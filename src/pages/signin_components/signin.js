@@ -103,13 +103,25 @@ function SignIn() {
                 {/* Email field */}
                 <TextField
                   label="Email"
-                  onChange={(event) => setEmail(event.target.value)} // save username from user input
+                  InputProps={{
+                    style: { borderColor: 'var(--text-color)' },
+                  }}
+                  InputLabelProps={{
+                    style: { color: 'var(--text-color)' },
+                  }}
+                  onChange={(event) => setEmail(event.target.value)} // save email from user input
                 />
 
                 {/* Password field */}
                 <TextField
                   label="Password"
                   type="password"
+                  InputProps={{
+                    style: { borderColor: 'var(--text-color)' },
+                  }}
+                  InputLabelProps={{
+                    style: { color: 'var(--text-color)' },
+                  }}
                   onChange={(event) => setPassword(event.target.value)} // save password from user input
                 />
 
@@ -122,7 +134,8 @@ function SignIn() {
                     color: 'var(--text-color)',
                     backgroundColor: 'var(--accent-color)',
                     textTransform: "none",
-                    fontSize: 15
+                    fontSize: 15,
+                    fontWeight: "bold"
                     }}
                 >
                   Sign In
@@ -143,9 +156,9 @@ function SignIn() {
                     color: 'var(--text-color)',
                     backgroundColor: 'var(--accent-color)',
                     textTransform: "none",
-                    alignItems: "center",
-                    fontSize: 15
-                  }}
+                    fontSize: 15,
+                    fontWeight: "bold"
+                    }}
                 >
                   Sign Up
                 </Button>
