@@ -191,7 +191,7 @@ function SignUp() {
                 <Button
                   variant="contained"
                   style={{
-                    width: 120,
+                    width: 200,
                     color: 'var(--text-color)',
                     backgroundColor: 'var(--accent-color)',
                     textTransform: "none",
