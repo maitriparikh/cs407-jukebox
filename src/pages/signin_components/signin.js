@@ -2,25 +2,27 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
-import Select from "@mui/material/Select";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import React, { useState, useEffect } from "react";
 import { Container } from "@mui/system";
 import Grid from "@mui/material/Grid";
+import Logo from '../../logo.png';
+import { useNavigate } from "react-router-dom";
 import { Link } from "@mui/material";
-import logo from '../../logo.png';
-
 
 
 function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  //const navigate = useNavigate();
 
+  /* Navigation for buttons */
+  const navigate = useNavigate();
+  const signin_click = () => {
+    console.log("SIGNIN CLICKED");
+  };
+  const signup_click = () => {
+    console.log("SIGNUP CLICKED");
+    navigate("/signup");
+  };
 
   return (
     <Container maxWidth="true" disableGutters="true">
@@ -55,7 +57,7 @@ function SignIn() {
                 Welcome to Jukebox!
             </h5>
 
-            <img src={logo} alt="Logo" height={75} width={75} />
+            <img src={Logo} alt="Logo" height={75} width={75} />
 
             <h4
                 style={{
@@ -68,7 +70,7 @@ function SignIn() {
             </h4>
         </Stack>
 
-        {/* Signin Form */}
+        {/* Sign In Form */}
         <Box
           p={4}
           sx={{
@@ -103,12 +105,6 @@ function SignIn() {
                 {/* Email field */}
                 <TextField
                   label="Email"
-                  InputProps={{
-                    style: { borderColor: 'var(--text-color)' },
-                  }}
-                  InputLabelProps={{
-                    style: { color: 'var(--text-color)' },
-                  }}
                   onChange={(event) => setEmail(event.target.value)} // save email from user input
                 />
 
@@ -116,12 +112,6 @@ function SignIn() {
                 <TextField
                   label="Password"
                   type="password"
-                  InputProps={{
-                    style: { borderColor: 'var(--text-color)' },
-                  }}
-                  InputLabelProps={{
-                    style: { color: 'var(--text-color)' },
-                  }}
                   onChange={(event) => setPassword(event.target.value)} // save password from user input
                 />
 
@@ -130,13 +120,14 @@ function SignIn() {
                 <Button
                   variant="contained"
                   style={{
-                    width: 120,
+                    width: 200,
                     color: 'var(--text-color)',
                     backgroundColor: 'var(--accent-color)',
                     textTransform: "none",
                     fontSize: 15,
                     fontWeight: "bold"
                     }}
+                  onClick={signin_click}
                 >
                   Sign In
                 </Button>
@@ -144,25 +135,21 @@ function SignIn() {
 
                 <br></br>
 
-                {/* Sign Up button */}
-                <h4 style={{ color: 'var(--text-color)', marginBottom: "0" }}>
-                  Don't have an account?
+                {/* Sign Up link */}
+                <h4 style={{ color: 'var(--text-color)', marginBottom: "0", fontSize: 16 }}>
+                  Don't have an account? {" "}
+                  <Link
+                    variant="contained"
+                    style={{
+                      color: "#3366ff",
+                      fontSize: 16,
+                      fontWeight: "bold"
+                      }}
+                    onClick={signup_click}
+                  >
+                    Sign Up
+                  </Link>
                 </h4>
-                <Box textAlign='center'>
-                <Button
-                  variant="contained"
-                  style={{
-                    width: 120,
-                    color: 'var(--text-color)',
-                    backgroundColor: 'var(--accent-color)',
-                    textTransform: "none",
-                    fontSize: 15,
-                    fontWeight: "bold"
-                    }}
-                >
-                  Sign Up
-                </Button>
-                </Box>
 
               </Stack>
             </Stack>
