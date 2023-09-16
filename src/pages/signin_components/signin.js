@@ -115,6 +115,9 @@ function SignIn() {
                   onChange={(event) => setPassword(event.target.value)} // save password from user input
                 />
 
+                <br></br>
+
+
                 {/* Sign In button */}
                 <Box textAlign='center'>
                 <Button
