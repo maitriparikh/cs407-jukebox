@@ -88,7 +88,7 @@ function SignIn() {
             alignItems="center"
           >
 
-            <Stack marginX="15%" width="100%">
+            <Stack marginX="22%" width="80%">
               <h1 style={{ textAlign: "left", color: 'var(--text-color)'}}>
                 Sign In
               </h1>
