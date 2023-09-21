@@ -11,7 +11,7 @@ import Avatar from "@mui/material/Avatar";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import CardTravelIcon from "@mui/icons-material/CardTravel";
+import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import SettingsIcon from "@mui/icons-material/Settings";
 import HomeIcon from "@mui/icons-material/Home";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -83,6 +83,54 @@ function Header() {
                                 <HomeIcon />
                             </ListItemIcon>
                             <ListItemText primary={"Homepage"} style={{color:"var(--text-color)"}}/>
+                        </ListItemButton>
+                    </ListItem>
+
+                    {/* Leaderboard */}
+                    <ListItem disablePadding id="text">
+                        <ListItemButton
+                            onClick={() => {
+                                navigate("/leaderboard");
+                                setDrawerOpen(false);
+                            }}
+                        >
+                            <ListItemIcon>
+                                {" "}
+                                <LeaderboardIcon />
+                            </ListItemIcon>
+                            <ListItemText primary={"Leaderboard"} style={{color:"var(--text-color)"}}/>
+                        </ListItemButton>
+                    </ListItem>
+
+                    {/* Profile */}
+                    <ListItem disablePadding id="text">
+                        <ListItemButton
+                            onClick={() => {
+                                navigate("/profile");
+                                setDrawerOpen(false);
+                            }}
+                        >
+                            <ListItemIcon>
+                                {" "}
+                                <AccountCircleIcon />
+                            </ListItemIcon>
+                            <ListItemText primary={"Profile"} style={{color:"var(--text-color)"}}/>
+                        </ListItemButton>
+                    </ListItem>
+
+                    {/* Settings */}
+                    <ListItem disablePadding id="text">
+                        <ListItemButton
+                            onClick={() => {
+                                navigate("/settings");
+                                setDrawerOpen(false);
+                            }}
+                        >
+                            <ListItemIcon>
+                                {" "}
+                                <SettingsIcon />
+                            </ListItemIcon>
+                            <ListItemText primary={"Settings"} style={{color:"var(--text-color)"}}/>
                         </ListItemButton>
                     </ListItem>
 
