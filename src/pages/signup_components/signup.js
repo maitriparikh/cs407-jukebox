@@ -12,6 +12,9 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import { Link } from "@mui/material";
+import { collection, addDoc } from "firebase/firestore";
+import { db, auth } from "../../utils/firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 
 function SignUp() {
@@ -23,11 +26,33 @@ function SignUp() {
 
   /* Navigation for buttons */
   const navigate = useNavigate();
-  const signup_click = () => {
+
+  const signup_click = async (e) => {
+    console.log(email + " " + password);
+    e.preventDefault();
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        console.log(userCredential);
+      }).catch((error) => {
+        console.log(error);
+      });
+    
+    try {
+      const docRef = await addDoc(collection(db, "user"), {
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        securityQuestion: securityQuestion    
+      });
+      console.log("Document written with ID: ", docRef.id);
+      navigate("/");
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
     console.log("SIGNUP CLICKED");
-    console.log(firstName + ", " + lastName + ", " + email + ", " + password + ", " + securityQuestion);
-    navigate("/signup");
+    signin_click();
   };
+  
   const signin_click = () => {
     console.log("GO BACK TO SIGNIN CLICKED");
     navigate("/");
