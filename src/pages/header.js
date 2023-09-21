@@ -54,20 +54,20 @@ function Header() {
                 anchor="left"
                 open={drawerOpen}
                 onClose={() => setDrawerOpen(false)}
-                PaperProps={{
-                  sx: {
-                    width: 240,
-                    flexShrink: 0,
-                    color: "primary.contrastText",
-                    backgroundColor: "sidebarColor.main",
-                    fontFamily: "Rubik",
-                    "& .MuiDrawer-paper": {
-                      width: 240,
-                      boxSizing: "border-box",
-                    },
-                  },
-                }}
             >
+              <List>
+                <ListItem disablePadding id="text">
+                  <img
+                  src={FullLogo}
+                  alt="Logo"
+                  style={{paddingLeft:'15px', paddingRight: '30px', height: 60}}
+                  onClick={() => {
+                      navigate("/homepage");
+                  }}
+                  />
+                </ListItem>
+              </List>
+
                 <List>
 
                     {/* Homepage */}
@@ -135,6 +135,33 @@ function Header() {
                     </ListItem>
 
                 </List>
+
+                {/* Log out button*/}
+                <List
+                  sx={{
+                    width: "100%",
+                    bottom: 0,
+                    position: "absolute",
+                    align: "center",
+                  }}
+                >
+                <ListItem disablePadding>
+                  <ListItemButton
+                    onClick={() => {
+                      setDrawerOpen(false);
+                    }}
+                  >
+                    <ListItemIcon>
+                      {" "}
+                      <LogoutIcon sx={{ color: "#DE6600" }} />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={<Box fontWeight="500">Sign out</Box>}
+                      sx={{ color: "#DE6600", fontWeight: "bold" }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+            </List>
 
             </Drawer>
 
