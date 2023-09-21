@@ -8,7 +8,9 @@ import Grid from "@mui/material/Grid";
 import Logo from '../../logo.png';
 import { useNavigate } from "react-router-dom";
 import { Link } from "@mui/material";
-
+import { collection, addDoc, getDocs, onSnapshot } from "firebase/firestore";
+import { db, auth } from "../../utils/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 function SignIn() {
   const [email, setEmail] = useState("");
@@ -16,7 +18,16 @@ function SignIn() {
 
   /* Navigation for buttons */
   const navigate = useNavigate();
-  const signin_click = () => {
+
+  const signin_click = (e) => {
+    console.log(email + " " + password);
+    e.preventDefault();
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        console.log(userCredential);
+      }).catch((error) => {
+        console.log(error);
+      });
     console.log("SIGNIN CLICKED");
   };
   const signup_click = () => {

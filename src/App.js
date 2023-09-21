@@ -7,6 +7,7 @@ import {
   BrowserRouter,
 } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import AuthDetails from "./utils/authDetails";
 
 import Header from "./pages/header";
 import SignIn from "./pages/signin_components/signin";
@@ -25,12 +26,16 @@ function App() {
   return (
     <div className="App">
       {conditionalHeader}
+      
+      <AuthDetails></AuthDetails>
+
       <Routes>
         <Route path="/" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/homepage" element={<Homepage />} />
       </Routes>
+      
     </div>
   );
 }
