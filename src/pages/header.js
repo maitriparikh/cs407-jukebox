@@ -80,7 +80,7 @@ function Header() {
                         >
                             <ListItemIcon>
                                 {" "}
-                                <HomeIcon />
+                                <HomeIcon sx={{ color: "var(--text-color)", opacity: 0.7 }}/>
                             </ListItemIcon>
                             <ListItemText primary={"Homepage"} style={{color:"var(--text-color)"}}/>
                         </ListItemButton>
@@ -96,7 +96,7 @@ function Header() {
                         >
                             <ListItemIcon>
                                 {" "}
-                                <LeaderboardIcon />
+                                <LeaderboardIcon sx={{ color: "var(--text-color)", opacity: 0.7 }}/>
                             </ListItemIcon>
                             <ListItemText primary={"Leaderboard"} style={{color:"var(--text-color)"}}/>
                         </ListItemButton>
@@ -112,7 +112,7 @@ function Header() {
                         >
                             <ListItemIcon>
                                 {" "}
-                                <AccountCircleIcon />
+                                <AccountCircleIcon sx={{ color: "var(--text-color)", opacity: 0.7 }}/>
                             </ListItemIcon>
                             <ListItemText primary={"Profile"} style={{color:"var(--text-color)"}}/>
                         </ListItemButton>
@@ -128,7 +128,7 @@ function Header() {
                         >
                             <ListItemIcon>
                                 {" "}
-                                <SettingsIcon />
+                                <SettingsIcon sx={{ color: "var(--text-color)", opacity: 0.7 }}/>
                             </ListItemIcon>
                             <ListItemText primary={"Settings"} style={{color:"var(--text-color)"}}/>
                         </ListItemButton>
