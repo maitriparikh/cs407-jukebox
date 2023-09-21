@@ -20,6 +20,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 function SignUp() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [securityQuestion, setSecurityQuestion] = useState("");
@@ -157,6 +158,12 @@ function SignUp() {
                 <TextField
                   label="Last Name"
                   onChange={(event) => setLastName(event.target.value)} // save password from user input
+                />
+
+                {/* Username field */}
+                <TextField
+                  label="Username"
+                  onChange={(event) => setUsername(event.target.value)} // save username from user input
                 />
 
                 {/* Email field */}

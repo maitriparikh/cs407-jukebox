@@ -13,12 +13,35 @@ import { useNavigate } from "react-router-dom";
 function Homepage() {
 
     return (
-        <div style={{ margin: "10%" }}>
-        <Grid container spacing={2}>
+      <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "7%", marginRight: "7%" }}>
+
+        <h1 style={{ textAlign: "center", color: "var(--text-color)", fontSize: "50px" }}>
+            Homepage
+        </h1>
+
+        <Button
+          variant="contained"
+          style={{
+            width: "15%",
+            marginBottom: "20px",
+            color: "var(--text-color)",
+            border: `2px solid var(--text-color)`,
+            backgroundColor: "var(--accent-color)",
+            textTransform: "none",
+            fontSize: 15,
+            fontWeight: "bold",
+          }}
+        >
+          Random 🔀
+        </Button>
+        <br></br>
+        <br></br>
+
+        <Grid container spacing={5}>
 
           {/* First Row */}
           <Grid item xs={4}>
-            <Card elevation={3} style={{ borderRadius: "8px", height: "200px", width: "400px" }}>
+            <Card elevation={3} style={{ backgroundColor: "var(--accent-color)", color: "var(--text-color)", border: `2px solid var(--text-color)`, borderRadius: "8px", height: "250px", width: "100%" }}>
               <CardContent>
                 <Typography variant="h6" component="div">
                   Daily Challenge
@@ -30,7 +53,7 @@ function Homepage() {
             </Card>
           </Grid>
           <Grid item xs={4}>
-            <Card elevation={3} style={{ borderRadius: "8px", height: "200px", width: "400px" }}>
+            <Card elevation={3} style={{ backgroundColor: "var(--accent-color)", color: "var(--text-color)", border: `2px solid var(--text-color)`, borderRadius: "8px", height: "250px", width: "100%" }}>
               <CardContent>
                 <Typography variant="h6" component="div">
                   Song Roulette
@@ -42,7 +65,7 @@ function Homepage() {
             </Card>
           </Grid>
           <Grid item xs={4}>
-            <Card elevation={3} style={{ borderRadius: "8px", height: "200px", width: "400px" }}>
+            <Card elevation={3} style={{ backgroundColor: "var(--accent-color)", color: "var(--text-color)", border: `2px solid var(--text-color)`, borderRadius: "8px", height: "250px", width: "100%" }}>
               <CardContent>
                 <Typography variant="h6" component="div">
                   Pictionary
@@ -56,7 +79,7 @@ function Homepage() {
     
           {/* Second Row */}
           <Grid item xs={4}>
-            <Card elevation={3} style={{ borderRadius: "8px", height: "200px", width: "400px" }}>
+            <Card elevation={3} style={{ backgroundColor: "var(--accent-color)", color: "var(--text-color)", border: `2px solid var(--text-color)`, borderRadius: "8px", height: "250px", width: "100%" }}>
               <CardContent>
                 <Typography variant="h6" component="div">
                   Song Snippet
@@ -68,7 +91,7 @@ function Homepage() {
             </Card>
           </Grid>
           <Grid item xs={4}>
-            <Card elevation={3} style={{ borderRadius: "8px", height: "200px", width: "400px" }}>
+            <Card elevation={3} style={{ backgroundColor: "var(--accent-color)", color: "var(--text-color)", border: `2px solid var(--text-color)`, borderRadius: "8px", height: "250px", width: "100%" }}>
               <CardContent>
                 <Typography variant="h6" component="div">
                   Trivia Challenge
@@ -80,7 +103,7 @@ function Homepage() {
             </Card>
           </Grid>
           <Grid item xs={4}>
-            <Card elevation={3} style={{ borderRadius: "8px", height: "200px", width: "400px" }}>
+            <Card elevation={3} style={{ backgroundColor: "var(--accent-color)", color: "var(--text-color)", border: `2px solid var(--text-color)`, borderRadius: "8px", height: "250px", width: "100%" }}>
               <CardContent>
                 <Typography variant="h6" component="div">
                   Lyric Challenge

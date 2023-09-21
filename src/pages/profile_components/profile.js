@@ -16,6 +16,7 @@ import { Link } from "@mui/material";
 function Profile() {
     const [firstName] = useState("Purdue");
     const [lastName] = useState("Pete");
+    const [username] = useState("purdue_pete");
     const [email] = useState("pete@purdue.edu");
 
     /* Navigation for buttons */
@@ -82,6 +83,9 @@ function Profile() {
             >
             <h2>
                 {firstName} {lastName}
+            </h2>
+            <h2>
+                @{username}
             </h2>
             <h2>{email}</h2>
             </Stack>
