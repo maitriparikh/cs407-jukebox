@@ -18,6 +18,7 @@ import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 function Profile() {
     const [firstName] = useState("Purdue");
@@ -40,7 +41,7 @@ function Profile() {
     return (
       <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "7%", marginRight: "7%" }}>
 
-        <Typography variant="h2" style={{ textAlign: "left" }}>
+        <Typography variant="h1" style={{ textAlign: "left" }}>
             My Profile
         </Typography>
 
@@ -115,7 +116,7 @@ function Profile() {
                       textTransform: "none",
                       fontSize: 15,
                       fontWeight: "bold",
-                      margin: "1%"
+                      margin: "3%"
                     }}
                   >
                     My Spotify Data
@@ -130,7 +131,7 @@ function Profile() {
                       textTransform: "none",
                       fontSize: 15,
                       fontWeight: "bold",
-                      margin: "1%"
+                      margin: "3%"
                     }}
                   >
                     Update Music Preferences
@@ -145,26 +146,10 @@ function Profile() {
                       textTransform: "none",
                       fontSize: 15,
                       fontWeight: "bold",
-                      margin: "1%"
+                      margin: "3%"
                     }}
                   >
                     Edit Profile
-                  </Button>
-
-                  <Button
-                    variant="contained"
-                    style={{
-                      width: 230,
-                      color: 'var(--text-color)',
-                      backgroundColor: 'var(--accent-color)',
-                      textTransform: "none",
-                      fontSize: 15,
-                      fontWeight: "bold",
-                      margin: "1%"
-                    }}
-                    onClick={signOut_click}
-                  >
-                    Sign Out
                   </Button>
                   
                 </Stack>
@@ -172,6 +157,27 @@ function Profile() {
               </CardContent>
             </Card>
           </Grid>
+  
+        </Grid>
+
+
+        <Grid item xs={3}>
+
+        <Button
+            variant="contained"
+            style={{
+              width: 230,
+              color: "#DE6600",
+              backgroundColor: 'var(--accent-color)',
+              textTransform: "none",
+              fontSize: 15,
+              fontWeight: "bold",
+              margin: "1%"
+            }}
+            onClick={signOut_click}
+          >
+            <LogoutIcon sx={{ color: "#DE6600" }} /> &nbsp; Sign Out
+          </Button>
   
         </Grid>
 
