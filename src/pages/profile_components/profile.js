@@ -15,6 +15,9 @@ import { Link } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent"
 import Typography from "@mui/material/Typography";
+import Avatar from "@mui/material/Avatar";
+import IconButton from "@mui/material/IconButton";
+import PhotoCamera from "@mui/icons-material/PhotoCamera";
 
 function Profile() {
     const [firstName] = useState("Purdue");
@@ -40,13 +43,40 @@ function Profile() {
 
         <Grid container spacing={5}>
 
-          {/* First Row */}
           <Grid item xs={4}>
-            <Card elevation={3} style={{ backgroundColor: "var(--accent-color)", color: "var(--text-color)", border: `2px solid var(--text-color)`, borderRadius: "8px", height: "200px", width: "100%" }}>
+            <Card elevation={0} style={{ height: "250px", width: "100%" }}>
               <CardContent>
-                <Typography variant="h3" component="div">
-                  Profile Picture
-                </Typography>
+              <div>
+              <Avatar
+                src={Logo}
+                sx={{
+                  width: 150,
+                  height: 150,
+                  border: "4px solid var(--text-color)",
+                  borderRadius: "50%", 
+                  margin: "auto", 
+                }}
+              >
+              </Avatar>
+
+              {/* Upload button */}
+              <input
+                type="file"
+                accept="image/*"
+                id="profile-picture-upload"
+                style={{ display: "none" }}
+                /*onChange={saveImage}*/
+              />
+              <label htmlFor="profile-picture-upload">
+                <IconButton
+                  color="primary"
+                  aria-label="upload picture"
+                  component="span"
+                >
+                  <PhotoCamera />
+                </IconButton>
+              </label>
+            </div>
               </CardContent>
             </Card>
           </Grid>
