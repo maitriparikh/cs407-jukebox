@@ -12,6 +12,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import { Link } from "@mui/material";
+import Typography from "@mui/material/Typography";
 
 function Profile() {
     const [firstName] = useState("Purdue");
@@ -27,115 +28,128 @@ function Profile() {
     };
 
     return (
-        <Box sx={{ margin: "5%" }}>
-        <Container maxWidth="true" disableGutters="true">
+      <Box sx={{ margin: "5%" }}>
+      <Container maxWidth="true" disableGutters="true">
 
-          <h1 style={{ textAlign: "left", color: "var(--text-color)" }}>
-            My Profile
-          </h1>
+      <Typography variant="h1" style={{ textAlign: "left" }}>
+          My Profile
+      </Typography>
 
-          <br></br>
-          <Grid container
-                direction={"row"}
-                spacing={2}
-                rowSpacing={2}
-                columnSpacing={3}
-                sx={{ marginLeft: "1%", alignItems: "center" }}
-            >
+        <br></br>
+        <Grid container
+              direction={"row"}
+              spacing={2}
+              rowSpacing={2}
+              columnSpacing={3}
+              sx={{ marginLeft: "1%", alignItems: "center" }}
+          >
 
-            {/* First Column */}
+          {/* First Column */}
+          <Stack
+          sx={{
+              minHeight: "100%",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "space-between",
+          }}
+          >
+          <img
+              src={Logo}
+              alt="Profile Picture"
+              style={{
+              border: "2px solid var(--text-color)",
+              borderRadius: "50%",
+              width: "100px",
+              height: "100px",
+              }}
+          />
+          </Stack>
+  
+          {/* Second Column */}
+          <Stack
+          p={2}
+          sx={{
+              backgroundColor: "var(--accent-color)",
+              color: "var(--text-color)",
+              border: `2px solid var(--text-color)`,
+              borderRadius: "10px",
+              minHeight: "100%",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              textAlign: "center",
+          }}
+          >
+          <h2>
+              {firstName} {lastName}
+          </h2>
+          <h2>
+              @{username}
+          </h2>
+          <h2>{email}</h2>
+          </Stack>
+  
+          {/* Third Column */}
             <Stack
-            sx={{
+              p={2}
+              sx={{
+                backgroundColor: "#ffffff",
                 minHeight: "100%",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "space-between",
-            }}
+              }}
             >
-            <img
-                src={Logo}
-                alt="Profile Picture"
+              <Button
+                variant="contained"
                 style={{
-                border: "2px solid var(--text-color)",
-                borderRadius: "50%",
-                width: "100px",
-                height: "100px",
-                }}
-            />
-            </Stack>
-    
-            {/* Second Column */}
-            <Stack
-            p={2}
-            sx={{
-                backgroundColor: "var(--accent-color)",
-                color: "var(--text-color)",
-                border: `2px solid var(--text-color)`,
-                borderRadius: "10px",
-                minHeight: "100%",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                textAlign: "center",
-            }}
-            >
-            <h2>
-                {firstName} {lastName}
-            </h2>
-            <h2>
-                @{username}
-            </h2>
-            <h2>{email}</h2>
-            </Stack>
-    
-            {/* Third Column */}
-              <Stack
-                p={2}
-                sx={{
-                  backgroundColor: "#ffffff",
-                  minHeight: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "space-between",
+                  width: "70%",
+                  color: "var(--text-color)",
+                  border: `2px solid var(--text-color)`,
+                  backgroundColor: "var(--accent-color)",
+                  textTransform: "none",
+                  fontSize: 20,
+                  fontWeight: "bold"
                 }}
               >
-                <Button
-                  variant="contained"
-                  style={{
-                    width: "70%",
-                    color: "var(--text-color)",
-                    border: `2px solid var(--text-color)`,
-                    backgroundColor: "var(--accent-color)",
-                    textTransform: "none",
-                    fontSize: 15,
-                    fontWeight: "bold",
-                  }}
-                >
-                  My Spotify Data
-                </Button>
-    
-                <Button
-                  variant="contained"
-                  style={{
-                    width: "70%",
-                    color: "var(--text-color)",
-                    border: `2px solid var(--text-color)`,
-                    backgroundColor: "var(--accent-color)",
-                    textTransform: "none",
-                    fontSize: 15,
-                    fontWeight: "bold",
-                    marginTop: "10px",
-                  }}
-                >
-                  Update Music Preferences
-                </Button>
-              </Stack>
-          </Grid>
-        </Container>
-        </Box>
+                My Spotify Data
+              </Button>
+  
+              <Button
+                variant="contained"
+                style={{
+                  width: "70%",
+                  color: "var(--text-color)",
+                  border: `2px solid var(--text-color)`,
+                  backgroundColor: "var(--accent-color)",
+                  textTransform: "none"
+                }}
+              >
+                Update Music Preferences
+              </Button>
+
+              <Button
+                variant="contained"
+                style={{
+                  width: "70%",
+                  color: "var(--text-color)",
+                  border: `2px solid var(--text-color)`,
+                  backgroundColor: "var(--accent-color)",
+                  textTransform: "none",
+                  fontSize: 20,
+                  fontWeight: "bold"
+                }}
+              >
+                Edit Profile
+              </Button>
+
+            </Stack>
+        </Grid>
+      </Container>
+      </Box>
       );
 }
 

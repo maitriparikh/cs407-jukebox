@@ -11,6 +11,7 @@ import { Link } from "@mui/material";
 import { collection, addDoc, getDocs, onSnapshot } from "firebase/firestore";
 import { db, auth } from "../../utils/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import Typography from "@mui/material/Typography";
 
 function SignIn() {
   const [email, setEmail] = useState("");
@@ -58,7 +59,7 @@ function SignIn() {
             }}
             spacing={4}
             >
-            <h5
+            <Typography variant="h1"
                 style={{
                 fontWeight: "bold",
                 color: "var(--text-color)",
@@ -66,11 +67,11 @@ function SignIn() {
                 }}
             >
                 Welcome to Jukebox!
-            </h5>
+            </Typography>
 
             <img src={Logo} alt="Logo" height={75} width={75} />
 
-            <h4
+            <Typography variant="h3"
                 style={{
                 fontWeight: "normal",
                 color: "var(--text-color)",
@@ -78,7 +79,7 @@ function SignIn() {
                 }}
             >
                 To get started, sign in to your account or sign up for one today!
-            </h4>
+            </Typography>
         </Stack>
 
         {/* Sign In Form */}
@@ -100,9 +101,11 @@ function SignIn() {
           >
 
             <Stack marginX="22%" width="80%">
-              <h1 style={{ textAlign: "left", color: 'var(--text-color)'}}>
+            <div style={{ marginBottom: '20px' }}>
+             <Typography variant="h2" style={{ textAlign: "left" }}>
                 Sign In
-              </h1>
+              </Typography>
+              </div>
 
               {/* Form Stack */}
               <Stack
@@ -150,8 +153,8 @@ function SignIn() {
                 <br></br>
 
                 {/* Sign Up link */}
-                <h4 style={{ color: 'var(--text-color)', marginBottom: "0", fontSize: 16 }}>
-                  Don't have an account? {" "}
+                <Typography variant="h4" >
+                  Already have an account? {" "}
                   <Link
                     variant="contained"
                     style={{
@@ -163,7 +166,7 @@ function SignIn() {
                   >
                     Sign Up
                   </Link>
-                </h4>
+                </Typography>
 
               </Stack>
             </Stack>

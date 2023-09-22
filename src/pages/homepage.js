@@ -15,9 +15,11 @@ function Homepage() {
     return (
       <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "7%", marginRight: "7%" }}>
 
-        <h1 style={{ textAlign: "center", color: "var(--text-color)", fontSize: "50px" }}>
+        <Typography variant="h1" style={{ textAlign: "center" }}>
             Homepage
-        </h1>
+        </Typography>
+
+        <br></br>
 
         <Button
           variant="contained"
@@ -28,8 +30,8 @@ function Homepage() {
             border: `2px solid var(--text-color)`,
             backgroundColor: "var(--accent-color)",
             textTransform: "none",
-            fontSize: 15,
-            fontWeight: "bold",
+            fontSize: 20,
+            fontWeight: "bold"
           }}
         >
           Random 🔀
@@ -43,11 +45,17 @@ function Homepage() {
           <Grid item xs={4}>
             <Card elevation={3} style={{ backgroundColor: "var(--accent-color)", color: "var(--text-color)", border: `2px solid var(--text-color)`, borderRadius: "8px", height: "250px", width: "100%" }}>
               <CardContent>
-                <Typography variant="h6" component="div">
+                <Typography variant="h3" component="div">
                   Daily Challenge
                 </Typography>
-                <Typography variant="body2">
-                  Content for Card 1
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={4}>
+            <Card elevation={3} style={{ backgroundColor: "var(--accent-color)", color: "var(--text-color)", border: `2px solid var(--text-color)`, borderRadius: "8px", height: "250px", width: "100%" }}>
+              <CardContent>
+                <Typography variant="h3" component="div">
+                  Song Roulette 👥
                 </Typography>
               </CardContent>
             </Card>
@@ -55,23 +63,8 @@ function Homepage() {
           <Grid item xs={4}>
             <Card elevation={3} style={{ backgroundColor: "var(--accent-color)", color: "var(--text-color)", border: `2px solid var(--text-color)`, borderRadius: "8px", height: "250px", width: "100%" }}>
               <CardContent>
-                <Typography variant="h6" component="div">
-                  Song Roulette
-                </Typography>
-                <Typography variant="body2">
-                  Content for Card 2
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={4}>
-            <Card elevation={3} style={{ backgroundColor: "var(--accent-color)", color: "var(--text-color)", border: `2px solid var(--text-color)`, borderRadius: "8px", height: "250px", width: "100%" }}>
-              <CardContent>
-                <Typography variant="h6" component="div">
-                  Pictionary
-                </Typography>
-                <Typography variant="body2">
-                  Content for Card 3
+                <Typography variant="h3" component="div">
+                  Pictionary 👥
                 </Typography>
               </CardContent>
             </Card>
@@ -81,35 +74,26 @@ function Homepage() {
           <Grid item xs={4}>
             <Card elevation={3} style={{ backgroundColor: "var(--accent-color)", color: "var(--text-color)", border: `2px solid var(--text-color)`, borderRadius: "8px", height: "250px", width: "100%" }}>
               <CardContent>
-                <Typography variant="h6" component="div">
+                <Typography variant="h3" component="div">
                   Song Snippet
                 </Typography>
-                <Typography variant="body2">
-                  Content for Card 4
-                </Typography>
               </CardContent>
             </Card>
           </Grid>
           <Grid item xs={4}>
             <Card elevation={3} style={{ backgroundColor: "var(--accent-color)", color: "var(--text-color)", border: `2px solid var(--text-color)`, borderRadius: "8px", height: "250px", width: "100%" }}>
               <CardContent>
-                <Typography variant="h6" component="div">
+                <Typography variant="h3" component="div">
                   Trivia Challenge
                 </Typography>
-                <Typography variant="body2">
-                  Content for Card 5
-                </Typography>
               </CardContent>
             </Card>
           </Grid>
           <Grid item xs={4}>
             <Card elevation={3} style={{ backgroundColor: "var(--accent-color)", color: "var(--text-color)", border: `2px solid var(--text-color)`, borderRadius: "8px", height: "250px", width: "100%" }}>
               <CardContent>
-                <Typography variant="h6" component="div">
+                <Typography variant="h3" component="div">
                   Lyric Challenge
-                </Typography>
-                <Typography variant="body2">
-                  Content for Card 6
                 </Typography>
               </CardContent>
             </Card>
