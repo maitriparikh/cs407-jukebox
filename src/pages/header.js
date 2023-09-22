@@ -32,7 +32,7 @@ function Header() {
 
   return (
     <Box>
-      <AppBar position="static" sx={{ background: "var(--accent-color)" }}>
+      <AppBar position="static" sx={{ background: "var(--accent-color)", borderBottom: "var(--line-color)", boxShadow: "none" }}>
         <Toolbar>
             {/* Hamburger Menu */}
             <IconButton
