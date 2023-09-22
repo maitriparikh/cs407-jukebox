@@ -16,6 +16,7 @@ import { collection, addDoc } from "firebase/firestore";
 import { db, auth } from "../../utils/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import validPassword from "../../utils/require";
+import Typography from "@mui/material/Typography";
 
 
 function SignUp() {
@@ -84,7 +85,7 @@ function SignUp() {
             }}
             spacing={4}
             >
-            <h5
+            <Typography variant="h1"
                 style={{
                 fontWeight: "bold",
                 color: "var(--text-color)",
@@ -92,11 +93,11 @@ function SignUp() {
                 }}
             >
                Sign Up for Jukebox!
-            </h5>
+            </Typography>
 
             <img src={Logo} alt="Logo" height={75} width={75} />
 
-            <h4
+            <Typography variant="h3"
                 style={{
                 fontWeight: "normal",
                 color: "var(--text-color)",
@@ -104,7 +105,7 @@ function SignUp() {
                 }}
             >
                 Fill in the fields to set up your account and start playing today!
-            </h4>
+            </Typography>
         </Stack>
 
         {/* Form Fields */}
@@ -126,9 +127,11 @@ function SignUp() {
           >
 
             <Stack marginX="22%" width="80%">
-              <h1 style={{ textAlign: "left", color: 'var(--text-color)'}}>
+            <div style={{ marginBottom: '20px' }}>
+            <Typography variant="h2" style={{ textAlign: "left" }}>
                 Create Your Account
-              </h1>
+              </Typography>   
+            </div>        
 
               {/* Form Stack */}
               <Stack
@@ -139,16 +142,9 @@ function SignUp() {
                 width="70%"
               >
 
-            <h1
-                style={{
-                  textAlign: "left",
-                  fontWeight: "400",
-                  fontSize: "16px",
-                  color: 'var(--text-color)',
-                }}
-              >
+              <Typography variant="h4" style={{ textAlign: "left" }}>
                 Account Information
-            </h1>
+              </Typography>
               
                 {/* First Name field */}
                 <TextField
@@ -181,16 +177,9 @@ function SignUp() {
                   onChange={(event) => setPassword(event.target.value)} // save password from user input
                 />
 
-            <h1
-                style={{
-                  textAlign: "left",
-                  fontWeight: "400",
-                  fontSize: "16px",
-                  color: 'var(--text-color)',
-                }}
-              >
+              <Typography variant="h4" style={{ textAlign: "left" }}>
                 Security Question
-            </h1>
+              </Typography>
 
                 {/* Security Question */}
                 <FormControl>
@@ -241,7 +230,7 @@ function SignUp() {
                 <br></br>
 
                 {/* Sign In link */}
-                <h4 style={{ color: 'var(--text-color)', marginBottom: "0", fontSize: 16}}>
+                <Typography variant="h4" >
                   Already have an account? {" "}
                   <Link
                     variant="contained"
@@ -254,7 +243,7 @@ function SignUp() {
                   >
                     Sign In
                   </Link>
-                </h4>
+                  </Typography>
 
               </Stack>
             </Stack>

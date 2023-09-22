@@ -4,12 +4,19 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
+import { useState, useEffect } from "react";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+import { ThemeProvider } from "@mui/material/styles";
+import JukeboxTheme from "../src/theme"; 
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+
 root.render(
-    <BrowserRouter>
+  <BrowserRouter>
+    <ThemeProvider theme={JukeboxTheme}>
       <App />
-    </BrowserRouter>
+    </ThemeProvider>
+  </BrowserRouter>
 );
 
 // If you want to start measuring performance in your app, pass a function
