@@ -60,7 +60,7 @@ function Header() {
                   <img
                   src={FullLogo}
                   alt="Logo"
-                  style={{paddingLeft:'15px', paddingRight: '30px', height: 60}}
+                  style={{paddingLeft:'10px', paddingRight: '100px', height: 60}}
                   onClick={() => {
                       navigate("/homepage");
                   }}
@@ -156,7 +156,7 @@ function Header() {
                       <LogoutIcon sx={{ color: "#DE6600" }} />
                     </ListItemIcon>
                     <ListItemText
-                      primary={<Box fontWeight="500">Sign out</Box>}
+                      primary={<Box fontWeight="500">Sign Out</Box>}
                       sx={{ color: "#DE6600", fontWeight: "bold" }}
                     />
                   </ListItemButton>
