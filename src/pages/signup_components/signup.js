@@ -15,6 +15,7 @@ import { Link } from "@mui/material";
 import { collection, addDoc } from "firebase/firestore";
 import { db, auth } from "../../utils/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import validPassword from "../../utils/require";
 
 
 function SignUp() {
@@ -39,9 +40,10 @@ function SignUp() {
       });
     
     try {
-      const docRef = await addDoc(collection(db, "user"), {
+      const docRef = await addDoc(collection(db, "users"), {
         firstName: firstName,
         lastName: lastName,
+        username: username,
         email: email,
         securityQuestion: securityQuestion    
       });

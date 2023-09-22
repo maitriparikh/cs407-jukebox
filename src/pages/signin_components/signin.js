@@ -11,10 +11,12 @@ import { Link } from "@mui/material";
 import { collection, addDoc, getDocs, onSnapshot } from "firebase/firestore";
 import { db, auth } from "../../utils/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { red } from "@mui/material/colors";
 
 function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [validUser, setValidUser] = useState(true);
 
   /* Navigation for buttons */
   const navigate = useNavigate();
@@ -24,8 +26,10 @@ function SignIn() {
     e.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
+        setValidUser(true);
         console.log(userCredential);
       }).catch((error) => {
+        setValidUser(false);
         console.log(error);
       });
     console.log("SIGNIN CLICKED");
@@ -33,6 +37,10 @@ function SignIn() {
   const signup_click = () => {
     console.log("SIGNUP CLICKED");
     navigate("/signup");
+  };
+  const forgot_password_click = () => {
+    console.log("FORGOT PASSWORD  CLICKED");
+    navigate("/password");
   };
 
   return (
@@ -125,7 +133,8 @@ function SignIn() {
                   type="password"
                   onChange={(event) => setPassword(event.target.value)} // save password from user input
                 />
-
+                { validUser ? <><p></p></>: <p style={{ color: 'red', textAlign: 'left' }}>Email/password combination does not match</p>}
+                
                 <br></br>
 
 
@@ -164,7 +173,21 @@ function SignIn() {
                     Sign Up
                   </Link>
                 </h4>
-
+              
+                {/* Forgot password link */}
+                <h4 style={{ color: 'var(--text-color)', marginBottom: "0", fontSize: 12 }}>
+                    <Link
+                      variant="contained"
+                      style={{
+                        color: "#3366ff",
+                        fontSize: 12,
+                        fontWeight: "bold"
+                      }}
+                      onClick={forgot_password_click}
+                    >
+                      Forgot password?
+                    </Link>
+                  </h4>
               </Stack>
             </Stack>
           </Grid>
