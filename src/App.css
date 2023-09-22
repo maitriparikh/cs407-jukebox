@@ -1,7 +1,7 @@
 :root {
   --text-color: #65350F;
   --accent-color: #FBE7BF;
-  --line-color: 4px solid #FFCB28;
+  --line-color: #FFCB28;
 }
 
 .App {

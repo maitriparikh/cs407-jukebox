@@ -81,7 +81,7 @@ function SignUp() {
                 justifyContent: "center",
                 textAlign: "center",
                 padding: "50px",
-                borderRight: 'var(--line-color)'
+                borderRight: '4px solid var(--line-color)'
             }}
             spacing={4}
             >

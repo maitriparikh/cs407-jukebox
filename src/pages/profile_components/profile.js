@@ -41,9 +41,9 @@ function Profile() {
 
         <br></br>
 
-        <Grid container spacing={5}>
+        <Grid container spacing={4}>
 
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <Card elevation={0} style={{ height: "250px", width: "100%" }}>
               <CardContent>
               <div>
@@ -52,7 +52,7 @@ function Profile() {
                 sx={{
                   width: 150,
                   height: 150,
-                  border: "4px solid var(--text-color)",
+                  border: "3px solid var(--text-color)",
                   borderRadius: "50%", 
                   margin: "auto", 
                 }}
@@ -80,29 +80,31 @@ function Profile() {
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={4}>
-            <Card elevation={3} style={{ backgroundColor: "var(--accent-color)", color: "var(--text-color)", border: `2px solid var(--text-color)`, borderRadius: "8px", height: "200px", width: "100%" }}>
-              <CardContent>
-                <Typography variant="h3" style={{ margin: "5%" }} component="div">
-                  {firstName} {lastName}
-                </Typography>
-                <Typography variant="h3" style={{ margin: "5%" }} component="div">
-                  {username}
-                </Typography>
-                <Typography variant="h3" style={{ margin: "5%" }} component="div">
-                  {email} 
-                </Typography>
-              </CardContent>
-            </Card>
+          <Grid item xs={0.5}></Grid>
+          <Grid item xs={5}>
+          <Card elevation={3} style={{ backgroundColor: "var(--accent-color)", color: "var(--text-color)", border: `3px solid var(--text-color)`, borderRadius: "8px", height: "200px", width: "100%" }}>
+            <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+              <Typography variant="h3" style={{ margin: "3%" }} component="div">
+                {firstName} {lastName}
+              </Typography>
+              <Typography variant="h3" style={{ margin: "3%" }} component="div">
+                {username}
+              </Typography>
+              <Typography variant="h3" style={{ margin: "3%" }} component="div">
+                {email} 
+              </Typography>
+            </CardContent>
+          </Card>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={0.5}></Grid>
+          <Grid item xs={3}>
             <Card elevation={0} style={{ height: "200px", width: "100%" }}>
               <CardContent>
               <Stack spacing={2} direction="column" alignItems="center">
                   <Button
                     variant="contained"
                     style={{
-                      width: 300,
+                      width: 230,
                       color: 'var(--text-color)',
                       backgroundColor: 'var(--accent-color)',
                       textTransform: "none",
@@ -117,7 +119,7 @@ function Profile() {
                   <Button
                     variant="contained"
                     style={{
-                      width: 300,
+                      width: 230,
                       color: 'var(--text-color)',
                       backgroundColor: 'var(--accent-color)',
                       textTransform: "none",
@@ -132,7 +134,7 @@ function Profile() {
                   <Button
                     variant="contained"
                     style={{
-                      width: 300,
+                      width: 230,
                       color: 'var(--text-color)',
                       backgroundColor: 'var(--accent-color)',
                       textTransform: "none",
@@ -150,6 +152,7 @@ function Profile() {
           </Grid>
   
         </Grid>
+
         </div>
       );
     }
