@@ -7,7 +7,6 @@ import { BrowserRouter } from 'react-router-dom';
 import { useState, useEffect } from "react";
 
 import { ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
 import JukeboxTheme from "../src/theme"; 
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -15,7 +14,6 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
     <ThemeProvider theme={JukeboxTheme}>
-      <CssBaseline />
       <App />
     </ThemeProvider>
   </BrowserRouter>
