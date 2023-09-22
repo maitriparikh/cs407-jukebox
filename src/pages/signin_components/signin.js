@@ -134,9 +134,25 @@ function SignIn() {
                 <TextField
                   label="Password"
                   type="password"
+                  style= {{ marginBottom: "-25px" }}
                   onChange={(event) => setPassword(event.target.value)} // save password from user input
                 />
                 { validUser ? <><p></p></>: <p style={{ color: 'red', textAlign: 'left' }}>Email/password combination does not match</p>}
+
+                {/* Forgot password link */}
+                <Typography variant="h4" textAlign="right">
+                  <Link
+                    variant="contained"
+                    style={{
+                      color: "#3366ff",
+                      fontSize: 16,
+                      fontWeight: "bold"
+                      }}
+                      onClick={forgot_password_click}
+                    >
+                      Forgot your password?
+                    </Link>
+                    </Typography>
                 
                 <br></br>
 
@@ -177,22 +193,6 @@ function SignIn() {
                   </Link>
       
                 </Typography>
-                
-                {/* Forgot password link */}
-                <h4 style={{ color: 'var(--text-color)', marginBottom: "0", fontSize: 12 }}>
-                    <Link
-                      variant="contained"
-                      style={{
-                        color: "#3366ff",
-                        fontSize: 12,
-                        fontWeight: "bold"
-                      }}
-                      onClick={forgot_password_click}
-                    >
-                      Forgot password?
-                    </Link>
-                  </h4>
-                
 
               </Stack>
             </Stack>
