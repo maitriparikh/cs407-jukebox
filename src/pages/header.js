@@ -30,6 +30,11 @@ function Header() {
   const [anchor, setAnchor] = React.useState(null);
   const open = Boolean(anchor);
 
+  const signOut_click = () => {
+    console.log("SIGNED OUT");
+    navigate("/");
+  }
+
   return (
     <Box>
       <AppBar position="static" sx={{ background: "var(--accent-color)", borderBottom: "4px solid var(--line-color)", boxShadow: "none" }}>
@@ -158,6 +163,7 @@ function Header() {
                     <ListItemText
                       primary={<Box fontWeight="500">Sign Out</Box>}
                       sx={{ color: "#DE6600", fontWeight: "bold" }}
+                      onClick={signOut_click}
                     />
                   </ListItemButton>
                 </ListItem>

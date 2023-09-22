@@ -32,6 +32,11 @@ function Profile() {
         navigate("/");
     };
 
+    const signOut_click = () => {
+      console.log("SIGNED OUT");
+      navigate("/");
+    }
+
     return (
       <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "7%", marginRight: "7%" }}>
 
@@ -110,7 +115,7 @@ function Profile() {
                       textTransform: "none",
                       fontSize: 15,
                       fontWeight: "bold",
-                      margin: "2%"
+                      margin: "1%"
                     }}
                   >
                     My Spotify Data
@@ -125,7 +130,7 @@ function Profile() {
                       textTransform: "none",
                       fontSize: 15,
                       fontWeight: "bold",
-                      margin: "2%"
+                      margin: "1%"
                     }}
                   >
                     Update Music Preferences
@@ -140,11 +145,28 @@ function Profile() {
                       textTransform: "none",
                       fontSize: 15,
                       fontWeight: "bold",
-                      margin: "2%"
+                      margin: "1%"
                     }}
                   >
                     Edit Profile
                   </Button>
+
+                  <Button
+                    variant="contained"
+                    style={{
+                      width: 230,
+                      color: 'var(--text-color)',
+                      backgroundColor: 'var(--accent-color)',
+                      textTransform: "none",
+                      fontSize: 15,
+                      fontWeight: "bold",
+                      margin: "1%"
+                    }}
+                    onClick={signOut_click}
+                  >
+                    Sign Out
+                  </Button>
+                  
                 </Stack>
 
               </CardContent>
