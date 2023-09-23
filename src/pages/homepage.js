@@ -41,6 +41,9 @@ function Homepage() {
       const randomGame = gameNames[num];
       console.log('Random Game Chosen:', randomGame);
       setChosenGame(randomGame);
+      if (randomGame == "Song Roulette") {
+        navigate("/songroulettelobby");
+      }
     };
 
     const specificGameChosen = (gameName) => {
