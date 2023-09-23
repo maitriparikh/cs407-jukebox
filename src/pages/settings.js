@@ -18,6 +18,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 
 function Settings() {
@@ -260,7 +261,7 @@ function Settings() {
             variant="contained"
             style={{
             width: 200,
-            color: 'var(--text-color)',
+            color: "#DE6600",
             backgroundColor: 'var(--accent-color)',
             textTransform: "none",
             fontSize: 15,
@@ -270,7 +271,7 @@ function Settings() {
             }}
             onClick={deleteAccount}
         >
-            Delete Account
+            <DeleteForeverIcon/> &nbsp; Delete Account
         </Button>
 
         <Dialog open={alertOpen} onClose={deleteAccountNo}>
