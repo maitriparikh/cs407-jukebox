@@ -12,6 +12,12 @@ import CardContent from "@mui/material/CardContent"
 import Typography from "@mui/material/Typography";
 import Switch from '@mui/material/Switch';
 import { styled } from '@mui/material/styles';
+import { setDefaultEventParameters } from "firebase/analytics";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 
 function Settings() {
@@ -28,6 +34,20 @@ function Settings() {
     const [filteredMode, setFilteredMode] = useState(true);
     const handleFilteredModeToggle = () => {
         setFilteredMode(!filteredMode);
+    };
+
+    const [alertOpen, setAlertOpen] = useState(false);
+    const deleteAccount = () => {
+        setAlertOpen(true)
+    };
+    const deleteAccountNo = () => {
+        setAlertOpen(false)
+    };
+    const deleteAccountYes = () => { // Actual account deletion logic
+        setAlertOpen(false) // close alert
+
+        /* Account deletion logic */
+
     };
 
     const MaterialUISwitch = styled(Switch)(({ theme }) => ({
@@ -235,6 +255,40 @@ function Settings() {
             </Card>
           </Grid>
         </Grid>
+
+        <Button
+            variant="contained"
+            style={{
+            width: 200,
+            color: 'var(--text-color)',
+            backgroundColor: 'var(--accent-color)',
+            textTransform: "none",
+            fontSize: 15,
+            fontWeight: "bold",
+            alignSelf: "center",
+            margin: "20px"
+            }}
+            onClick={deleteAccount}
+        >
+            Delete Account
+        </Button>
+
+        <Dialog open={alertOpen} onClose={deleteAccountNo}>
+        <DialogTitle>Are you sure you want to delete your account?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            This action is irreversible and will permanently delete your account and all associated data.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={deleteAccountNo} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={deleteAccountYes} color="secondary">
+            Delete
+          </Button>
+        </DialogActions>
+        </Dialog>
 
         {/* TAKE OUT LATER -- TESTING PURPOSES */}
         {darkMode ? (
