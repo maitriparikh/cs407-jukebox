@@ -16,7 +16,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 
-function SongRouletteHome() {
+function SongRouletteLobby() {
 
     const [numOfRounds, setNumOfRounds] = useState("");
 
@@ -120,4 +120,4 @@ function SongRouletteHome() {
     }
     
 
-export default SongRouletteHome;
+export default SongRouletteLobby;

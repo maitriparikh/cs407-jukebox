@@ -46,7 +46,7 @@ function Homepage() {
     const specificGameChosen = (gameName) => {
       console.log('Specific Game Chosen:', gameName);
       if (gameName == "Song Roulette") {
-        navigate("/songroulettehome");
+        navigate("/songroulettelobby");
       }
     }
 
