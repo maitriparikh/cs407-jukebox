@@ -38,6 +38,11 @@ function Profile() {
       navigate("/");
     }
 
+    const editProfile_click = () => {
+      console.log("GO TO EDIT PROFILE");
+      navigate("/editprofile");
+    }
+
     return (
       <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "7%", marginRight: "7%" }}>
 
@@ -65,23 +70,6 @@ function Profile() {
               >
               </Avatar>
 
-              {/* Upload button */}
-              <input
-                type="file"
-                accept="image/*"
-                id="profile-picture-upload"
-                style={{ display: "none" }}
-                /*onChange={saveImage}*/
-              />
-              <label htmlFor="profile-picture-upload">
-                <IconButton
-                  color="primary"
-                  aria-label="upload picture"
-                  component="span"
-                >
-                  <PhotoCamera />
-                </IconButton>
-              </label>
             </div>
               </CardContent>
             </Card>
@@ -148,6 +136,7 @@ function Profile() {
                       fontWeight: "bold",
                       margin: "3%"
                     }}
+                    onClick={editProfile_click}
                   >
                     Edit Profile
                   </Button>

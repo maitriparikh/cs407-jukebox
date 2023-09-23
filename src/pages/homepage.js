@@ -11,14 +11,14 @@ import CardContent from "@mui/material/CardContent"
 import { useNavigate } from "react-router-dom";
 import ButtonBase from '@mui/material/ButtonBase';
 
-const gameCardHover = {
-    transition: "transform 0.2s", 
-    "&:hover": {
-      transform: "scale(1.05)", 
-    },
-};
-
 function Homepage() {
+
+    const gameCardHover = {
+      transition: "transform 0.2s", 
+      "&:hover": {
+        transform: "scale(1.05)", 
+      },
+  };
 
     // to track which game is selected
     const [game, setChosenGame] = useState('');

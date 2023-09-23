@@ -16,6 +16,7 @@ import Profile from "./pages/profile_components/profile";
 import Homepage from "./pages/homepage";
 import Leaderboard from "./pages/leaderboard";
 import Settings from "./pages/settings";
+import EditProfile from "./pages/profile_components/edit_profile";
 
 function App() {
   const location = useLocation();
@@ -38,6 +39,7 @@ function App() {
         <Route path="/homepage" element={<Homepage />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/editprofile" element={<EditProfile />} />
       </Routes>
       
     </div>
