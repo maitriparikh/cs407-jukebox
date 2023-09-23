@@ -27,30 +27,38 @@ function Homepage() {
 
     // for a random game selection
     const gameNames = [
-      'Daily Challenge',
-      'Song Roulette',
-      'Pictionary',
-      'Song Snippet',
-      'Trivia Challenge',
-      'Lyric Challenge',
+      "Daily Challenge",
+      "Song Roulette",
+      "Pictionary",
+      "Song Snippet",
+      "Trivia Challenge",
+      "Lyric Challenge",
     ];
 
-    const randomGameChosen = () => {
-      // generate a random number from 0-5 (array indices corresponding to games in gameNames array)
-      const num = Math.floor(Math.random() * 6);
-      const randomGame = gameNames[num];
-      console.log('Random Game Chosen:', randomGame);
-      setChosenGame(randomGame);
-      if (randomGame == "Song Roulette") {
-        navigate("/songroulettelobby");
+    const chooseGame = (game) => {
+      // random button clicked
+      if (game == "Random") {
+        // generate a random number from 0-5 (array indices corresponding to games in gameNames array)
+        console.log('Random Game Chosen!');
+        const num = Math.floor(Math.random() * 6);
+        game = gameNames[num];
       }
-    };
-
-    const specificGameChosen = (gameName) => {
-      console.log('Specific Game Chosen:', gameName);
-      if (gameName == "Song Roulette") {
+      console.log('Game Chosen:', game);
+      setChosenGame(game);
+      if (game == "Song Roulette") {
         navigate("/songroulettelobby");
-      }
+      } 
+      /* else if (game == "Daily Challenge") {
+        navigate("/dailychallengelobby");
+      } else if (game == "Pictionary") {
+        navigate("/pictionarylobby");
+      } else if (game == "Song Snippet") {
+        navigate("/songsnippetlobby");
+      } else if (game == "Trivia Challenge") {
+        navigate("/triviachallengelobby");
+      } else if (game == "Lyric Challenge") {
+        navigate("/lyricchallengelobby");
+      } */
     }
 
     return (
@@ -90,7 +98,7 @@ function Homepage() {
             },
             
           }}
-          onClick={randomGameChosen}
+          onClick={() => chooseGame("Random")}
         >
           Random 🔀
         </Button>
@@ -110,7 +118,7 @@ function Homepage() {
               height: "250px",
               width: "100%",
             }}
-            onClick={() => specificGameChosen("Daily Challenge")}
+            onClick={() => chooseGame("Daily Challenge")}
             >
               <CardContent>
                 <ButtonBase>
@@ -131,7 +139,7 @@ function Homepage() {
               height: "250px",
               width: "100%",
             }}
-            onClick={() => specificGameChosen("Song Roulette")}>
+            onClick={() => chooseGame("Song Roulette")}>
               <CardContent>
                 <ButtonBase>
                 <Typography variant="h3" component="div">
@@ -151,7 +159,7 @@ function Homepage() {
               height: "250px",
               width: "100%",
             }}
-            onClick={() => specificGameChosen("Pictionary")}>
+            onClick={() => chooseGame("Pictionary")}>
               <CardContent>
               <ButtonBase>
                 <Typography variant="h3" component="div">
@@ -173,7 +181,7 @@ function Homepage() {
               height: "250px",
               width: "100%",
             }}
-            onClick={() => specificGameChosen("Song Snippet")}>
+            onClick={() => chooseGame("Song Snippet")}>
               <CardContent>
                 <ButtonBase>
                 <Typography variant="h3" component="div">
@@ -193,7 +201,7 @@ function Homepage() {
               height: "250px",
               width: "100%",
             }}
-            onClick={() => specificGameChosen("Trivia Challenge")}>
+            onClick={() => chooseGame("Trivia Challenge")}>
               <CardContent>
               <ButtonBase>
                 <Typography variant="h3" component="div">
@@ -213,7 +221,7 @@ function Homepage() {
               height: "250px",
               width: "100%",
             }}
-            onClick={() => specificGameChosen("Lyric Challenge")}>
+            onClick={() => chooseGame("Lyric Challenge")}>
               <CardContent>
               <ButtonBase>
                 <Typography variant="h3" component="div">
