@@ -13,6 +13,8 @@ import ButtonBase from '@mui/material/ButtonBase';
 
 function Homepage() {
 
+    const navigate = useNavigate();
+
     const gameCardHover = {
       transition: "transform 0.2s", 
       "&:hover": {
@@ -42,7 +44,10 @@ function Homepage() {
     };
 
     const specificGameChosen = (gameName) => {
-      console.log('Specific Game Chosen:', gameName)
+      console.log('Specific Game Chosen:', gameName);
+      if (gameName == "Song Roulette") {
+        navigate("/songroulettehome");
+      }
     }
 
     return (

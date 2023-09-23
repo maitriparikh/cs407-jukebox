@@ -17,6 +17,7 @@ import Homepage from "./pages/homepage";
 import Leaderboard from "./pages/leaderboard";
 import Settings from "./pages/settings";
 import EditProfile from "./pages/profile_components/edit_profile";
+import SongRouletteHome from "./pages/song_roulette/song_roulette_home";
 
 function App() {
   const location = useLocation();
@@ -40,6 +41,7 @@ function App() {
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/editprofile" element={<EditProfile />} />
+        <Route path="/songroulettehome" element={<SongRouletteHome />} />
       </Routes>
       
     </div>

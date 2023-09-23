@@ -149,8 +149,7 @@ function Profile() {
   
         </Grid>
 
-
-        <Grid item xs={3}>
+        <br></br>
 
         <Button
             variant="contained"
@@ -161,15 +160,12 @@ function Profile() {
               textTransform: "none",
               fontSize: 15,
               fontWeight: "bold",
-              margin: "1%"
             }}
             onClick={signOut_click}
           >
             <LogoutIcon sx={{ color: "#DE6600" }} /> &nbsp; Sign Out
           </Button>
   
-        </Grid>
-
         </div>
       );
     }
