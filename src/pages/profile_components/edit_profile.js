@@ -32,9 +32,9 @@ function EditProfile() {
         navigate("/");
     };
 
-    const signOut_click = () => {
+    const submitChanges_click = () => {
       console.log("SIGNED OUT");
-      navigate("/");
+      navigate("/profile");
     }
 
     return (
@@ -151,7 +151,7 @@ function EditProfile() {
                     fontWeight: "bold",
                     margin: "auto"
                 }}
-                onClick={signOut_click}
+                onClick={submitChanges_click}
                 >
                 Submit Profile Changes
                 </Button>
