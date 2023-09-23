@@ -137,25 +137,29 @@ function SignIn() {
                   style= {{ marginBottom: "-25px" }}
                   onChange={(event) => setPassword(event.target.value)} // save password from user input
                 />
-                { validUser ? <><p></p></>: <p style={{ color: 'red', textAlign: 'left' }}>Email/password combination does not match</p>}
+                <br></br>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  {validUser ? <p></p> : (
+                    <Typography variant="p" style={{ color: 'red', textAlign: 'left' }}> 
+                      Email/password combination does not match 
+                    </Typography>
+                  )}
 
-                {/* Forgot password link */}
-                <Typography variant="h4" textAlign="right">
-                  <Link
-                    variant="contained"
-                    style={{
-                      color: "#3366ff",
-                      fontSize: 16,
-                      fontWeight: "bold"
+                  {/* Forgot password link */}
+                  <Typography variant="h4" textAlign="right">
+                    <Link
+                      variant="contained"
+                      style={{
+                        color: "#3366ff",
+                        fontSize: 16,
+                        fontWeight: "bold"
                       }}
                       onClick={forgot_password_click}
                     >
                       Forgot your password?
                     </Link>
-                    </Typography>
-                
-                <br></br>
-
+                  </Typography>
+              </div>
 
                 {/* Sign In button */}
                 <Box textAlign='center'>

@@ -26,6 +26,11 @@ const JukeboxTheme = createTheme({
         fontSize: '15px',
         color: "var(--text-color)"
     },
+    p: {
+        fontFamily: 'Fira Sans, sans-serif',
+        fontSize: '15px',
+        color: "var(--text-color)"
+    },
   },
   components: {
     MuiButton: {

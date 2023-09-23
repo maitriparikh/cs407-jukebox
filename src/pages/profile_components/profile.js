@@ -107,7 +107,7 @@ function Profile() {
                       margin: "3%"
                     }}
                   >
-                    My Spotify Data
+                    Connect to Spotify
                   </Button>
 
                   <Button
