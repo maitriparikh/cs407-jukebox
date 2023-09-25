@@ -29,6 +29,7 @@ function SignIn() {
       .then((userCredential) => {
         setValidUser(true);
         console.log(userCredential);
+        navigate("/homepage");
       }).catch((error) => {
         setValidUser(false);
         console.log(error);
