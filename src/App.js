@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import AuthDetails from "./utils/authDetails";
+import socketClient  from "socket.io-client";
 
 import Header from "./pages/header";
 import SignIn from "./pages/signin_components/signin";
@@ -19,7 +20,14 @@ import Settings from "./pages/settings";
 import EditProfile from "./pages/profile_components/edit_profile";
 import SongRouletteLobby from "./pages/song_roulette/song_roulette_lobby";
 
+const SERVER = "http://127.0.0.1:8080";
+
 function App() {
+  console.log('test1');
+  var socket = socketClient(SERVER);
+    socket.on('connection', () => {
+      console.log('Im connected with the backend');
+    });
   const location = useLocation();
   const conditionalHeader =
     location.pathname === "/" ||
