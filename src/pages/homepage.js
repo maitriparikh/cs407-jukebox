@@ -48,7 +48,7 @@ function Homepage() {
       if (game == "Song Roulette") {
         navigate("/songroulettelobby");
       } 
-      /* else if (game == "Daily Challenge") {
+      else if (game == "Daily Challenge") {
         navigate("/dailychallengelobby");
       } else if (game == "Pictionary") {
         navigate("/pictionarylobby");
@@ -58,7 +58,7 @@ function Homepage() {
         navigate("/triviachallengelobby");
       } else if (game == "Lyric Challenge") {
         navigate("/lyricchallengelobby");
-      } */
+      } 
     }
 
     return (

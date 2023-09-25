@@ -16,15 +16,16 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 
-function SongRouletteLobby() {
+function PictionaryLobby() {
 
     const [numOfRounds, setNumOfRounds] = useState("");
+
 
     return (
       <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
 
         <Typography variant="h1" style={{ textAlign: "center" }}>
-            Song Roulette
+            Pictionary
         </Typography>
 
         <br></br>
@@ -119,4 +120,4 @@ function SongRouletteLobby() {
     }
     
 
-export default SongRouletteLobby;
+export default PictionaryLobby;
