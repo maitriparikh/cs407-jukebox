@@ -17,7 +17,25 @@ import Homepage from "./pages/homepage";
 import Leaderboard from "./pages/leaderboard";
 import Settings from "./pages/settings";
 import EditProfile from "./pages/profile_components/edit_profile";
+
+// Daily Challenge Game Pages
+import DailyChallengeLobby from "./pages/daily_challenge/daily_challenge_lobby";
+
+// Song Roulette Game Pages
 import SongRouletteLobby from "./pages/song_roulette/song_roulette_lobby";
+
+// Pictionary Game Pages
+import PictionaryLobby from "./pages/pictionary/pictionary_challenge_lobby";
+
+// Song Snippet Game Pages
+import SongSnippetLobby from "./pages/song_snippet/song_snippet_lobby";
+
+// Trivia Challenge Game Pages
+import TriviaChallengeLobby from "./pages/trivia_challenge/trivia_challenge_lobby";
+
+// Lyric Challenge Game Pages
+import LyricChallengeLobby from "./pages/lyric_challenge/lyric_challenge_lobby";
+
 import { useState, createContext, useContext } from "react";
 export const UserContext = createContext(null);
 
@@ -37,7 +55,6 @@ function App() {
         {conditionalHeader}
 
         <AuthDetails></AuthDetails>
-
         <Routes>
           <Route path="/" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
@@ -46,9 +63,14 @@ function App() {
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/editprofile" element={<EditProfile />} />
+          <Route path="/dailychallengelobby" element={<DailyChallengeLobby />} />
           <Route path="/songroulettelobby" element={<SongRouletteLobby />} />
+          <Route path="/pictionarylobby" element={<PictionaryLobby />} />
+          <Route path="/songsnippetlobby" element={<SongSnippetLobby />} />
+          <Route path="/triviachallengelobby" element={<TriviaChallengeLobby />} />
+          <Route path="/lyricchallengelobby" element={<LyricChallengeLobby />} />
         </Routes>
-      </UserContext.Provider>  
+      </UserContext.Provider>       
     </div>
   );
 }
