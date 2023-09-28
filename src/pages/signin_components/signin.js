@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createContext, useContext } from "react";
 import { Container } from "@mui/system";
 import Grid from "@mui/material/Grid";
 import Logo from '../../logo.png';
@@ -13,8 +13,10 @@ import { db, auth } from "../../utils/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { red } from "@mui/material/colors";
 import Typography from "@mui/material/Typography";
+import { UserContext } from "../../App";
 
 function SignIn() {
+  const { user, setUser } = useContext(UserContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [validUser, setValidUser] = useState(true);
@@ -26,9 +28,15 @@ function SignIn() {
     console.log(email + " " + password);
     e.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+      .then(async (userCredential) => {
         setValidUser(true);
-        console.log(userCredential);
+        setUser(userCredential.user.uid);
+        console.log(user);
+        //console.log(userCredential.user.uid);
+        //console.log(userCredential);
+
+        navigate("/homepage");
+        //console.log(u)
       }).catch((error) => {
         setValidUser(false);
         console.log(error);

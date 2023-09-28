@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createContext, useContext } from "react";
 import { Container } from "@mui/system";
 import Grid from "@mui/material/Grid";
 import Logo from '../../logo.png';
@@ -19,15 +19,29 @@ import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { getTokenFromUrl, loginUrl } from "../../utils/spotify";
+import SpotifyWebApi from "spotify-web-api-js";
+import { UserContext } from "../../App";
+import { db } from "../../utils/firebase";
+import { collection, onSnapshot, getDoc, doc, updateDoc, setDoc } from "firebase/firestore";
+const spotify = new SpotifyWebApi();
 
 function Profile() {
-    const [firstName] = useState("Purdue");
-    const [lastName] = useState("Pete");
-    const [username] = useState("purdue_pete");
-    const [email] = useState("pete@purdue.edu");
+    const { user, setUser } = useContext(UserContext);
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [spotifyToken, setSpotifyToken] = useState("");
+    const [data, setData] = useState(null);
 
     /* Navigation for buttons */
     const navigate = useNavigate();
+
+    const spotifySubmit_click = () => {
+      //console.log(getTokenFromUrl());
+    };
+
     const settings_click = () => {
         console.log("GO TO SETTINGS");
         navigate("/");
@@ -42,6 +56,40 @@ function Profile() {
       console.log("GO TO EDIT PROFILE");
       navigate("/editprofile");
     }
+
+    useEffect(()=>{
+      const unsubUserDoc = onSnapshot(doc(db, "users", "dSGIYen09jWLA3gNPM88aVGaMUs2"), async (doc) => {
+        setFirstName(doc.data().firstName);
+        setLastName(doc.data().lastName);
+        setUsername(doc.data().username);
+        setEmail(doc.data().email);
+        console.log(doc.data());
+      });
+
+      console.log("This is what we received: ", getTokenFromUrl());
+      const _spotifyToken = getTokenFromUrl().access_token;
+      window.location.hash = "";
+      console.log("This is our spotify token: ", _spotifyToken);
+
+      if(_spotifyToken) {
+        setSpotifyToken(_spotifyToken);
+        spotify.setAccessToken(_spotifyToken);
+        spotify.getMe().then((user) => {
+          console.log("This is you: ", user);
+        })
+        //if the spotify token exists then we add it to the user's doc
+        const docRef = doc(db, "users", "dSGIYen09jWLA3gNPM88aVGaMUs2");
+
+        setDoc(docRef, {
+          spotifyToken: _spotifyToken
+        }, {
+          merge: true
+        }).then(() => console.log("Document updated"));
+      }
+      
+      return unsubUserDoc;
+
+    }, []);
 
     return (
       <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "7%", marginRight: "7%" }}>
@@ -97,6 +145,8 @@ function Profile() {
               <Stack spacing={2} direction="column" alignItems="center">
                   <Button
                     variant="contained"
+                    href={loginUrl}
+                    onClick={spotifySubmit_click}
                     style={{
                       width: 230,
                       color: 'var(--text-color)',

@@ -18,12 +18,15 @@ import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
+import { db } from "../../utils/firebase";
+import { collection, query, where, getDocs, updateDoc, doc, getDoc } from "firebase/firestore";
+
 
 function EditProfile() {
-    const [firstName, setFirstName] = useState("Purdue");
-    const [lastName, setLastName] = useState("Pete");
-    const [username, setUsername] = useState("purdue_pete");
-    const [email, setEmail] = useState("pete@purdue.edu");
+    const [firstName, setFirstName] = useState("Francisco");
+    const [lastName, setLastName] = useState("Chagua");
+    const [username, setUsername] = useState("fchagua");
+    const [email, setEmail] = useState("fchagua@purdue.edu");
 
     /* Navigation for buttons */
     const navigate = useNavigate();
@@ -32,7 +35,33 @@ function EditProfile() {
         navigate("/");
     };
 
-    const submitChanges_click = () => {
+    const updateUser = async () => {
+      const userRef = query(collection(db, "users"), where("username", "==", username));
+      const findUsers = await getDocs(userRef);
+      findUsers.forEach( async (user) => {
+        const getUser = doc(db, 'users', user.username);
+        await updateDoc(getUser, {
+          firstname: firstName,
+          lastname: lastName,
+          username: username,
+          email: email
+        });
+      });
+    };
+  
+
+    const submitChanges_click = async () => {
+      //updateDoc();
+      //need to find a way to skip having to use the documentId (which is hard to find)
+      /*
+      const userRef = query(collection(db, "users"), where("username", "==", 'fchagua'));
+      const docRef = await updateDoc(getDoc(userRef), {
+        firstName: firstName,
+        lastName: lastName,
+        username: username,
+        email: email,
+      });
+      */
       console.log("SIGNED OUT");
       navigate("/profile");
     }

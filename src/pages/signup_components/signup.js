@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createContext, useContext } from "react";
 import { Container } from "@mui/system";
 import Grid from "@mui/material/Grid";
 import Logo from '../../logo.png';
@@ -12,20 +12,25 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import { Link } from "@mui/material";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, setDoc, doc, updateDoc } from "firebase/firestore";
 import { db, auth } from "../../utils/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import validPassword from "../../utils/require";
 import Typography from "@mui/material/Typography";
+import { UserContext } from "../../App";
+
 
 
 function SignUp() {
+  const { user, setUser } = useContext(UserContext);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [securityQuestion, setSecurityQuestion] = useState("");
+  //const [validPassword, setValidPassword] = useState("");
+  //const [validUsername]
 
   /* Navigation for buttons */
   const navigate = useNavigate();
@@ -33,26 +38,31 @@ function SignUp() {
   const signup_click = async (e) => {
     console.log(email + " " + password);
     e.preventDefault();
+    if (handleInput()) {
+      
+      console.log("validPassword");
+
+    } else {
+      console.log("bad password");
+      return;
+    }
+    
     createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        console.log(userCredential);
+      .then(async (userCredential) => {
+        //console.log(userCredential);
+        await setDoc(doc(db, "users", userCredential.user.uid), {
+          firstName: firstName,
+          lastName: lastName,
+          username: username,
+          email: email,
+          securityQuestion: securityQuestion
+        });
+        setUser(userCredential.user.uid);
+
       }).catch((error) => {
         console.log(error);
       });
     
-    try {
-      const docRef = await addDoc(collection(db, "users"), {
-        firstName: firstName,
-        lastName: lastName,
-        username: username,
-        email: email,
-        securityQuestion: securityQuestion    
-      });
-      console.log("Document written with ID: ", docRef.id);
-      navigate("/");
-    } catch (e) {
-      console.error("Error adding document: ", e);
-    }
     console.log("SIGNUP CLICKED");
     signin_click();
   };
@@ -61,6 +71,12 @@ function SignUp() {
     console.log("GO BACK TO SIGNIN CLICKED");
     navigate("/");
   };
+
+  const handleInput = () => {
+    const result = true;
+    //
+    return (password.length >= 6  && result); 
+  }
 
   return (
     <Container maxWidth="true" disableGutters="true">
@@ -174,6 +190,16 @@ function SignUp() {
                 <TextField
                   label="Password"
                   type="password"
+                  validation={{
+                    required: {
+                      value: true,
+                      message: 'required',
+                    },
+                    minLength: {
+                      value: 6,
+                      message: 'min 6 characters',
+                    },
+                  }}
                   onChange={(event) => setPassword(event.target.value)} // save password from user input
                 />
 
