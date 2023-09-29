@@ -4,6 +4,7 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
+  Navigate,
   BrowserRouter,
 } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -46,10 +47,43 @@ function App() {
     location.pathname === "/signup" ? null : (
       <Header></Header>
     );
-
   const [user, setUser] = useState(null);
 
-  return (
+  if (user) {
+    console.log("user is :" + user);
+      return (
+                <div className="App">
+                  <UserContext.Provider value={{ user: user, setUser: setUser }}>
+                    {conditionalHeader}
+
+                    <AuthDetails></AuthDetails>
+                    <Routes>
+                      <Route path="/" element={<SignIn />} />
+                      <Route path="/signup" element={<SignUp />} />
+                      <Route path="/profile" element={<Profile />} />
+                      <Route path="/homepage" element={<Homepage />} />
+                      <Route path="/leaderboard" element={<Leaderboard />} />
+                      <Route path="/settings" element={<Settings />} />
+                      <Route path="/editprofile" element={<EditProfile />} />
+                      <Route path="/dailychallengelobby" element={<DailyChallengeLobby />} />
+                      <Route path="/songroulettelobby" element={<SongRouletteLobby />} />
+                      <Route path="/pictionarylobby" element={<PictionaryLobby />} />
+                      <Route path="/songsnippetlobby" element={<SongSnippetLobby />} />
+                      <Route path="/triviachallengelobby" element={<TriviaChallengeLobby />} />
+                      <Route path="/lyricchallengelobby" element={<LyricChallengeLobby />} />
+                    </Routes>
+                  </UserContext.Provider>       
+                </div>
+              );
+  }
+  else {
+    console.log("no user logged in");
+    // If var "user" is null then dont allow them to access any routes(pages)
+    // besides login and signup
+    //  <Route path="*" element={<Navigate replace to="/" />} />
+    // path="*" - means all other pahts
+    // to="/" - redirect to "/" which is the signin page
+      return (
     <div className="App">
       <UserContext.Provider value={{ user: user, setUser: setUser }}>
         {conditionalHeader}
@@ -58,21 +92,15 @@ function App() {
         <Routes>
           <Route path="/" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/homepage" element={<Homepage />} />
-          <Route path="/leaderboard" element={<Leaderboard />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/editprofile" element={<EditProfile />} />
-          <Route path="/dailychallengelobby" element={<DailyChallengeLobby />} />
-          <Route path="/songroulettelobby" element={<SongRouletteLobby />} />
-          <Route path="/pictionarylobby" element={<PictionaryLobby />} />
-          <Route path="/songsnippetlobby" element={<SongSnippetLobby />} />
-          <Route path="/triviachallengelobby" element={<TriviaChallengeLobby />} />
-          <Route path="/lyricchallengelobby" element={<LyricChallengeLobby />} />
+         <Route path="*" element={<Navigate replace to="/" />} />
+
         </Routes>
       </UserContext.Provider>       
     </div>
   );
+  }
+
+
 }
 
 export default App;
