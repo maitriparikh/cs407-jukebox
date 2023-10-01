@@ -44,6 +44,15 @@ const JukeboxTheme = createTheme({
         },
     }
   },
+  /*
+  palette: {
+    primary: {
+      main: "#65350F", 
+    },
+    secondary: {
+      main: "#FBE7BF", 
+    },
+},*/
 });
 
 export default JukeboxTheme;

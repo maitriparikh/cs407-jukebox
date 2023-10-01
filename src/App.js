@@ -24,6 +24,7 @@ import DailyChallengeLobby from "./pages/daily_challenge/daily_challenge_lobby";
 
 // Song Roulette Game Pages
 import SongRouletteLobby from "./pages/song_roulette/song_roulette_lobby";
+import SongRouletteGame from "./pages/song_roulette/song_roulette_game";
 
 // Pictionary Game Pages
 import PictionaryLobby from "./pages/pictionary/pictionary_challenge_lobby";
@@ -67,6 +68,7 @@ function App() {
                       <Route path="/editprofile" element={<EditProfile />} />
                       <Route path="/dailychallengelobby" element={<DailyChallengeLobby />} />
                       <Route path="/songroulettelobby" element={<SongRouletteLobby />} />
+                      <Route path="/songroulettegame" element={<SongRouletteGame />} />
                       <Route path="/pictionarylobby" element={<PictionaryLobby />} />
                       <Route path="/songsnippetlobby" element={<SongSnippetLobby />} />
                       <Route path="/triviachallengelobby" element={<TriviaChallengeLobby />} />

@@ -15,8 +15,17 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
+import CancelIcon from '@mui/icons-material/Cancel';
 
 function SongRouletteLobby() {
+
+    /* Navigation for buttons */
+    const navigate = useNavigate();
+
+    const startgame_click = () => {
+      console.log("START GAME CLICKED");
+      navigate("/songroulettegame");
+    };
 
     const [numOfRounds, setNumOfRounds] = useState("");
 
@@ -110,6 +119,7 @@ function SongRouletteLobby() {
             fontWeight: "bold",
             margin: "3%"
           }}
+          onClick={startgame_click}
         >
           Start Game!
         </Button>
