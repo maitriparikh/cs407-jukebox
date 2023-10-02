@@ -55,7 +55,8 @@ function SignUp() {
           lastName: lastName,
           username: username,
           email: email,
-          securityQuestion: securityQuestion
+          securityQuestion: securityQuestion,
+          spotifyToken: ""
         });
         setUser(userCredential.user.uid);
 

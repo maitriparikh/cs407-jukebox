@@ -40,6 +40,7 @@ function Profile() {
 
     const spotifySubmit_click = () => {
       //console.log(getTokenFromUrl());
+      displayTop();
     };
 
     const settings_click = () => {
@@ -57,14 +58,55 @@ function Profile() {
       navigate("/editprofile");
     }
 
-    useEffect(()=>{
-      const unsubUserDoc = onSnapshot(doc(db, "users", "dSGIYen09jWLA3gNPM88aVGaMUs2"), async (doc) => {
+    const fetchWebApi = async (endpoint, method, body) => {
+      const res = await fetch(`https://api.spotify.com/${endpoint}`, {
+        headers: {
+          Authorization: `Bearer ${spotifyToken}}`,
+        },
+        method,
+        body:JSON.stringify(body)
+      });
+      return await res.json();
+    }
+
+    const getTopTracks = async () => {
+      return (await fetchWebApi('v1/me/top/tracks?time_range=short_term&limit=5', 'GET')).items;
+    }
+
+    const displayTop = async() => {
+      const topTracks = await getTopTracks();
+      console.log(
+        topTracks?.map(
+          ({name, artists}) =>
+            `${name} by ${artists.map(artist => artist.name).join(', ')}`
+        )
+      );
+    }
+    
+    const startUp = async () => {
+      const unsubUserDoc = await onSnapshot(doc(db, "users", "vjP0aZvrnPPLs7WmTmX5WQWQWNv2"), async (doc) => {
         setFirstName(doc.data().firstName);
         setLastName(doc.data().lastName);
         setUsername(doc.data().username);
         setEmail(doc.data().email);
+        setSpotifyToken(doc.data().spotifyToken);
         console.log(doc.data());
       });
+    }
+
+    useEffect(()=>{
+      console.log(user);
+      /*
+      const unsubUserDoc = onSnapshot(doc(db, "users", user), async (doc) => {
+        setFirstName(doc.data().firstName);
+        setLastName(doc.data().lastName);
+        setUsername(doc.data().username);
+        setEmail(doc.data().email);
+        setSpotifyToken(doc.data().spotifyToken);
+        console.log(doc.data());
+      });
+      */
+      startUp();
 
       console.log("This is what we received: ", getTokenFromUrl());
       const _spotifyToken = getTokenFromUrl().access_token;
@@ -78,7 +120,7 @@ function Profile() {
           console.log("This is you: ", user);
         })
         //if the spotify token exists then we add it to the user's doc
-        const docRef = doc(db, "users", "dSGIYen09jWLA3gNPM88aVGaMUs2");
+        const docRef = doc(db, "users", "vjP0aZvrnPPLs7WmTmX5WQWQWNv2");
 
         setDoc(docRef, {
           spotifyToken: _spotifyToken
@@ -86,8 +128,12 @@ function Profile() {
           merge: true
         }).then(() => console.log("Document updated"));
       }
-      
-      return unsubUserDoc;
+
+      if(spotifyToken) {
+        displayTop();
+      }
+
+      //return unsubUserDoc;
 
     }, []);
 
@@ -198,9 +244,11 @@ function Profile() {
           </Grid>
   
         </Grid>
-
+        
+        { spotifyToken ? <><p>{`Hello ${spotifyToken} `}</p></>: 
+                <p>Signed Out</p>}
         <br></br>
-
+        
         <Button
             variant="contained"
             style={{

@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Container } from "@mui/system";
 import Grid from "@mui/material/Grid";
 import Logo from '../../logo.png';
@@ -19,14 +19,18 @@ import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import { db } from "../../utils/firebase";
-import { collection, query, where, getDocs, updateDoc, doc, getDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, updateDoc, doc, getDoc, onSnapshot, setDoc } from "firebase/firestore";
+import { UserContext } from "../../App";
 
 
 function EditProfile() {
-    const [firstName, setFirstName] = useState("Francisco");
-    const [lastName, setLastName] = useState("Chagua");
-    const [username, setUsername] = useState("fchagua");
-    const [email, setEmail] = useState("fchagua@purdue.edu");
+    const { user, setUser } = useContext(UserContext);
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [securityQuestion, setSecurityQuestion] = useState("");
+    const [spotifyToken, setSpotifyToken] = useState("");
 
     /* Navigation for buttons */
     const navigate = useNavigate();
@@ -35,36 +39,52 @@ function EditProfile() {
         navigate("/");
     };
 
-    const updateUser = async () => {
-      const userRef = query(collection(db, "users"), where("username", "==", username));
-      const findUsers = await getDocs(userRef);
-      findUsers.forEach( async (user) => {
-        const getUser = doc(db, 'users', user.username);
-        await updateDoc(getUser, {
-          firstname: firstName,
-          lastname: lastName,
-          username: username,
-          email: email
-        });
-      });
-    };
-  
-
     const submitChanges_click = async () => {
       //updateDoc();
       //need to find a way to skip having to use the documentId (which is hard to find)
-      /*
-      const userRef = query(collection(db, "users"), where("username", "==", 'fchagua'));
-      const docRef = await updateDoc(getDoc(userRef), {
-        firstName: firstName,
-        lastName: lastName,
+      
+      const docRef = doc(db, "users", user);
+      setDoc(docRef, {
+        firstname: firstName,
+        lastname: lastName,
         username: username,
         email: email,
-      });
-      */
-      console.log("SIGNED OUT");
+        securityQuestion: securityQuestion,
+        spotifyToken:  spotifyToken
+      }, {
+        merge: false
+      }).then(() => console.log("Document updated"));
+      
       navigate("/profile");
     }
+
+    const readUser = async () => {
+      const docRef = doc(db, "users", user);
+      const unSubDoc = await getDoc(docRef, async (doc) => {
+        setFirstName(doc.data().firstName);
+        setLastName(doc.data().lastName);
+        setUsername(doc.data().username);
+        setEmail(doc.data().email);
+        setSpotifyToken(doc.data().spotifyToken);
+        console.log(doc.data());
+      });
+    }
+
+    useEffect(() =>{
+      
+      
+      const unsubUserDoc = onSnapshot(doc(db, "users", user), async (doc) => {
+        setFirstName(doc.data().firstName);
+        setLastName(doc.data().lastName);
+        setUsername(doc.data().username);
+        setEmail(doc.data().email);
+        setSecurityQuestion(doc.data().securityQuestion);
+        setSpotifyToken(doc.data().spotifyToken);
+        console.log(doc.data());
+      });
+      
+      return unsubUserDoc;
+    }, []);
 
     return (
       <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "7%", marginRight: "7%" }}>

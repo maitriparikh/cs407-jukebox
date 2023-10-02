@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Container } from "@mui/system";
 import Grid from "@mui/material/Grid";
 import { useNavigate } from "react-router-dom";
@@ -19,13 +19,21 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { auth, db } from "../utils/firebase";
+import { UserContext } from "../App";
+import { deleteUser, getAuth } from "firebase/auth";
+import { doc, deleteDoc } from "firebase/firestore";
+import { updateEmail, updatePassword } from "firebase/auth";
 
 
 function Settings() {
-    const [firstName] = useState("Purdue");
-    const [lastName] = useState("Pete");
-    const [username] = useState("purdue_pete");
-    const [email] = useState("pete@purdue.edu");
+    const [firstName] = useState("");
+    const [lastName] = useState("");
+    const [username] = useState("");
+    const [email, setEmail] = useState("");
+    const { user, setUser } = useContext(UserContext);
+    const [oldPassword, setOldPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
 
     const [darkMode, setDarkMode] = useState(true);
     const handleDarkModeToggle = () => {
@@ -44,11 +52,37 @@ function Settings() {
     const deleteAccountNo = () => {
         setAlertOpen(false)
     };
-    const deleteAccountYes = () => { // Actual account deletion logic
+    const deleteAccountYes = async () => { // Actual account deletion logic
         setAlertOpen(false) // close alert
-
+        console.log("Chose to delete account");
+        console.log(user);
+        
+        deleteUser(auth.currentUser).then(async () => {
+          console.log("Successful");
+          await deleteDoc(doc(db, "users", user));
+          navigate("/")
+        }).catch((error) => {
+        });
+        
         /* Account deletion logic */
+        console.log("Complete deletion")
+    };
 
+    const changePassword = () => {
+      console.log("Clicked change password");
+      console.log("Email is ", email);
+      console.log("Old password is ", oldPassword);
+      console.log("New password is ", newPassword);
+      updateEmail(auth.currentUser, email).then(() => {
+        console.log("Email was updated");
+      }).catch((error) => {
+        console.log("Error occurred in updateEmail");
+      });
+      updatePassword(auth.currentUser, newPassword).then(() => {
+        console.log("Password was updated");
+      }).catch((error) => {
+        console.log("Error occurred in updatePassword");
+      });
     };
 
     const MaterialUISwitch = styled(Switch)(({ theme }) => ({
@@ -216,16 +250,19 @@ function Settings() {
                 {/* Email Field */}
                 <TextField
                   label="Email"
+                  onChange={(event) => setEmail(event.target.value)}
                 />
 
                 {/* Old Password Field */}
                 <TextField
                   label="Old Password"
+                  onChange={(event) => setOldPassword(event.target.value)}
                 />
 
                 {/* New Password Field */}
                 <TextField
                   label="New Password"
+                  onChange={(event) => setNewPassword(event.target.value)}
                 />
 
                 {/* Confirm New Password Field */}
@@ -236,6 +273,7 @@ function Settings() {
 
                 <Button
                   variant="contained"
+                  onClick={changePassword}
                   style={{
                     width: 200,
                     color: 'var(--text-color)',
