@@ -9,66 +9,84 @@ import Typography from "@mui/material/Typography"
 import ArrowCircleLeftOutlinedIcon from "@mui/icons-material/ArrowCircleLeftOutlined";
 import ArrowCircleRightOutlinedIcon from "@mui/icons-material/ArrowCircleRightOutlined";
 import CancelIcon from '@mui/icons-material/Cancel';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 
 function SongRouletteGame() {
+
+    /* Navigation for buttons */
+    const navigate = useNavigate();
+
+    const exitgame_click = () => {
+      console.log("EXIT GAME CLICKED");
+      navigate("/songroulettelobby");
+    };
+    
     const [people, setPeople] = useState([
         {
             name: "Shreya",
-            flag: false
+            flag: false,
+            points: 0
         },
         {
             name: "Sean",
-            flag: false 
+            flag: false,
+            points: 0
         },
         {
             name: "Maitri",
-            flag: false
+            flag: false,
+            points: 0
         },
         {
             name: "Francisco",
-            flag: false
+            flag: false,
+            points: 0
+        },
+        {
+            name: "Purdue Pete",
+            flag: false,
+            points: 0
         },
     ])
     
     const song_bank = [ 
         {
             song: "https://open.spotify.com/embed/track/6rdkCkjk6D12xRpdMXy0I2?utm_source=generator",
-            correctAnswer: [
-                { answerText: "Shreya" },
-            ]
+            correctAnswer: ["Shreya", "Purdue Pete"]
         },
         {
             song: "https://open.spotify.com/embed/track/5QO79kh1waicV47BqGRL3g?utm_source=generator",
-            correctAnswer: [
-                { answerText: "Francisco" },
-            ]
+            correctAnswer: ["Francisco"]
         },
         {
             song: "https://open.spotify.com/embed/track/5zsHmE2gO3RefVsPyw2e3T?utm_source=generator",
-            correctAnswer: [
-                { answerText: "Shreya" },
-                { answerText: "Maitri" },
-            ]
+            correctAnswer: ["Shreya", "Maitri"]
         },
         {
             song: "https://open.spotify.com/embed/track/1BxfuPKGuaTgP7aM0Bbdwr?utm_source=generator",
-            correctAnswer: [
-                { answerText: "Maitri" },
-            ]
+            correctAnswer: ["Maitri"]
         },
         {
             song: "https://open.spotify.com/embed/track/0pqnGHJpmpxLKifKRmU6WP?utm_source=generator",
-            correctAnswer: [
-                { answerText: "Sean" },
-            ]
+            correctAnswer: ["Sean"]
         }
     ]
     
-    const navigate = useNavigate();
+    const me = "Shreya" // should be name of current player
+    const meIndex = people.findIndex((person) => person.name === me); // change flag state when selected
+    
     const [currentQuestion, setCurrentQuestion] = useState(0); // keeps track of question number
-    const [showEnd, setShowEnd] = useState(false); // Determines when quiz ends
+    const [showGame, setShowGame] = useState(true); // Determines when quiz ends
     const [selected, setSelected] = useState([]); // Answers the user has selected
+    const [alertOpen, setAlertOpen] = useState(false); // Open/close dialog
+    const [currentPoints, setCurrentPoints] = useState(0); // Points during each round
+    
 
     const handleOptionClick = (answerOption) => {
         console.log(answerOption);
@@ -102,22 +120,102 @@ function SongRouletteGame() {
         return;
       };
     
-    const handleNextButtonClick = (answerOption) => {
+    const handleSubmitButtonClick = (answerOption) => { // Shows dialog with everyone's points
+        // check user's selection
+        checkAnswers(selected);
+        setAlertOpen(true)
+    };
+
+    const handleNextQuestion = () => { // Change question to next question
         // Increment question when Next Button is pressed
+        setAlertOpen(false)
+        
+        // Reset (clearing previous question's selections)
+        // reset answer option flags
+        for (let i = 0; i < people.length; i++) { 
+            people[i].flag = false;
+        }
+        // reset selected option (for next question)
+        setSelected([]);
 
         if (currentQuestion == song_bank.length - 1) { // End of song_bank reached
-            setShowEnd(true);
+            setShowGame(!showGame);
         } 
         else if (currentQuestion < song_bank.length - 1) { // Change question to next question
             const nextQuestion = currentQuestion + 1;
             setCurrentQuestion(nextQuestion);
         }
-    };
+    }
+
+    const checkAnswers = (selected) => {
+        /*  
+         *   SYSTEM FOR AWARDING POINTS
+         *      each correct answer = +100  
+         *      each wrong answer = -50
+         *      each missing answer = -25
+         *      no answer selected = -25
+        */
+
+        console.log("CHECKING ANSWER")
+
+        
+
+        let curPoints = 0 // total points for current round
+        
+        // Correct answer and wrong answer scoring
+        for (var i = 0; i < selected.length; i++) {
+            const selectedName = selected[i];
+            const correctAnswers = song_bank[currentQuestion].correctAnswer;
+
+            console.log(selectedName + ", " + correctAnswers);
+
+            // each correct answer (+100)
+            if (correctAnswers.some(answer => answer === selectedName)) {
+                curPoints += 100;
+                console.log("Correct answer found! +100, points = " + curPoints);
+            }
+            // each wrong answer (-50)
+            if (correctAnswers.every(answer => answer !== selectedName)) {
+                curPoints -= 50;
+                console.log("Selected answer is not a correct answer! -50, points = " + curPoints);
+            }
+        }
+
+        // Missing answer scoring
+        const correctAnswers = song_bank[currentQuestion].correctAnswer;
+        for (var i = 0; i < correctAnswers.length; i++) {
+            console.log(correctAnswers[i])
+            // each missing answer (-25)
+            if (!selected.includes(correctAnswers[i])){
+                curPoints -= 25;
+                console.log("Missing answer! -25, points = " + curPoints);
+            }
+        }
+
+        console.log("curPoints total before capping: " +  curPoints);
+
+        if (curPoints < 0) { // Cap curPoints at 0 if less than 0
+            console.log("Total points under 0! Current points now 0.")
+            curPoints = 0;
+        }
+
+        // Add curPoints to total points
+        const updatedPeople = [...people];
+        updatedPeople[meIndex].points = people[meIndex].points + curPoints;
+        setPeople(updatedPeople);
+
+        console.log(people);
+
+        // update state of current points for pop up message
+        setCurrentPoints(curPoints);
+        
+    }
     
     return (
+    <div>
+    {showGame ? (
         <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
-
-          <Card style={{ borderRadius: '12px', position: 'relative' }}>
+          <Card elevation={3} style={{ position: 'relative', border: `2px solid var(--text-color)`, borderRadius: "8px" }}>
             {/* Cancel Icon */}
             <CancelIcon
                 style={{
@@ -130,6 +228,7 @@ function SongRouletteGame() {
                 cursor: 'pointer',
                 zIndex: 1, 
                 }}
+                onClick={() => exitgame_click()} 
             />
             
             <CardContent>
@@ -167,8 +266,48 @@ function SongRouletteGame() {
                 </Grid>
             </CardContent>
         </Card>
+        <Button
+          variant="contained"
+          style={{
+            width: 230,
+            color: 'var(--text-color)',
+            backgroundColor: 'var(--accent-color)',
+            textTransform: "none",
+            fontSize: 15,
+            fontWeight: "bold",
+            margin: "3%"
+          }}
+          onClick={handleSubmitButtonClick}
+        >
+          Submit
+        </Button>
+
+        <Dialog open={alertOpen} onClose={handleNextQuestion}>
+        <DialogTitle>Point Status</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            You earned {currentPoints} points in this round!
+            Your total points earned in this game are {people[meIndex].points}.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleNextQuestion} color="primary">
+            Next Question
+          </Button>
+        </DialogActions>
+        </Dialog>
+
         </div>
-      );
+    ) : (
+        <div>
+            <Typography variant="h2" style={{ textAlign: "center" }}>
+                Game Summary
+            </Typography>
+            
+        </div>
+    )}
+    </div>
+    );
 }
 
 export default SongRouletteGame;
