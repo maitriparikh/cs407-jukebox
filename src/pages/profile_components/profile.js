@@ -22,8 +22,8 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { getTokenFromUrl, loginUrl } from "../../utils/spotify";
 import SpotifyWebApi from "spotify-web-api-js";
 import { UserContext } from "../../App";
-import { db } from "../../utils/firebase";
-import { collection, onSnapshot, getDoc, doc, updateDoc, setDoc } from "firebase/firestore";
+import { db, auth } from "../../utils/firebase";
+import { collection, onSnapshot, getDoc, doc, updateDoc, setDoc, getDocs } from "firebase/firestore";
 const spotify = new SpotifyWebApi();
 
 function Profile() {
@@ -33,6 +33,7 @@ function Profile() {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [spotifyToken, setSpotifyToken] = useState("");
+    const [uid, setUID] = useState("");
     const [data, setData] = useState(null);
 
     /* Navigation for buttons */
@@ -61,7 +62,7 @@ function Profile() {
     const fetchWebApi = async (endpoint, method, body) => {
       const res = await fetch(`https://api.spotify.com/${endpoint}`, {
         headers: {
-          Authorization: `Bearer ${spotifyToken}}`,
+          Authorization: `Bearer ${spotifyToken}`,
         },
         method,
         body:JSON.stringify(body)
@@ -82,17 +83,22 @@ function Profile() {
         )
       );
     }
-    
-    const startUp = async () => {
-      const unsubUserDoc = await onSnapshot(doc(db, "users", "vjP0aZvrnPPLs7WmTmX5WQWQWNv2"), async (doc) => {
-        setFirstName(doc.data().firstName);
-        setLastName(doc.data().lastName);
-        setUsername(doc.data().username);
-        setEmail(doc.data().email);
-        setSpotifyToken(doc.data().spotifyToken);
-        console.log(doc.data());
+
+    const getUserData = async () => {
+      const response = collection(db, 'users');
+      const data = await getDocs(response); // Use getDocs to retrieve the data
+      console.log(auth.currentUser.email);
+      data.forEach((item) => {
+        if (item.data().email === auth.currentUser.email) {
+          // Use item.data() to access the data of the document
+          setFirstName(item.data().firstName);
+          setLastName(item.data().lastName);
+          setUsername(item.data().username);
+          setEmail(item.data().email);
+          setUID(item.data().id)
+        }
       });
-    }
+    };    
 
     useEffect(()=>{
       console.log(user);
@@ -106,7 +112,7 @@ function Profile() {
         console.log(doc.data());
       });
       */
-      startUp();
+      getUserData();
 
       console.log("This is what we received: ", getTokenFromUrl());
       const _spotifyToken = getTokenFromUrl().access_token;
@@ -120,6 +126,8 @@ function Profile() {
           console.log("This is you: ", user);
         })
         //if the spotify token exists then we add it to the user's doc
+        
+        //console.log("USER ID = " + uid);
         const docRef = doc(db, "users", "vjP0aZvrnPPLs7WmTmX5WQWQWNv2");
 
         setDoc(docRef, {
