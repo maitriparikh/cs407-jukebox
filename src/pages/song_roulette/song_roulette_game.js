@@ -53,6 +53,11 @@ function SongRouletteGame() {
             flag: false,
             points: 0
         },
+        {
+            name: "Devin",
+            flag: false,
+            points: 0
+        },
     ])
     
     const song_bank = [ 
@@ -86,7 +91,10 @@ function SongRouletteGame() {
     const [selected, setSelected] = useState([]); // Answers the user has selected
     const [alertOpen, setAlertOpen] = useState(false); // Open/close dialog
     const [currentPoints, setCurrentPoints] = useState(0); // Points during each round
-    
+    let pointText = ""; // Text in dialog at the end
+    const [pointTextState, setPointTextState] = useState("");    
+    const [winner, setWinner] = useState(""); // To display winner in summary
+
 
     const handleOptionClick = (answerOption) => {
         console.log(answerOption);
@@ -140,6 +148,28 @@ function SongRouletteGame() {
 
         if (currentQuestion == song_bank.length - 1) { // End of song_bank reached
             setShowGame(!showGame);
+
+            /* CALCULATE WINNER */
+            const sortedPeople = [...people];
+            sortedPeople.sort((a, b) => b.points - a.points);
+
+            let winners = "";
+            let topScore = sortedPeople[0].points;
+            for (let i = 1; i < sortedPeople.length; i++) {
+                if (sortedPeople[i].points == topScore) { // tie found
+                    winners += sortedPeople[i].name + ", "
+                }    
+            }
+
+            if (winners != "") {
+                winners += "and " + sortedPeople[0].name + " have won this game of Song Roulette! 🎉"
+                setWinner(winners)
+            }
+            else {
+                let gameWinner = sortedPeople[0].name + " has won this game of Song Roulette! 🎉"
+                setWinner(gameWinner)
+            }
+            
         } 
         else if (currentQuestion < song_bank.length - 1) { // Change question to next question
             const nextQuestion = currentQuestion + 1;
@@ -158,8 +188,6 @@ function SongRouletteGame() {
 
         console.log("CHECKING ANSWER")
 
-        
-
         let curPoints = 0 // total points for current round
         
         // Correct answer and wrong answer scoring
@@ -172,11 +200,17 @@ function SongRouletteGame() {
             // each correct answer (+100)
             if (correctAnswers.some(answer => answer === selectedName)) {
                 curPoints += 100;
+
+                pointText += "Correct Answer +100\n"
+                console.log(pointText)
                 console.log("Correct answer found! +100, points = " + curPoints);
             }
             // each wrong answer (-50)
             if (correctAnswers.every(answer => answer !== selectedName)) {
                 curPoints -= 50;
+
+                pointText += "Wrong Answer -50\n"
+                console.log(pointText)
                 console.log("Selected answer is not a correct answer! -50, points = " + curPoints);
             }
         }
@@ -188,6 +222,9 @@ function SongRouletteGame() {
             // each missing answer (-25)
             if (!selected.includes(correctAnswers[i])){
                 curPoints -= 25;
+
+                pointText += "Missing Answer -25\n"
+                console.log(pointText)
                 console.log("Missing answer! -25, points = " + curPoints);
             }
         }
@@ -208,6 +245,7 @@ function SongRouletteGame() {
 
         // update state of current points for pop up message
         setCurrentPoints(curPoints);
+        setPointTextState(pointText)
         
     }
     
@@ -283,15 +321,32 @@ function SongRouletteGame() {
         </Button>
 
         <Dialog open={alertOpen} onClose={handleNextQuestion}>
-        <DialogTitle>Point Status</DialogTitle>
+        <DialogTitle>
+        <Typography variant="h3" style={{ textAlign: "center", marginBottom: "-15px" }}>
+            Results
+        </Typography>
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
+          <Typography variant="h4" style={{ textAlign: "center" }}>
+            <pre>{pointTextState}</pre>
+          </Typography>
+         <Typography variant="h4" style={{ textAlign: "center" }}>
             You earned {currentPoints} points in this round!
             Your total points earned in this game are {people[meIndex].points}.
+          </Typography>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleNextQuestion} color="primary">
+          <Button variant="contained"
+            style={{
+              color: 'var(--text-color)',
+              backgroundColor: 'var(--accent-color)',
+              textTransform: "none",
+              fontSize: 15,
+              fontWeight: "bold"
+              }}  
+            onClick={handleNextQuestion} >
             Next Question
           </Button>
         </DialogActions>
@@ -301,7 +356,19 @@ function SongRouletteGame() {
     ) : (
         <div>
             <Typography variant="h2" style={{ textAlign: "center" }}>
-                Game Summary
+                Song Roulette Summary
+            </Typography>
+            <br></br>
+            {people.map(person => (
+                <div>
+                <Typography variant="h3" style={{ textAlign: "center" }}>
+                    {person.name} earned {person.points} points!
+                </Typography>
+                </div>
+            ))}
+            <br></br>
+             <Typography variant="h3" style={{ textAlign: "center" }}>
+                {winner} 
             </Typography>
             
         </div>

@@ -275,17 +275,39 @@ function Settings() {
         </Button>
 
         <Dialog open={alertOpen} onClose={deleteAccountNo}>
-        <DialogTitle>Are you sure you want to delete your account?</DialogTitle>
+        <DialogTitle>
+        <Typography variant="h3" style={{ textAlign: "left" }}>
+          Are you sure you want to delete your account?
+        </Typography>
+          </DialogTitle>
         <DialogContent>
           <DialogContentText>
+          <Typography variant="h4" style={{ textAlign: "left" }}>
             This action is irreversible and will permanently delete your account and all associated data.
+            </Typography>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={deleteAccountNo} color="primary">
+          <Button variant="contained"
+            style={{
+              color: 'var(--text-color)',
+              backgroundColor: 'var(--accent-color)',
+              textTransform: "none",
+              fontSize: 15,
+              fontWeight: "bold"
+              }} 
+            onClick={deleteAccountNo}>
             Cancel
           </Button>
-          <Button onClick={deleteAccountYes} color="secondary">
+          <Button variant="contained"
+            style={{
+              color: "#DE6600",
+              backgroundColor: 'var(--accent-color)',
+              textTransform: "none",
+              fontSize: 15,
+              fontWeight: "bold"
+              }} 
+            onClick={deleteAccountYes}>
             Delete
           </Button>
         </DialogActions>
