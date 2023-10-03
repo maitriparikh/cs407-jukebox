@@ -89,7 +89,7 @@ function EditProfile() {
     return (
       <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "7%", marginRight: "7%" }}>
 
-        <Typography variant="h1" style={{ textAlign: "left" }}>
+        <Typography variant="h2" style={{ textAlign: "left" }}>
             Edit Profile
         </Typography>
 

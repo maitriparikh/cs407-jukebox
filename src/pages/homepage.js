@@ -69,7 +69,7 @@ function Homepage() {
     return (
       <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "7%", marginRight: "7%" }}>
 
-        <Typography variant="h1" style={{ textAlign: "center" }}>
+        <Typography variant="h2" style={{ textAlign: "center" }}>
             Homepage
         </Typography>
 

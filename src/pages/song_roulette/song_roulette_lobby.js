@@ -22,18 +22,107 @@ function SongRouletteLobby() {
     /* Navigation for buttons */
     const navigate = useNavigate();
 
+    const [numOfRounds, setNumOfRounds] = useState(3);
+    const [people, setPeople] = useState([
+      {
+          name: "Shreya",
+          flag: false,
+          points: 0
+      },
+      {
+          name: "Sean",
+          flag: false,
+          points: 0
+      },
+      {
+          name: "Maitri",
+          flag: false,
+          points: 0
+      },
+      {
+          name: "Francisco",
+          flag: false,
+          points: 0
+      },
+      {
+          name: "Purdue Pete",
+          flag: false,
+          points: 0
+      },
+      {
+          name: "Devin",
+          flag: false,
+          points: 0
+      },
+    ])
+    const [song_bank, setSong_bank] = useState([ 
+      {
+          song: "https://open.spotify.com/embed/track/6rdkCkjk6D12xRpdMXy0I2?utm_source=generator",
+          correctAnswer: ["Shreya", "Purdue Pete"]
+      },
+      {
+          song: "https://open.spotify.com/embed/track/5QO79kh1waicV47BqGRL3g?utm_source=generator",
+          correctAnswer: ["Francisco"]
+      },
+      {
+          song: "https://open.spotify.com/embed/track/5zsHmE2gO3RefVsPyw2e3T?utm_source=generator",
+          correctAnswer: ["Shreya", "Maitri"]
+      },
+      {
+          song: "https://open.spotify.com/embed/track/1BxfuPKGuaTgP7aM0Bbdwr?utm_source=generator",
+          correctAnswer: ["Maitri"]
+      },
+      {
+          song: "https://open.spotify.com/embed/track/0pqnGHJpmpxLKifKRmU6WP?utm_source=generator",
+          correctAnswer: ["Sean"]
+      },
+      {
+          song: "https://open.spotify.com/embed/track/5HrIcZOo1DysX53qDRlRnt?utm_source=generator",
+          correctAnswer: ["Francisco", "Shreya", "Sean", "Maitri"]
+      },
+      {
+          song: "https://open.spotify.com/embed/track/6DCZcSspjsKoFjzjrWoCdn?utm_source=generator",
+          correctAnswer: ["Francisco", "Devin"]
+      },
+      {
+          song: "https://open.spotify.com/embed/track/39MK3d3fonIP8Mz9oHCTBB?utm_source=generator",
+          correctAnswer: ["Purdue Pete", "Devin"]
+      },
+      {
+          song: "https://open.spotify.com/embed/track/0nbXyq5TXYPCO7pr3N8S4I?utm_source=generator",
+          correctAnswer: ["Sean", "Maitri"]
+      },
+      {
+          song: "https://open.spotify.com/embed/track/10eBRyImhfqVvkiVEGf0N0?utm_source=generator",
+          correctAnswer: ["Shreya", "Francisco", "Maitri", "Sean", "Devin", "Purdue Pete"]
+      }
+    ])
+
     const startgame_click = () => {
       console.log("START GAME CLICKED");
-      navigate("/songroulettegame");
+      navigate("/songroulettegame", {
+        state: {
+          rounds: numOfRounds,
+          people: people,
+          song_bank: song_bank
+        },
+      });
     };
-
-    const [numOfRounds, setNumOfRounds] = useState("");
 
     return (
       <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
 
-        <Typography variant="h1" style={{ textAlign: "center" }}>
+        <Typography variant="h2" style={{ textAlign: "center" }}>
             Song Roulette
+        </Typography>
+
+        <br></br>
+
+        <Typography variant="h4" style={{ textAlign: "center" }}>
+            Join a lobby now to play Song Roulette with your friends! The host will choose the number of rounds
+            and start the game. Each round will have a song from one of the player's playlists. Guess which friend has the song 
+            in their playlist to get points. Don't forget to select multiple players if you think more than one of them has the 
+            song in their playlist! Good luck! 🤩
         </Typography>
 
         <br></br>

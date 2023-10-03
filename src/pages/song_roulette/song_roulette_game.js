@@ -1,6 +1,6 @@
 import Button from "@mui/material/Button";
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { CircularProgress, Grid } from "@mui/material";
 import { Box, Stack } from "@mui/system";
 import Card from "@mui/material/Card";
@@ -17,6 +17,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 
+
 function SongRouletteGame() {
 
     /* Navigation for buttons */
@@ -27,62 +28,20 @@ function SongRouletteGame() {
       navigate("/songroulettelobby");
     };
     
-    const [people, setPeople] = useState([
-        {
-            name: "Shreya",
-            flag: false,
-            points: 0
-        },
-        {
-            name: "Sean",
-            flag: false,
-            points: 0
-        },
-        {
-            name: "Maitri",
-            flag: false,
-            points: 0
-        },
-        {
-            name: "Francisco",
-            flag: false,
-            points: 0
-        },
-        {
-            name: "Purdue Pete",
-            flag: false,
-            points: 0
-        },
-        {
-            name: "Devin",
-            flag: false,
-            points: 0
-        },
-    ])
-    
-    const song_bank = [ 
-        {
-            song: "https://open.spotify.com/embed/track/6rdkCkjk6D12xRpdMXy0I2?utm_source=generator",
-            correctAnswer: ["Shreya", "Purdue Pete"]
-        },
-        {
-            song: "https://open.spotify.com/embed/track/5QO79kh1waicV47BqGRL3g?utm_source=generator",
-            correctAnswer: ["Francisco"]
-        },
-        {
-            song: "https://open.spotify.com/embed/track/5zsHmE2gO3RefVsPyw2e3T?utm_source=generator",
-            correctAnswer: ["Shreya", "Maitri"]
-        },
-        {
-            song: "https://open.spotify.com/embed/track/1BxfuPKGuaTgP7aM0Bbdwr?utm_source=generator",
-            correctAnswer: ["Maitri"]
-        },
-        {
-            song: "https://open.spotify.com/embed/track/0pqnGHJpmpxLKifKRmU6WP?utm_source=generator",
-            correctAnswer: ["Sean"]
-        }
-    ]
-    
+    const location = useLocation();
+
+    const rounds = location.state.rounds; // Get number of rounds from lobby page
+
+    const peopleGet = location.state.people; // Get people array from lobby page
+    const [people, setPeople] = useState(peopleGet);
+
+    const song_bankGet = location.state.song_bank; // Get song_bank array from lobby page
+    const song_bank = song_bankGet
+
+    console.log("NUMBER OF ROUNDS = " + rounds);
+    console.log(people);
+    console.log(song_bank);
+
     const me = "Shreya" // should be name of current player
     const meIndex = people.findIndex((person) => person.name === me); // change flag state when selected
     
@@ -94,6 +53,7 @@ function SongRouletteGame() {
     let pointText = ""; // Text in dialog at the end
     const [pointTextState, setPointTextState] = useState("");    
     const [winner, setWinner] = useState(""); // To display winner in summary
+    
 
 
     const handleOptionClick = (answerOption) => {
@@ -146,7 +106,7 @@ function SongRouletteGame() {
         // reset selected option (for next question)
         setSelected([]);
 
-        if (currentQuestion == song_bank.length - 1) { // End of song_bank reached
+        if (currentQuestion == rounds - 1) { // Max rounds reached
             setShowGame(!showGame);
 
             /* CALCULATE WINNER */
@@ -253,6 +213,12 @@ function SongRouletteGame() {
     <div>
     {showGame ? (
         <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
+
+        <Typography variant="h3" style={{ textAlign: "center"}}>
+           Round {currentQuestion + 1} of {rounds}
+        </Typography>
+        <br></br>
+            
           <Card elevation={3} style={{ position: 'relative', border: `2px solid var(--text-color)`, borderRadius: "8px" }}>
             {/* Cancel Icon */}
             <CancelIcon

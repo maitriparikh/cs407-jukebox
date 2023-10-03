@@ -143,7 +143,7 @@ function Settings() {
     return (
       <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "7%", marginRight: "7%" }}>
 
-        <Typography variant="h1" style={{ textAlign: "left" }}>
+        <Typography variant="h2" style={{ textAlign: "left" }}>
             Settings
         </Typography>
 
@@ -167,19 +167,19 @@ function Settings() {
                 }}
             >
               <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%" }}>
-                <Typography variant="h2" component="div">
+                <Typography variant="h3" component="div">
                     Appearance
                 </Typography>
 
                 <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%", marginTop:"-5%"}}>
                 {/* Toggle Switch */}
                 <Stack direction="row" spacing={1} alignItems="center">
-                    <Typography variant="h3" > Light 🌝</Typography>
+                    <Typography variant="h4" > Light 🌝</Typography>
                     <Switch
                     checked={darkMode}
                     onChange={handleDarkModeToggle}
                     />
-                    <Typography variant="h3" > Dark 🌚</Typography>
+                    <Typography variant="h4" > Dark 🌚</Typography>
                 </Stack>
                 </div>
 
@@ -200,19 +200,19 @@ function Settings() {
               }}
             >
               <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%" }}>
-                <Typography variant="h2" component="div">
+                <Typography variant="h3" component="div">
                     Content Filter
                 </Typography>
 
                 <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%", marginTop:"-5%"}}>
                 {/* Toggle Switch */}
                 <Stack direction="row" spacing={1} alignItems="center">
-                    <Typography variant="h3" > Explicit 🤬</Typography>
+                    <Typography variant="h4" > Explicit 🤬</Typography>
                     <Switch
                     checked={filteredMode}
                     onChange={handleFilteredModeToggle}
                     />
-                    <Typography variant="h3" > Filtered 🤗</Typography>
+                    <Typography variant="h4" > Filtered 🤗</Typography>
                 </Stack>
                 </div>
 
@@ -234,7 +234,7 @@ function Settings() {
               }}
             >
                 <br></br>
-              <Typography variant="h2" component="div">
+              <Typography variant="h3" component="div">
                 Change Password
               </Typography>
               <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%" }}> 
