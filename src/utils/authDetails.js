@@ -27,7 +27,7 @@ const AuthDetails = () => {
             console.log("sign out successful");
             navigate("/");
         }).catch(error => console.log(error))
-    }
+    };
 
     return (
         <div>

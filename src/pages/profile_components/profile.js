@@ -22,8 +22,9 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { getTokenFromUrl, loginUrl } from "../../utils/spotify";
 import SpotifyWebApi from "spotify-web-api-js";
 import { UserContext } from "../../App";
-import { db } from "../../utils/firebase";
+import { db, auth } from "../../utils/firebase";
 import { collection, onSnapshot, getDoc, doc, updateDoc, setDoc } from "firebase/firestore";
+import { signOut } from "firebase/auth"; 
 const spotify = new SpotifyWebApi();
 
 function Profile() {
@@ -38,6 +39,14 @@ function Profile() {
     /* Navigation for buttons */
     const navigate = useNavigate();
 
+    const userSignOut = () => {
+      signOut(auth).then(() => {
+          console.log("sign out successful");
+          setUser(null);
+          navigate("/");
+      }).catch(error => console.log(error))
+    };
+
     const spotifySubmit_click = () => {
       //console.log(getTokenFromUrl());
       displayTop();
@@ -50,7 +59,7 @@ function Profile() {
 
     const signOut_click = () => {
       console.log("SIGNED OUT");
-      navigate("/");
+      userSignOut();
     }
 
     const editProfile_click = () => {
