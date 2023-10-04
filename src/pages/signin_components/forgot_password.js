@@ -14,16 +14,28 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
-        
+import { auth, db } from "../../utils/firebase";
+import { sendPasswordResetEmail } from "firebase/auth";
         
 function ForgotPassword() {
+
+    const [email, setEmail] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [securityQuestion, setSecurityQuestion] = useState("");
 
     /* Navigation for buttons */
     const navigate = useNavigate();
 
     
-    const signup_click = () => {
+    const forgot_password = () => {
         console.log("PASSWORD RESET SUBMITTED");
+        
+        sendPasswordResetEmail(auth, email).then(() => {
+            console.log("Password reset email sent");
+        }).catch((error) => {
+            console.log(error)
+        });
         navigate("/");
     };
 
@@ -38,7 +50,7 @@ function ForgotPassword() {
 
         <Card 
             style={{ 
-            height: "500px", 
+            height: "300px", 
             border: `3px solid var(--text-color)`, 
             borderRadius: "8px",
             textTransform: "none",
@@ -58,50 +70,13 @@ function ForgotPassword() {
                 width="70%"
                 marginTop="-5%"
                 >
-
+                    <p>Please enter the email where we can send you a password reset</p>
                     {/* Email Field */}
                     <TextField
                         label="Email"
+                        onChange={(event) => setEmail(event.target.value)}
                     />
-
-                    {/* New Password Field */}
-                    <TextField
-                        label="New Password"
-                    />
-
-                    {/* Confirm New Password Field */}
-                    <TextField
-                        label="Confirm New Password"
-                    />
-
-                    {/* Security Question Verification */}
-                    <Typography variant="h4" style={{ textAlign: "left" }}>
-                        Security Question Verification
-                    </Typography>
-
-                    <FormControl>
-                        <InputLabel id="demo-simple-select-label" label="label">
-                        What is a city you would like to visit?
-                        </InputLabel>
-                        <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        label="What is a city you would like to visit?"
-                        defaultValue={10} // Set the default option by its value
-                        >
-                        <MenuItem value={10}>New York City</MenuItem>
-                        <MenuItem value={20}>San Francisco</MenuItem>
-                        <MenuItem value={30}>Paris</MenuItem>
-                        <MenuItem value={40}>Barcelona</MenuItem>
-                        <MenuItem value={50}>New Delhi</MenuItem>
-                        <MenuItem value={60}>Venice</MenuItem>
-                        <MenuItem value={60}>Shanghai</MenuItem>
-                        <MenuItem value={70}>Tokyo</MenuItem>
-                        <MenuItem value={80}>Seoul</MenuItem>
-                        <MenuItem value={90}>London</MenuItem>
-                        <MenuItem value={100}>Nairobi</MenuItem>
-                        </Select>
-                    </FormControl>
+                    
                 
                 </Stack>
 
@@ -122,7 +97,7 @@ function ForgotPassword() {
             fontWeight: "bold",
             alignSelf: "center"
             }}
-            onClick={signup_click}
+            onClick={forgot_password}
         >
             Submit
         </Button>  
