@@ -84,7 +84,7 @@ function Profile() {
     }
     
     const startUp = async () => {
-      const unsubUserDoc = await onSnapshot(doc(db, "users", "vjP0aZvrnPPLs7WmTmX5WQWQWNv2"), async (doc) => {
+      const unsubUserDoc = await onSnapshot(doc(db, "users", user), async (doc) => {
         setFirstName(doc.data().firstName);
         setLastName(doc.data().lastName);
         setUsername(doc.data().username);
