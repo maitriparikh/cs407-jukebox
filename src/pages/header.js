@@ -44,6 +44,7 @@ function Header() {
   };
 
   const signOut_click = () => {
+    userSignOut();
     console.log("SIGNED OUT");
     navigate("/");
   }
