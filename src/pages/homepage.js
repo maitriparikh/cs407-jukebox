@@ -51,7 +51,7 @@ function Homepage() {
       console.log('Game Chosen:', game);
       setChosenGame(game);
       if (game == "Song Roulette") {
-        navigate("/songroulettelobby");
+        navigate("/songroulettelobbybrowser");
       } 
       else if (game == "Daily Challenge") {
         navigate("/dailychallengelobby");

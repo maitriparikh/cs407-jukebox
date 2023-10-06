@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import AuthDetails from "./utils/authDetails";
+import socketClient  from "socket.io-client";
 
 import Header from "./pages/header";
 import SignIn from "./pages/signin_components/signin";
@@ -25,6 +26,9 @@ import DailyChallengeLobby from "./pages/daily_challenge/daily_challenge_lobby";
 // Song Roulette Game Pages
 import SongRouletteLobby from "./pages/song_roulette/song_roulette_lobby";
 import SongRouletteGame from "./pages/song_roulette/song_roulette_game";
+import SongRouletteLobbyBrowser from "./pages/song_roulette/song_roulette_browser";
+
+import LobbyViewer from "./pages/song_roulette/song_roulette_lobby_viewer";
 
 // Pictionary Game Pages
 import PictionaryLobby from "./pages/pictionary/pictionary_challenge_lobby";
@@ -50,6 +54,8 @@ function App() {
     );
   const [user, setUser] = useState(null);
 
+  
+
   if (user) {
     console.log("user is :" + user);
       return (
@@ -67,6 +73,7 @@ function App() {
                       <Route path="/settings" element={<Settings />} />
                       <Route path="/editprofile" element={<EditProfile />} />
                       <Route path="/dailychallengelobby" element={<DailyChallengeLobby />} />
+                      <Route path="/SongRoulettelobbybrowser" element={<SongRouletteLobbyBrowser />} />
                       <Route path="/songroulettelobby" element={<SongRouletteLobby />} />
                       <Route path="/songroulettegame" element={<SongRouletteGame />} />
                       <Route path="/pictionarylobby" element={<PictionaryLobby />} />

@@ -16,6 +16,11 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import CancelIcon from '@mui/icons-material/Cancel';
+import io from 'socket.io-client';
+
+    
+
+  const socket = io('http://localhost:3001');
 
 function SongRouletteLobby() {
 
@@ -27,7 +32,14 @@ function SongRouletteLobby() {
       navigate("/songroulettegame");
     };
 
+
+
+    const [lobbyUsers, setLobbyUsers] = useState([]);
+
     const [numOfRounds, setNumOfRounds] = useState("");
+
+
+    
 
     return (
       <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
@@ -123,7 +135,11 @@ function SongRouletteLobby() {
         >
           Start Game!
         </Button>
-        
+        <ul>
+          {lobbyUsers.map((player, index) => (
+            <li key={index}>{player}</li>
+          ))}
+        </ul>
         </div>
       );
     }
