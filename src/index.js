@@ -11,6 +11,10 @@ import JukeboxTheme from "../src/theme";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
+
+
+
+
 root.render(
   <BrowserRouter>
     <ThemeProvider theme={JukeboxTheme}>

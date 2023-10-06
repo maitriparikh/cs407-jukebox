@@ -22,6 +22,11 @@ import { collection, onSnapshot, getDoc, doc, updateDoc, setDoc } from "firebase
 
 
 // STILL TO DO: ensure that the song bank length is >= # of rounds chosen (or else not enough songs for game)
+import io from 'socket.io-client';
+
+    
+
+  const socket = io('http://localhost:3001');
 
 function SongRouletteLobby() {
 
@@ -95,6 +100,10 @@ function SongRouletteLobby() {
         },
       });
     };
+
+
+
+    const [lobbyUsers, setLobbyUsers] = useState([]);
 
     const getSpotifyToken = async () => {
       const unsubUserDoc = await onSnapshot(doc(db, "users", user), async (doc) => {
@@ -252,6 +261,9 @@ function SongRouletteLobby() {
       
     }, [spotifyToken]);
 
+
+    
+
     return (
 
       <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
@@ -369,7 +381,11 @@ function SongRouletteLobby() {
         >
           Start Game!
         </Button>
-        
+        <ul>
+          {lobbyUsers.map((player, index) => (
+            <li key={index}>{player}</li>
+          ))}
+        </ul>
         </div>
       );
     }
