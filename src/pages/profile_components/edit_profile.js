@@ -18,9 +18,10 @@ import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
-import { db } from "../../utils/firebase";
+import { auth, db } from "../../utils/firebase";
 import { collection, query, where, getDocs, updateDoc, doc, getDoc, onSnapshot, setDoc } from "firebase/firestore";
 import { UserContext } from "../../App";
+import { onAuthStateChanged } from "firebase/auth";
 
 
 function EditProfile() {
@@ -40,50 +41,40 @@ function EditProfile() {
     };
 
     const submitChanges_click = async () => {
-      //updateDoc();
-      //need to find a way to skip having to use the documentId (which is hard to find)
       
       const docRef = doc(db, "users", user);
-      setDoc(docRef, {
-        firstname: firstName,
-        lastname: lastName,
+      await updateDoc(docRef, {
+        firstName: firstName,
+        lastName: lastName,
         username: username,
         email: email,
-        securityQuestion: securityQuestion,
-        spotifyToken:  spotifyToken
-      }, {
-        merge: false
       }).then(() => console.log("Document updated"));
       
       navigate("/profile");
     }
 
-    const readUser = async () => {
-      const docRef = doc(db, "users", user);
-      const unSubDoc = await getDoc(docRef, async (doc) => {
-        setFirstName(doc.data().firstName);
-        setLastName(doc.data().lastName);
-        setUsername(doc.data().username);
-        setEmail(doc.data().email);
-        setSpotifyToken(doc.data().spotifyToken);
-        console.log(doc.data());
-      });
-    }
 
     useEffect(() =>{
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          
+          setUser(user.uid);
+          console.log("the profile passed thru uid is: ", user.uid);
+
+          await onSnapshot(doc(db, "users", user.uid), async (doc) => {
+            setFirstName(doc.data().firstName);
+            setLastName(doc.data().lastName);
+            setUsername(doc.data().username);
+            setEmail(doc.data().email);
+            setSpotifyToken(doc.data().spotifyToken);
+            console.log(doc.data());
+          });
+        } else {
+          console.log("auth state where no user");
+          navigate("/");
+        }
+      })
       
-      
-      const unsubUserDoc = onSnapshot(doc(db, "users", user), async (doc) => {
-        setFirstName(doc.data().firstName);
-        setLastName(doc.data().lastName);
-        setUsername(doc.data().username);
-        setEmail(doc.data().email);
-        setSecurityQuestion(doc.data().securityQuestion);
-        setSpotifyToken(doc.data().spotifyToken);
-        console.log(doc.data());
-      });
-      
-      return unsubUserDoc;
     }, []);
 
     return (

@@ -16,8 +16,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { UserContext } from "../App";
-import { db } from "../utils/firebase";
+import { auth, db } from "../utils/firebase";
 import { collection, onSnapshot, getDoc, doc, updateDoc, setDoc } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 
 function Homepage() {
 
@@ -55,13 +56,27 @@ function Homepage() {
     }
 
     useEffect(()=>{
-        getSpotifyToken()
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          
+          setUser(user.uid);
+          console.log("the profile passed thru uid is: ", user.uid);
 
-        if (spotifyToken != "") {
-          console.log("spotify token got in choose game ->", spotifyToken)
-          setSpotifyConnected(true)
-          console.log("spotify token set to true", spotifyConnected)
+          await onSnapshot(doc(db, "users", user.uid), async (doc) => {
+            setSpotifyToken(doc.data().spotifyToken);
+            console.log("spotify token got ->", spotifyToken)
+          });
+
+          if (spotifyToken != "") {
+            console.log("spotify token got in choose game ->", spotifyToken)
+            setSpotifyConnected(true)
+            console.log("spotify token set to true", spotifyConnected)
+          }
+        } else {
+          console.log("auth state where no user");
+          navigate("/");
         }
+      })
 
     }, [spotifyToken]);
 

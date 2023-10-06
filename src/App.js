@@ -39,7 +39,11 @@ import TriviaChallengeLobby from "./pages/trivia_challenge/trivia_challenge_lobb
 // Lyric Challenge Game Pages
 import LyricChallengeLobby from "./pages/lyric_challenge/lyric_challenge_lobby";
 
-import { useState, createContext, useContext } from "react";
+import { useState, createContext, useContext, useEffect } from "react";
+import { onAuthStateChanged } from 'firebase/auth';
+import { useNavigate } from "react-router-dom";
+import { auth } from './utils/firebase';
+
 export const UserContext = createContext(null);
 
 function App() {
@@ -50,8 +54,28 @@ function App() {
       <Header></Header>
     );
   const [user, setUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
+  const navigate = useNavigate();
 
-  if (user) {
+  
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log("auth state changed");
+        console.log("the passed thru user is: ", user);
+        setCurrentUser(user);
+        setUser(user.uid);
+      } else {
+        console.log("auth state where no user");
+        navigate("/");
+      }
+    })
+  }, []);
+  
+  
+
+  
+  if (true) {
     console.log("user is :" + user);
       return (
                 <div className="App">
@@ -79,24 +103,26 @@ function App() {
                 </div>
               );
   }
+  
   else {
     console.log("no user logged in");
+    
     // If var "user" is null then dont allow them to access any routes(pages)
     // besides login and signup
     //  <Route path="*" element={<Navigate replace to="/" />} />
     // path="*" - means all other pahts
     // to="/" - redirect to "/" which is the signin page
+    
       return (
     <div className="App">
       <UserContext.Provider value={{ user: user, setUser: setUser }}>
         {conditionalHeader}
 
-        <AuthDetails></AuthDetails>
+        
         <Routes>
           <Route path="/" element={<SignIn />} />
           <Route path="/forgot_password" element={<ForgotPassword />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/profile" element={<Profile />} />
          <Route path="*" element={<Navigate replace to="/" />} />
 
         </Routes>

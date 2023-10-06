@@ -24,7 +24,7 @@ import SpotifyWebApi from "spotify-web-api-js";
 import { UserContext } from "../../App";
 import { db, auth } from "../../utils/firebase";
 import { collection, onSnapshot, getDoc, doc, updateDoc, setDoc } from "firebase/firestore";
-import { signOut } from "firebase/auth"; 
+import { signOut, onAuthStateChanged } from "firebase/auth"; 
 const spotify = new SpotifyWebApi();
 
 function Profile() {
@@ -35,6 +35,7 @@ function Profile() {
     const [email, setEmail] = useState("");
     const [spotifyToken, setSpotifyToken] = useState("");
     const [data, setData] = useState(null);
+    const [topFive, setTopFive] = useState([]);
 
     /* Navigation for buttons */
     const navigate = useNavigate();
@@ -84,6 +85,7 @@ function Profile() {
 
     const displayTop = async() => {
       const topTracks = await getTopTracks();
+      //console.log("The top tracks are: ", topTracks);
       console.log(
         topTracks?.map(
           ({name, artists}) =>
@@ -92,57 +94,93 @@ function Profile() {
       );
     }
     
-    const startUp = async () => {
-      const unsubUserDoc = await onSnapshot(doc(db, "users", user), async (doc) => {
-        setFirstName(doc.data().firstName);
-        setLastName(doc.data().lastName);
-        setUsername(doc.data().username);
-        setEmail(doc.data().email);
-        setSpotifyToken(doc.data().spotifyToken);
-        console.log(doc.data());
-      });
-    }
 
     useEffect(()=>{
-      console.log(user);
-      /*
-      const unsubUserDoc = onSnapshot(doc(db, "users", user), async (doc) => {
-        setFirstName(doc.data().firstName);
-        setLastName(doc.data().lastName);
-        setUsername(doc.data().username);
-        setEmail(doc.data().email);
-        setSpotifyToken(doc.data().spotifyToken);
-        console.log(doc.data());
-      });
-      */
-      startUp();
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          setUser(user.uid);
 
-      console.log("This is what we received: ", getTokenFromUrl());
-      const _spotifyToken = getTokenFromUrl().access_token;
-      window.location.hash = "";
-      console.log("This is our spotify token: ", _spotifyToken);
+          //read current user data
+          await onSnapshot(doc(db, "users", user.uid), async (doc) => {
+            setFirstName(doc.data().firstName);
+            setLastName(doc.data().lastName);
+            setUsername(doc.data().username);
+            setEmail(doc.data().email);
+            setSpotifyToken(doc.data().spotifyToken);
+            console.log(doc.data());
+          });
 
-      if(_spotifyToken) {
-        setSpotifyToken(_spotifyToken);
-        spotify.setAccessToken(_spotifyToken);
-        spotify.getMe().then((user) => {
-          console.log("This is you: ", user);
-        })
-        //if the spotify token exists then we add it to the user's doc
-        const docRef = doc(db, "users", "vjP0aZvrnPPLs7WmTmX5WQWQWNv2");
+          //handle if spotify token is in url
+          const _spotifyToken = getTokenFromUrl().access_token;
+          window.location.hash = "";
+          if(_spotifyToken) {
+            setSpotifyToken(_spotifyToken);
+            spotify.setAccessToken(_spotifyToken);
+            spotify.getMe().then((user) => {
+              console.log("This is you: ", user);
+            });
 
-        setDoc(docRef, {
-          spotifyToken: _spotifyToken
-        }, {
-          merge: true
-        }).then(() => console.log("Document updated"));
-      }
+            //finding top 5 songs
+            //console.log("A spotify token was found");
+            //const topTracks = (await fetchWebApi('v1/me/top/tracks?time_range=short_term&limit=5', 'GET')).items;
+            //console.log(topTracks);
+            /*
+            var arr = [...topFive];
+            topTracks?.map(
+              ({id, name}) =>
+                arr.push(`https://open.spotify.com/embed/track/${id}?utm_source=generator for ${name}`)
+            )
+            console.log(arr);
+            setTopFive(arr);
+            */
+           /*
+            console.log(
+              topTracks?.map(
+                ({id, name}) =>
+                  `https://open.spotify.com/embed/track/${id}?utm_source=generator for ${name}`
+              )
+            );
+            */
 
-      if(spotifyToken) {
-        displayTop();
-      }
+            const docRef = doc(db, "users", user.uid);
+            await updateDoc(docRef, {
+              spotifyToken: _spotifyToken,
+              //songList: topFive
+            }, {
+              merge: true
+            }).then(() => {
+              console.log("Document updated")
+            }).catch((error) => {
+              console.log("There was an error updating the doc with spotify token");
+            });
+          }
+          /*
+          console.log("before st condition: ", spotifyToken);
+          if (spotifyToken) {
+            console.log("A spotify token was found");
+            const topTracks = await getTopTracks();
+            var arr = [...topFive];
+            topTracks?.map(
+              ({id, name}) =>
+                arr.push(`https://open.spotify.com/embed/track/${id}?utm_source=generator for ${name}`)
+            )
+            console.log(arr);
+            setTopFive(arr);
+            console.log(
+              topTracks?.map(
+                ({id, name}) =>
+                  `https://open.spotify.com/embed/track/${id}?utm_source=generator for ${name}`
+              )
+            );
+            
+          }
+          */
+        } else {
+          console.log("auth state where no user");
+          navigate("/");
+        }
+      })
 
-      //return unsubUserDoc;
 
     }, []);
 
@@ -254,8 +292,7 @@ function Profile() {
   
         </Grid>
         
-        { spotifyToken ? <><p>{`Hello ${spotifyToken} `}</p></>: 
-                <p>Signed Out</p>}
+       
         <br></br>
         
         <Button

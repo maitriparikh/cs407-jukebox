@@ -14,9 +14,11 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { red } from "@mui/material/colors";
 import Typography from "@mui/material/Typography";
 import { UserContext } from "../../App";
+import SignUp from "../signup_components/signup";
 
 function SignIn() {
   const { user, setUser } = useContext(UserContext);
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [validUser, setValidUser] = useState(true);
@@ -27,6 +29,7 @@ function SignIn() {
   const signin_click = (e) => {
     console.log(email + " " + password);
     e.preventDefault();
+    //SignIn(email, password);
     signInWithEmailAndPassword(auth, email, password)
       .then(async (userCredential) => {
         setValidUser(true);
