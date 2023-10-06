@@ -23,7 +23,7 @@ function SongSnippetLobby() {
     return (
       <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
 
-        <Typography variant="h1" style={{ textAlign: "center" }}>
+        <Typography variant="h2" style={{ textAlign: "center" }}>
             Song Snippet
         </Typography>
 

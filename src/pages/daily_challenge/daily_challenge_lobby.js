@@ -32,31 +32,36 @@ function DailyChallengeLobby() {
     return (
       <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
 
-        <Typography variant="h1" style={{ textAlign: "center" }}>
+        <Typography variant="h2" style={{ textAlign: "center" }}>
             Daily Challenge
         </Typography>
 
         <br></br>
 
-        <Grid
-        container
-        spacing={5}
-        justifyContent="center"
-        alignItems="center"
-        style={{ marginTop: '20px' }}
+        <Card 
+            style={{ 
+            height: "270px", 
+            border: `3px solid var(--text-color)`, 
+            borderRadius: "8px",
+            textTransform: "none",
+            fontWeight: "bold",
+            width: "85%", 
+            margin: "0 auto", 
+            }}
         >
 
-            <Grid item xs={12}>
+        <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", paddingBottom: "50px", paddingLeft: "100px", paddingRight: "100px" }}>
+            <Grid item xs={12} style={{ marginBottom: "25px" }}>
                 {/* Daily challenge game instructions - update as needed */}
-                <Typography variant="h3" style={{ textAlign: "center", marginBottom: "16px" }}>
+                <Typography variant="h4" style={{ textAlign: "center", marginBottom: "16px" }}>
                     Welcome to Jukebox's daily challenge! Your task will be to guess a particular song with as few hints as possible. First, choose a game mode below. 
                 </Typography>
-                <Typography variant="h3" style={{ textAlign: "center" }}>
+                <Typography variant="h4" style={{ textAlign: "center" }}>
                     In easy mode, we will start you off with an an audio snippet from the mystery song. If you recognize the tune, enter it in the box that appears on your screen. If you can't, don't worry - we will continue giving you more hints (visual, lyrical, trivia-y, etc). For hard mode, you must guess the song from the audio snippet alone! Good luck!
                 </Typography>
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={12} style={{ marginBottom: "25px" }}>
                 <ButtonGroup variant="outlined" aria-label="outlined button group">
                     <Button 
                     variant={gameMode === "Easy" ? "contained" : "outlined"} 
@@ -88,6 +93,8 @@ function DailyChallengeLobby() {
                     </Button>
                 </ButtonGroup>
             </Grid>
+            </CardContent>
+            </Card>
 
             <Grid item xs={12}>
                 <Button
@@ -104,7 +111,6 @@ function DailyChallengeLobby() {
                 >
                 Start Game!
                 </Button>
-            </Grid>
             </Grid>
    
         </div>

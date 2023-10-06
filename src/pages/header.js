@@ -8,7 +8,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import FullLogo from "../full_logo.png";
 import Avatar from "@mui/material/Avatar";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
@@ -23,14 +23,28 @@ import {
   ListItemText,
   ListItemIcon,
 } from "@mui/material";
+import { signOut } from "firebase/auth"; 
+import { db, auth } from "../utils/firebase";
+import { UserContext } from "../App";
+
 
 function Header() {
+  const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [anchor, setAnchor] = React.useState(null);
   const open = Boolean(anchor);
 
+  const userSignOut = () => {
+    signOut(auth).then(() => {
+        console.log("sign out successful");
+        setUser(null);
+        navigate("/");
+    }).catch(error => console.log(error))
+  };
+
   const signOut_click = () => {
+    userSignOut();
     console.log("SIGNED OUT");
     navigate("/");
   }

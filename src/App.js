@@ -13,6 +13,7 @@ import socketClient  from "socket.io-client";
 
 import Header from "./pages/header";
 import SignIn from "./pages/signin_components/signin";
+import ForgotPassword from "./pages/signin_components/forgot_password";
 import SignUp from "./pages/signup_components/signup";
 import Profile from "./pages/profile_components/profile";
 import Homepage from "./pages/homepage";
@@ -100,7 +101,9 @@ function App() {
         <AuthDetails></AuthDetails>
         <Routes>
           <Route path="/" element={<SignIn />} />
+          <Route path="/forgot_password" element={<ForgotPassword />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/profile" element={<Profile />} />
          <Route path="*" element={<Navigate replace to="/" />} />
 
         </Routes>

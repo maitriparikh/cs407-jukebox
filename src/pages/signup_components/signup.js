@@ -12,7 +12,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import { Link } from "@mui/material";
-import { collection, addDoc, setDoc, doc, updateDoc } from "firebase/firestore";
+import { collection, addDoc, setDoc, doc, updateDoc, where, query, getDocs } from "firebase/firestore";
 import { db, auth } from "../../utils/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import validPassword from "../../utils/require";
@@ -38,12 +38,13 @@ function SignUp() {
   const signup_click = async (e) => {
     console.log(email + " " + password);
     e.preventDefault();
-    if (handleInput()) {
+    const result = await checkUsername();
+    if (validPassword() && result) {
       
       console.log("validPassword");
 
     } else {
-      console.log("bad password");
+      console.log("bad password or username");
       return;
     }
     
@@ -55,7 +56,8 @@ function SignUp() {
           lastName: lastName,
           username: username,
           email: email,
-          securityQuestion: securityQuestion
+          securityQuestion: securityQuestion,
+          spotifyToken: ""
         });
         setUser(userCredential.user.uid);
 
@@ -65,6 +67,7 @@ function SignUp() {
     
     console.log("SIGNUP CLICKED");
     signin_click();
+    
   };
   
   const signin_click = () => {
@@ -72,10 +75,22 @@ function SignUp() {
     navigate("/");
   };
 
-  const handleInput = () => {
-    const result = true;
-    //
-    return (password.length >= 6  && result); 
+  const validPassword = async () => {    
+    console.log(password.length);
+    
+    return (password.length >= 6); 
+  }
+
+  const checkUsername = async () => {
+    var result;
+    const collectionRef = await collection(db, "users"); 
+    const queryRef = query(collectionRef, where("username", "==", username));
+    const querySnapshot = await getDocs(queryRef);
+    querySnapshot.forEach((doc) => {
+      console.log(doc.data());
+    });
+    querySnapshot.size == 0 ? result = true : result = false;
+    return result;
   }
 
   return (

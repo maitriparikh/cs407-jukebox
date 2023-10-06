@@ -49,7 +49,7 @@ function SignIn() {
   };
   const forgot_password_click = () => {
     console.log("FORGOT PASSWORD  CLICKED");
-    navigate("/password");
+    navigate("/forgot_password");
   };
 
   return (
