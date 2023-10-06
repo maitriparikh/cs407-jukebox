@@ -31,6 +31,7 @@ function SignUp() {
   const [securityQuestion, setSecurityQuestion] = useState("");
   //const [validPassword, setValidPassword] = useState("");
   //const [validUsername]
+  const [validUser, setValidUser] = useState(true);
 
   /* Navigation for buttons */
   const navigate = useNavigate();
@@ -39,15 +40,36 @@ function SignUp() {
     console.log(email + " " + password);
     e.preventDefault();
     const result = await checkUsername();
-    if (validPassword() && result) {
-      
+    
+    if ((password.length >= 6) && result) {
+      setValidUser(true);
       console.log("validPassword");
+      createUserWithEmailAndPassword(auth, email, password)
+      .then(async (userCredential) => {
+        //console.log(userCredential);
+        await setDoc(doc(db, "users", userCredential.user.uid), {
+          firstName: firstName,
+          lastName: lastName,
+          username: username,
+          email: email,
+          securityQuestion: securityQuestion,
+          spotifyToken: ""
+        });
+        setUser(userCredential.user.uid);
+
+      }).catch((error) => {
+        console.log(error);
+      });
+    
+    console.log("SIGNUP CLICKED");
+    signin_click();
 
     } else {
       console.log("bad password or username");
-      return;
+      setValidUser(false);
+      //return;
     }
-    
+    /*
     createUserWithEmailAndPassword(auth, email, password)
       .then(async (userCredential) => {
         //console.log(userCredential);
@@ -67,7 +89,7 @@ function SignUp() {
     
     console.log("SIGNUP CLICKED");
     signin_click();
-    
+    */
   };
   
   const signin_click = () => {
@@ -217,6 +239,12 @@ function SignUp() {
                   }}
                   onChange={(event) => setPassword(event.target.value)} // save password from user input
                 />
+
+                  {validUser ? <p></p> : (
+                    <Typography variant="p" style={{ color: 'red', textAlign: 'left' }}> 
+                      There was an issue creating an account. Use a different username and/or password. 
+                    </Typography>
+                  )}
 
               <Typography variant="h4" style={{ textAlign: "left" }}>
                 Security Question
