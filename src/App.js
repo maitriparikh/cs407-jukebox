@@ -103,6 +103,7 @@ function App() {
                       <Route path="/songsnippetlobby" element={<SongSnippetLobby />} />
                       <Route path="/triviachallengelobby" element={<TriviaChallengeLobby />} />
                       <Route path="/lyricchallengelobby" element={<LyricChallengeLobby />} />
+                      <Route path="/forgot_password" element={<ForgotPassword />} />
                     </Routes>
                   </UserContext.Provider>       
                 </div>

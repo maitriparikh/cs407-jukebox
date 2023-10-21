@@ -36,6 +36,7 @@ function Profile() {
     const [spotifyToken, setSpotifyToken] = useState("");
     const [data, setData] = useState(null);
     const [topFive, setTopFive] = useState([]);
+    const [spotifyName, setSpotifyName] = useState("");
 
     /* Navigation for buttons */
     const navigate = useNavigate();
@@ -118,11 +119,12 @@ function Profile() {
             spotify.setAccessToken(_spotifyToken);
             spotify.getMe().then((user) => {
               console.log("This is you: ", user);
+              setSpotifyName(user.display_name);
             });
 
             //finding top 5 songs
             //console.log("A spotify token was found");
-            //const topTracks = (await fetchWebApi('v1/me/top/tracks?time_range=short_term&limit=5', 'GET')).items;
+            const topTracks = await getTopTracks();
             //console.log(topTracks);
             /*
             var arr = [...topFive];
@@ -133,14 +135,14 @@ function Profile() {
             console.log(arr);
             setTopFive(arr);
             */
-           /*
+           
             console.log(
               topTracks?.map(
                 ({id, name}) =>
                   `https://open.spotify.com/embed/track/${id}?utm_source=generator for ${name}`
               )
             );
-            */
+            
 
             const docRef = doc(db, "users", user.uid);
             await updateDoc(docRef, {
@@ -154,9 +156,9 @@ function Profile() {
               console.log("There was an error updating the doc with spotify token");
             });
           }
-          /*
+          
           console.log("before st condition: ", spotifyToken);
-          if (spotifyToken) {
+          if (spotifyToken !== "") {
             console.log("A spotify token was found");
             const topTracks = await getTopTracks();
             var arr = [...topFive];
@@ -172,9 +174,9 @@ function Profile() {
                   `https://open.spotify.com/embed/track/${id}?utm_source=generator for ${name}`
               )
             );
-            
+            console.log("Top Five is: ", topFive);
           }
-          */
+          
         } else {
           console.log("auth state where no user");
           navigate("/");
@@ -293,7 +295,17 @@ function Profile() {
         </Grid>
         
        
+        {spotifyName === "" ? <p></p> : (
+                    <Typography variant="p" style={{ textAlign: 'left' }}> 
+                      Hello, you have connected with {spotifyName} 
+                    </Typography>
+                  )}
+
+
+
         <br></br>
+          <br></br>
+        
         
         <Button
             variant="contained"

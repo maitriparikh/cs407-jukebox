@@ -18,10 +18,13 @@ import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
-import { auth, db } from "../../utils/firebase";
+import { auth, db, storage } from "../../utils/firebase";
 import { collection, query, where, getDocs, updateDoc, doc, getDoc, onSnapshot, setDoc } from "firebase/firestore";
 import { UserContext } from "../../App";
 import { onAuthStateChanged } from "firebase/auth";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { v4 } from "uuid";
+
 
 
 function EditProfile() {
@@ -32,6 +35,8 @@ function EditProfile() {
     const [email, setEmail] = useState("");
     const [securityQuestion, setSecurityQuestion] = useState("");
     const [spotifyToken, setSpotifyToken] = useState("");
+    const [image, setImage] = useState("");
+    const [imageURL, setImageURL] = useState("");
 
     /* Navigation for buttons */
     const navigate = useNavigate();
@@ -51,6 +56,27 @@ function EditProfile() {
       }).then(() => console.log("Document updated"));
       
       navigate("/profile");
+    };
+
+    const editProfilePicture = async () => {
+      console.log("Inside editProfilePicture with image: ", image);
+      const imageRef = ref(storage, `files/${v4()}`)
+      uploadBytes(imageRef, image);
+      updateProfilePicture();
+      
+    };
+
+    const updateProfilePicture = async () => {
+      const pathRef = ref(storage, "gs://testing-ca9b2.appspot.com/files/9caf61e2-e7df-4927-9987-ee15944112b3")
+      getDownloadURL(pathRef).then(url => {
+        setImageURL(data=>[...data,url])
+      })
+
+      console.log(imageURL, "imageURL");
+    }
+
+    const changePicture = () => {
+      console.log("Inside change picture with picture as ", image);
     }
 
 
@@ -112,17 +138,32 @@ function EditProfile() {
                 style={{ display: "none" }}
                 /* Handle profile image change in later sprint */
                 // onChange={uploadImage}
+                onChange={(e) => setImage(e.target.files[0])}
               />
               <label htmlFor="profile-picture-upload">
                 <IconButton
                   color="primary"
                   aria-label="upload picture"
                   component="span"
+                  onClick={changePicture}
                 >
                   <PhotoCamera />
                 </IconButton>
               </label>
             </div>
+            <label htmlFor="profile-picture-submit">
+                <IconButton
+                  color="primary"
+                  aria-label="submit picture"
+                  component="span"
+                  onClick={editProfilePicture}
+                >
+                  Submit Changes
+
+                </IconButton>
+              </label>
+              <br></br>
+              <img src={image} heigh="200px" width="200px"></img>
               </CardContent>
             </Card>
           </Grid>
