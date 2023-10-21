@@ -36,6 +36,7 @@ function EditProfile() {
     const [securityQuestion, setSecurityQuestion] = useState("");
     const [spotifyToken, setSpotifyToken] = useState("");
     const [image, setImage] = useState("");
+    const [imageName, setImageName] = useState("");
     const [imageURL, setImageURL] = useState("");
 
     /* Navigation for buttons */
@@ -60,8 +61,12 @@ function EditProfile() {
 
     const editProfilePicture = async () => {
       console.log("Inside editProfilePicture with image: ", image);
-      const imageRef = ref(storage, `files/${v4()}`)
-      uploadBytes(imageRef, image);
+      console.log("Inside editProfilePicture with image name: ", imageName);
+      const imageRef = ref(storage, `images/${imageName}`)
+      const storageRef = ref(storage, imageName);
+      uploadBytes(imageRef, image).then(() => {
+        console.log("upload successful");
+      })
       updateProfilePicture();
       
     };
@@ -70,13 +75,19 @@ function EditProfile() {
       const pathRef = ref(storage, "gs://testing-ca9b2.appspot.com/files/9caf61e2-e7df-4927-9987-ee15944112b3")
       getDownloadURL(pathRef).then(url => {
         setImageURL(data=>[...data,url])
-      })
+      });
+      
+      const docRef = doc(db, "users", user);
+      await updateDoc(docRef, {
+        image: imageName
+      }).then(() => console.log("Document updated"));
 
       console.log(imageURL, "imageURL");
     }
 
     const changePicture = () => {
       console.log("Inside change picture with picture as ", image);
+      console.log("Inside change picture with picture name as ", imageName);
     }
 
 
@@ -138,7 +149,10 @@ function EditProfile() {
                 style={{ display: "none" }}
                 /* Handle profile image change in later sprint */
                 // onChange={uploadImage}
-                onChange={(e) => setImage(e.target.files[0])}
+                onChange={(e) => {
+                  setImage(e.target.files[0]); 
+                  setImageName(e.target.files[0].name);
+                }}
               />
               <label htmlFor="profile-picture-upload">
                 <IconButton
