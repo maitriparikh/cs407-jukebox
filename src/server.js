@@ -3,10 +3,12 @@ const express = require('express');
 
 const http = require('http');
 const socketIo = require('socket.io');
-
+const cors = require('cors');
 const app2 = express();
+app2.use(cors());
+
 const server = http.createServer(app2);
-const io = socketIo(server);
+const io = socketIo(server, {cors: {origin: "*"}});
 
 const PORT =3001;
 var count = 0;

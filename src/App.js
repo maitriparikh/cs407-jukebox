@@ -62,6 +62,8 @@ function App() {
   const navigate = useNavigate();
 
   
+
+  
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
