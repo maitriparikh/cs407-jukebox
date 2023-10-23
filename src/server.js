@@ -22,19 +22,25 @@ app2.use((req, res, next) => {
 
 let lobbyExists = false;
 let id;
+let selectedGameType;
 
 server.listen(PORT, () => {
     console.log(`listening on *:${PORT}`);
 });
 
 io.on('connection', (socket) => {
-    console.log('new client connected');
+    //console.log('new client connected');
 
     // Generate a unique userID and send it to the client
 
     id = 0;
     socket.on('set-user-id', (val) => {
       id = val;
+    });
+
+    selectedGameType = 'none';
+    socket.on('set-selectedGameType', (val) => {
+      selectedGameType = val;
     });
 
 
@@ -59,6 +65,7 @@ io.on('connection', (socket) => {
         code: lobbyCode,
         ownerID: id, // The owner is the user who created the lobby
         players: [id], // Include the owner in the players list
+        gameType: selectedGameType,
       };
       lobbies.set(lobbyCode, lobbyDetails);
       io.to(lobbyCode).emit('lobby-created', lobbyCode, socket.userID);
@@ -93,7 +100,7 @@ io.on('connection', (socket) => {
 
 
   socket.on('disconnect', () => {
-    console.log('A user disconnected');
+    //console.log('A user disconnected');
 
     const rooms = socket.rooms;
     rooms.forEach((room) => {
@@ -117,7 +124,7 @@ io.on('connection', (socket) => {
 
   function updateLobbies() {
  // Get the list of lobbies with their details (e.g., number of players)
-    /*
+  /*
     const updatedLobbies = Array.from(io.sockets.adapter.rooms.keys()).map((lobbyCode) => ({
       code: lobbyCode,
       players: io.sockets.adapter.rooms.get(lobbyCode).size || 0,
@@ -125,7 +132,7 @@ io.on('connection', (socket) => {
 
     // Emit the updated list to all connected clients
     io.emit('update-lobbies', updatedLobbies);
-  }
+    }
   */
     const updatedLobbies = Array.from(lobbies.values());
 
