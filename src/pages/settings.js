@@ -57,7 +57,7 @@ function Settings() {
         console.log("Chose to delete account");
         console.log(user);
         
-        deleteUser(auth.currentUser).then(async () => {
+        await deleteUser(auth.currentUser).then(async () => {
           console.log("Successful");
           await deleteDoc(doc(db, "users", user));
           navigate("/")
