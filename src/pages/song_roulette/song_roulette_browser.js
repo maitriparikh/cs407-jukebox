@@ -20,6 +20,10 @@ import io from "socket.io-client";
 import LobbyViewer from "./song_roulette_lobby_viewer";
 import { UserContext } from "../../App";
 
+import { db } from "../../utils/firebase";
+import { collection, onSnapshot, getDoc, doc, updateDoc, setDoc } from "firebase/firestore";
+
+
 
 
 //import handleCreateLobby from "../../server"
@@ -45,6 +49,9 @@ function SongRouletteLobbyBrowser() {
   const [owner, setOwner] = useState(null); // Store the owner of the lobby
   const [roomCode, setRoomCode] = useState("");
   const [joinError, setJoinError] = useState("");
+  const [spotifyToken, setSpotifyToken] = useState(""); // Spotify Token
+  const [userNameTemp2, setUserNameTemp2] = useState("");
+
 
 
   /* Navigation for buttons */
@@ -57,6 +64,19 @@ function SongRouletteLobbyBrowser() {
       setMessage('Creating a new lobby...');
     }
   };
+
+  
+  const getSpotifyToken = async () => {
+    const unsubUserDoc = await onSnapshot(doc(db, "users", user), async (doc) => {
+      setSpotifyToken(doc.data().spotifyToken);
+      setUserNameTemp2(doc.data().username);
+      //userNameTemp = doc.data().username;
+      console.log('username is:' + userNameTemp2);
+    });
+  };
+
+  
+
 
   const handleJoinRoom = () => {
     if (roomCode.trim() === "") {
@@ -95,7 +115,8 @@ const changeID = (id) => {
         setUserID(user);
 
         changeID(user);
-        socket.emit('create-lobby', userID);
+
+        socket.emit('create-lobby', userID, userNameTemp2 );
         setMessage('Creating a new lobby...');
         //navigate("/songroulettelobby");
         navigate('/songroulettelobby', { state: { 1: lobbies.players } });
@@ -136,6 +157,8 @@ const changeID = (id) => {
     setMessage('Lobby created with code: ${code}');
     setCreatingLobby(false);
 
+    
+
     // Set the owner when the lobby is created
     if (userID === lobbyOwnerID) {
       setOwner(lobbyOwnerID);
@@ -153,6 +176,20 @@ const changeID = (id) => {
     setMessage('Error: ${error}');
     setCreatingLobby(false);
   });
+
+  
+  useEffect(()=>{
+
+      getSpotifyToken()
+      if (spotifyToken) {
+        console.log("spotify token got in song roulette game lobby ->", spotifyToken)
+        // get specific playlist code (user entered or from firebase?) (future sprint) (hard-coded)
+        /* make song_bank data structure */
+      
+      }
+      
+      
+    }, [spotifyToken]);
 
     const canCreateLobby = lobbies.length === 0;
 
