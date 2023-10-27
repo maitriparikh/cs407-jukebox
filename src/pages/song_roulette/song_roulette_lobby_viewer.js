@@ -92,7 +92,7 @@ const handleJoinLobby = (lobbyCode, ownerID) => {
       <ul>
         {lobbies.map((lobby) => (
           <li key={lobby.code}>
-           Lobby Code: {lobby.code} (Players: {lobby.players.join(', ')})
+           Lobby Code: {lobby.code} (Players: {lobby.playerNames.join(', ')})
             <button
               onClick={() => handleJoinLobby(lobby.code, lobby.ownerID)}
               disabled={joiningLobby === lobby.code || lobby.ownerID === user}
