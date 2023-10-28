@@ -22,9 +22,11 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { getTokenFromUrl, loginUrl } from "../../utils/spotify";
 import SpotifyWebApi from "spotify-web-api-js";
 import { UserContext } from "../../App";
-import { db, auth } from "../../utils/firebase";
+import { db, auth, storage } from "../../utils/firebase";
 import { collection, onSnapshot, getDoc, doc, updateDoc, setDoc } from "firebase/firestore";
 import { signOut, onAuthStateChanged } from "firebase/auth"; 
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+
 const spotify = new SpotifyWebApi();
 
 function Profile() {
@@ -37,6 +39,7 @@ function Profile() {
     const [data, setData] = useState(null);
     const [topFive, setTopFive] = useState([]);
     const [spotifyName, setSpotifyName] = useState("");
+    const [imageURL, setImageURL] = useState("");
 
     /* Navigation for buttons */
     const navigate = useNavigate();
@@ -108,6 +111,10 @@ function Profile() {
             setUsername(doc.data().username);
             setEmail(doc.data().email);
             setSpotifyToken(doc.data().spotifyToken);
+            const pathRef = ref(storage, `images/${doc.data().image}`);
+            await getDownloadURL(pathRef).then(async (url) => {
+              setImageURL(url);
+            });
             console.log(doc.data());
           });
 
@@ -202,7 +209,7 @@ function Profile() {
               <CardContent>
               <div>
               <Avatar
-                src={Logo}
+                src={imageURL}
                 sx={{
                   width: 150,
                   height: 150,
