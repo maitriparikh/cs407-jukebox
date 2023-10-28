@@ -38,6 +38,7 @@ function EditProfile() {
     const [image, setImage] = useState("");
     const [imageName, setImageName] = useState("");
     const [imageURL, setImageURL] = useState("");
+    const [imageChanged, setImageChanged] = useState("");
 
     /* Navigation for buttons */
     const navigate = useNavigate();
@@ -60,30 +61,16 @@ function EditProfile() {
     };
 
     const editProfilePicture = async () => {
-      console.log("Inside editProfilePicture with image: ", image);
-      console.log("Inside editProfilePicture with image name: ", imageName);
-      const imageRef = ref(storage, `images/${imageName}`)
-      const storageRef = ref(storage, imageName);
-      uploadBytes(imageRef, image).then(() => {
-        console.log("upload successful");
+      const imageRef = ref(storage, `images/${imageName}`);
+
+      await uploadBytes(imageRef, image).then(async (snapshot) => {
+        const docRef = doc(db, "users", user);
+        await updateDoc(docRef, {
+          image: imageName,
+        }).then(() => console.log("Document updated"));
       })
-      updateProfilePicture();
-      
+      setImageChanged(imageName);
     };
-
-    const updateProfilePicture = async () => {
-      const pathRef = ref(storage, "gs://testing-ca9b2.appspot.com/files/9caf61e2-e7df-4927-9987-ee15944112b3")
-      getDownloadURL(pathRef).then(url => {
-        setImageURL(data=>[...data,url])
-      });
-      
-      const docRef = doc(db, "users", user);
-      await updateDoc(docRef, {
-        image: imageName
-      }).then(() => console.log("Document updated"));
-
-      console.log(imageURL, "imageURL");
-    }
 
     const changePicture = () => {
       console.log("Inside change picture with picture as ", image);
@@ -93,6 +80,8 @@ function EditProfile() {
 
     useEffect(() =>{
       onAuthStateChanged(auth, async (user) => {
+        
+
         if (user) {
           
           setUser(user.uid);
@@ -104,15 +93,27 @@ function EditProfile() {
             setUsername(doc.data().username);
             setEmail(doc.data().email);
             setSpotifyToken(doc.data().spotifyToken);
-            console.log(doc.data());
+            setImageName(doc.data().image);
+            setImageChanged("changed")
           });
+          //getting profile picture from storage
+          if (imageChanged == "changed") {
+            if (imageName) {
+              const pathRef = ref(storage, `images/${imageName}`);
+              await getDownloadURL(pathRef).then(async (url) => {
+                setImageURL(url);
+              });
+            }
+            
+          }
+          
         } else {
           console.log("auth state where no user");
           navigate("/");
         }
       })
       
-    }, []);
+    }, [imageChanged]);
 
     return (
       <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "7%", marginRight: "7%" }}>
@@ -130,7 +131,7 @@ function EditProfile() {
               <CardContent>
               <div>
               <Avatar
-                src={Logo}
+                src={imageURL}
                 sx={{
                   width: 270,
                   height: 270,
@@ -176,8 +177,6 @@ function EditProfile() {
 
                 </IconButton>
               </label>
-              <br></br>
-              <img src={image} heigh="200px" width="200px"></img>
               </CardContent>
             </Card>
           </Grid>

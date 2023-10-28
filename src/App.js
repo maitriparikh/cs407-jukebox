@@ -46,7 +46,7 @@ import LyricChallengeLobby from "./pages/lyric_challenge/lyric_challenge_lobby";
 import { useState, createContext, useContext, useEffect } from "react";
 import { onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from "react-router-dom";
-import { auth } from './utils/firebase';
+import { auth, storage, db } from './utils/firebase';
 
 export const UserContext = createContext(null);
 
