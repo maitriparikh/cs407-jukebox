@@ -26,7 +26,7 @@ import io from 'socket.io-client';
 
     
 
-  const socket = io('http://localhost:3001');
+const socket = io('http://localhost:3001');
 
 function SongRouletteLobby() {
 
@@ -37,6 +37,7 @@ function SongRouletteLobby() {
     const [spotifyToken, setSpotifyToken] = useState(""); // Spotify Token
     const [people, setPeople] = useState([]);
     const [song_bank, setSong_bank] = useState([]);
+    const [lobbies, setLobbies] = useState([]);
     const [myPlaylist, setMyPlaylist] = useState([]); // intermediate playlist array
     const [myPlaylistFinal2, setMyPlaylistFinal2] = useState([ // Maitri hard coded playlist
       "https://open.spotify.com/embed/track/4JQpghvT0ZH2WLRqzlPUC7?utm_source=generator",
@@ -104,10 +105,13 @@ function SongRouletteLobby() {
 
 
     const [lobbyUsers, setLobbyUsers] = useState([]);
+    let userNameTemp;
 
     const getSpotifyToken = async () => {
       const unsubUserDoc = await onSnapshot(doc(db, "users", user), async (doc) => {
         setSpotifyToken(doc.data().spotifyToken);
+        //userNameTemp = doc.data().username;
+        //console.log('username is:' + userNameTemp);
       });
     };
 
@@ -262,6 +266,19 @@ function SongRouletteLobby() {
     }, [spotifyToken]);
 
 
+    useEffect(() => {
+      socket.emit('fetch-lobbies');
+
+      socket.on('update-lobbies', (updatedLobbies) => {
+          setLobbies(updatedLobbies);
+          //setLobbyUsers(lobbies.);
+      });
+      return () => {
+        socket.off('update-lobbies');
+      };
+    }, []);;
+
+
     
 
     return (
@@ -312,6 +329,14 @@ function SongRouletteLobby() {
                 <Typography variant="h3" component="div">
                   Game Lobby
                 </Typography>
+
+                <ul>
+                {lobbies.map((lobby) => (
+                <li key={lobby.code}>
+                (Players: {lobby.playerNames.join(', ')})
+                </li>
+                ))}
+                </ul>
               </CardContent>
             </Card>
           </Grid>
@@ -386,6 +411,11 @@ function SongRouletteLobby() {
             <li key={index}>{player}</li>
           ))}
         </ul>
+
+
+
+
+
         </div>
       );
     }

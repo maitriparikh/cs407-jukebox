@@ -3,10 +3,12 @@ const express = require('express');
 
 const http = require('http');
 const socketIo = require('socket.io');
-
+const cors = require('cors');
 const app2 = express();
+app2.use(cors());
+
 const server = http.createServer(app2);
-const io = socketIo(server);
+const io = socketIo(server, {cors: {origin: "*"}});
 
 const PORT =3001;
 var count = 0;
@@ -20,19 +22,25 @@ app2.use((req, res, next) => {
 
 let lobbyExists = false;
 let id;
+let selectedGameType;
 
 server.listen(PORT, () => {
     console.log(`listening on *:${PORT}`);
 });
 
 io.on('connection', (socket) => {
-    console.log('new client connected');
+    //console.log('new client connected');
 
     // Generate a unique userID and send it to the client
 
     id = 0;
     socket.on('set-user-id', (val) => {
       id = val;
+    });
+
+    selectedGameType = 'none';
+    socket.on('set-selectedGameType', (val) => {
+      selectedGameType = val;
     });
 
 
@@ -44,31 +52,37 @@ io.on('connection', (socket) => {
         socket.emit('update-lobbies', lobbyData);
     });
 
-    socket.on('create-lobby', (lobbyData, userID) => {
+    socket.on('create-lobby', (userID, userNameTemp) => {
       if (lobbyExists) {
           socket.emit('lobby-error', 'A lobby already exists.');
           return;
       }
 
       console.log("lobby creation started");
+      console.log("username of user creating lobby:" + userNameTemp);
       const lobbyCode = generateUniqueLobbyCode();
       socket.join(lobbyCode);
       const lobbyDetails = {
         code: lobbyCode,
         ownerID: id, // The owner is the user who created the lobby
         players: [id], // Include the owner in the players list
+        gameType: selectedGameType,
+        gameDate:[],
+        playerNames: []
       };
       lobbies.set(lobbyCode, lobbyDetails);
       io.to(lobbyCode).emit('lobby-created', lobbyCode, socket.userID);
       console.log("lobby created");
+      lobbyDetails.playerNames.push(userNameTemp);
       console.log(lobbies);
+  
       
 
       updateLobbies();
 
       lobbyExists = true;
     });
-    socket.on('join-lobby', (lobbyCode) => {
+    socket.on('join-lobby', (lobbyCode, userNameTemp) => {
       // Handle joining a lobby
       if (isLobbyValid(lobbyCode)) {
         socket.join(lobbyCode);
@@ -76,6 +90,8 @@ io.on('connection', (socket) => {
 
         // Add the user to the lobby's players array
         lobbyDetails.players.push(id);
+        console.log('passed username:' + userNameTemp);
+        lobbyDetails.playerNames.push(userNameTemp);
 
         console.log(lobbies);
 
@@ -91,7 +107,7 @@ io.on('connection', (socket) => {
 
 
   socket.on('disconnect', () => {
-    console.log('A user disconnected');
+    //console.log('A user disconnected');
 
     const rooms = socket.rooms;
     rooms.forEach((room) => {
@@ -115,7 +131,7 @@ io.on('connection', (socket) => {
 
   function updateLobbies() {
  // Get the list of lobbies with their details (e.g., number of players)
-    /*
+  /*
     const updatedLobbies = Array.from(io.sockets.adapter.rooms.keys()).map((lobbyCode) => ({
       code: lobbyCode,
       players: io.sockets.adapter.rooms.get(lobbyCode).size || 0,
@@ -123,7 +139,7 @@ io.on('connection', (socket) => {
 
     // Emit the updated list to all connected clients
     io.emit('update-lobbies', updatedLobbies);
-  }
+    }
   */
     const updatedLobbies = Array.from(lobbies.values());
 
