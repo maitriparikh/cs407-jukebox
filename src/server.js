@@ -49,6 +49,7 @@ io.on('connection', (socket) => {
     let userID = id;
     socket.on('fetch-lobbies', () => {
         const lobbyData = Array.from(lobbies.values());
+        //console.log(lobbyData);
         socket.emit('update-lobbies', lobbyData);
     });
 
@@ -74,6 +75,7 @@ io.on('connection', (socket) => {
       io.to(lobbyCode).emit('lobby-created', lobbyCode, socket.userID);
       console.log("lobby created");
       lobbyDetails.playerNames.push(userNameTemp);
+      console.log("lobbies following...");
       console.log(lobbies);
   
       
@@ -142,6 +144,8 @@ io.on('connection', (socket) => {
     }
   */
     const updatedLobbies = Array.from(lobbies.values());
+    //console.log("updated lobbies following");
+    //console.log(updatedLobbies);
 
     // Emit the updated list to all connected clients
     io.emit('update-lobbies', updatedLobbies);

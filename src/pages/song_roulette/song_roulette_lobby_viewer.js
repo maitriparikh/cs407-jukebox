@@ -50,7 +50,7 @@ function LobbyViewer() {
     };
   }, []);;
 
-const handleJoinLobby = (lobbyCode, ownerID) => {
+  const handleJoinLobby = (lobbyCode, ownerID) => {
     // Check if the user is the owner before allowing them to join
     if (joiningLobby === null && ownerID !== user ) {
 
@@ -95,7 +95,7 @@ const handleJoinLobby = (lobbyCode, ownerID) => {
            Lobby Code: {lobby.code} (Players: {lobby.playerNames.join(', ')})
             <button
               onClick={() => handleJoinLobby(lobby.code, lobby.ownerID)}
-              disabled={joiningLobby === lobby.code || lobby.ownerID === user}
+              disabled={joiningLobby === lobby.code || lobby.ownerID === user || lobby.players.includes(user) }
             >
               Join
             </button>

@@ -143,6 +143,7 @@ const changeID = (id) => {
 
       socket.on('update-lobbies', (updatedLobbies) => {
         setLobbies(updatedLobbies);
+        console.log("" + lobbies);
       });
 
       socket.emit('set-user-id', user);
@@ -311,9 +312,6 @@ const changeID = (id) => {
     </div>
     
 
-    <button onClick={handleRefresh}>
-       refresh
-      </button>
       
         </div>
         

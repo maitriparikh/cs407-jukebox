@@ -1,24 +1,17 @@
-import React, { useState, useEffect, createContext, useContext, useCallback } from "react";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
-import { Container } from "@mui/system";
-import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
-import Typography from "@mui/material/Typography"
-import CardContent from "@mui/material/CardContent"
-import { useNavigate } from "react-router-dom";
-import ButtonBase from '@mui/material/ButtonBase';
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
+import CardContent from "@mui/material/CardContent";
 import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
+import Grid from "@mui/material/Grid";
 import InputLabel from "@mui/material/InputLabel";
-import CancelIcon from '@mui/icons-material/Cancel';
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import Typography from "@mui/material/Typography";
+import { doc, onSnapshot } from "firebase/firestore";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../App";
 import { db } from "../../utils/firebase";
-import { collection, onSnapshot, getDoc, doc, updateDoc, setDoc } from "firebase/firestore";
 
 
 // STILL TO DO: ensure that the song bank length is >= # of rounds chosen (or else not enough songs for game)
@@ -32,12 +25,15 @@ function SongRouletteLobby() {
 
     /* Navigation for buttons */
     const navigate = useNavigate();
+
+
     const { user, setUser } = useContext(UserContext);
     const [numOfRounds, setNumOfRounds] = useState(3);
     const [spotifyToken, setSpotifyToken] = useState(""); // Spotify Token
     const [people, setPeople] = useState([]);
     const [song_bank, setSong_bank] = useState([]);
     const [lobbies, setLobbies] = useState([]);
+    const [currentLobby, setCurrentLobby] = useState([]);
     const [myPlaylist, setMyPlaylist] = useState([]); // intermediate playlist array
     const [myPlaylistFinal2, setMyPlaylistFinal2] = useState([ // Maitri hard coded playlist
       "https://open.spotify.com/embed/track/4JQpghvT0ZH2WLRqzlPUC7?utm_source=generator",
@@ -112,6 +108,7 @@ function SongRouletteLobby() {
         setSpotifyToken(doc.data().spotifyToken);
         //userNameTemp = doc.data().username;
         //console.log('username is:' + userNameTemp);
+        
       });
     };
 
@@ -125,6 +122,31 @@ function SongRouletteLobby() {
       });
       return await res.json();
     };
+
+
+    function findLobbyByPlayerId(updatedLobbies, targetId) {
+      return updatedLobbies.find(lobby => lobby.players.includes(targetId));
+    }
+
+          
+    const getCurrentLobby = async () => {
+
+      const tempThing = findLobbyByPlayerId(lobbies,user);
+
+
+      if (tempThing) {
+          setCurrentLobby(tempThing); // If a lobby is found, set the currentLobby state
+          console.log("Current Lobby:", tempThing);
+          console.log("Current user ID:", user);
+          console.log("Current Lobby owner ID:", tempThing.ownerID);
+      } else {
+          setCurrentLobby(null); // If no lobby is found, set currentLobby as null
+          console.log("No lobby found for the current user:", user);
+      }
+    };
+
+
+
 
     
     const getAllPlaylistTracks = async (playlistId) => {
@@ -248,6 +270,7 @@ function SongRouletteLobby() {
         song_bank.push(songInBank);
       }
     
+
       console.log("song_bank", song_bank);
     };
     
@@ -268,18 +291,33 @@ function SongRouletteLobby() {
 
     useEffect(() => {
       socket.emit('fetch-lobbies');
-
       socket.on('update-lobbies', (updatedLobbies) => {
           setLobbies(updatedLobbies);
           //setLobbyUsers(lobbies.);
+          //console.log("lobbies should print");
+
+          
+          //console.log("lobbies should print");
+          //console.log(updatedLobbies);
+          getCurrentLobby();
+          //setLobbyUsers(currentLobby.players);
       });
+
+
       return () => {
         socket.off('update-lobbies');
       };
     }, []);;
 
+    useEffect(() => {
+      getCurrentLobby();
+      //console.log(currentLobby);
+      //setLobbyUsers(currentLobby.players);
 
-    
+    },[lobbies]);
+
+
+    const isButtonDisabled = currentLobby && currentLobby.players && currentLobby.players.length === 4 && currentLobby.ownerID === user;
 
     return (
 
@@ -403,13 +441,14 @@ function SongRouletteLobby() {
             margin: "3%"
           }}
           onClick={startgame_click}
+         disabled={!isButtonDisabled}
         >
           Start Game!
         </Button>
         <ul>
-          {lobbyUsers.map((player, index) => (
+          { /*lobbyUsers.map((player, index) => (
             <li key={index}>{player}</li>
-          ))}
+          )) */}
         </ul>
 
 
