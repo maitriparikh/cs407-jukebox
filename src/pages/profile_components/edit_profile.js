@@ -39,6 +39,7 @@ function EditProfile() {
     const [imageName, setImageName] = useState("");
     const [imageURL, setImageURL] = useState("");
     const [imageChanged, setImageChanged] = useState("");
+    const [defaultPic, setDefaultPic] = useState(false);
 
     /* Navigation for buttons */
     const navigate = useNavigate();
@@ -84,6 +85,7 @@ function EditProfile() {
         image: "logo.png",
       }).then(() => { 
         console.log("Document updated");
+        
         setImageChanged("logo.png");
     });
     }
@@ -105,9 +107,14 @@ function EditProfile() {
             setEmail(doc.data().email);
             setSpotifyToken(doc.data().spotifyToken);
             setImageName(doc.data().image);
-            setImageChanged("changed")
+            setImageChanged("changed");
           });
           //getting profile picture from storage
+          if (imageName == "logo.png") {
+            setDefaultPic(false);
+          } else {
+            setDefaultPic(true);
+          }
           if (imageChanged == "changed") {
             if (imageName) {
               const pathRef = ref(storage, `images/${imageName}`);
@@ -190,7 +197,9 @@ function EditProfile() {
                   </IconButton>
                 </label>
             </div>
-            <div>
+
+
+            {defaultPic ? (<div>
               <label htmlFor="profile-picture-delete">
                   <IconButton
                     color="primary"
@@ -201,8 +210,8 @@ function EditProfile() {
                     Delete Profile Picture
                   </IconButton>
                 </label>
-            </div>
-            
+            </div>) : <p></p>
+            }
               
               </CardContent>
             </Card>
