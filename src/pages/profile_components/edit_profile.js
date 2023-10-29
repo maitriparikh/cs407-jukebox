@@ -75,6 +75,17 @@ function EditProfile() {
     const changePicture = () => {
       console.log("Inside change picture with picture as ", image);
       console.log("Inside change picture with picture name as ", imageName);
+    };
+
+    const deleteProfilePicture = async () => {
+      console.log("Inside deleteProfilePicture");
+      const docRef = doc(db, "users", user);
+      await updateDoc(docRef, {
+        image: "logo.png",
+      }).then(() => { 
+        console.log("Document updated");
+        setImageChanged("logo.png");
+    });
     }
 
 
@@ -127,7 +138,7 @@ function EditProfile() {
         <Grid container spacing={4}>
 
           <Grid item xs={5}>
-            <Card elevation={0} style={{ height: "400px", width: "100%" }}>
+            <Card elevation={0} style={{ height: "600px", width: "100%" }}>
               <CardContent>
               <div>
               <Avatar
@@ -166,17 +177,33 @@ function EditProfile() {
                 </IconButton>
               </label>
             </div>
-            <label htmlFor="profile-picture-submit">
-                <IconButton
-                  color="primary"
-                  aria-label="submit picture"
-                  component="span"
-                  onClick={editProfilePicture}
-                >
-                  Submit Changes
+            <div>
+              <label htmlFor="profile-picture-submit">
+                  <IconButton
+                    color="primary"
+                    aria-label="submit picture"
+                    component="span"
+                    onClick={editProfilePicture}
+                  >
+                    Submit Changes
 
-                </IconButton>
-              </label>
+                  </IconButton>
+                </label>
+            </div>
+            <div>
+              <label htmlFor="profile-picture-delete">
+                  <IconButton
+                    color="primary"
+                    aria-label="delete picture"
+                    component="span"
+                    onClick={deleteProfilePicture}
+                  >
+                    Delete Profile Picture
+                  </IconButton>
+                </label>
+            </div>
+            
+              
               </CardContent>
             </Card>
           </Grid>
