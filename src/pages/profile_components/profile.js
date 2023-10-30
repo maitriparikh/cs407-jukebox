@@ -40,6 +40,9 @@ function Profile() {
     const [topFive, setTopFive] = useState([]);
     const [spotifyName, setSpotifyName] = useState("");
     const [imageURL, setImageURL] = useState("");
+    const [age, setAge] = useState("");
+    const [gender, setGender] = useState("");
+    const [ethnicity, setEthnicity] = useState("");
 
     /* Navigation for buttons */
     const navigate = useNavigate();
@@ -110,6 +113,9 @@ function Profile() {
             setLastName(doc.data().lastName);
             setUsername(doc.data().username);
             setEmail(doc.data().email);
+            setAge(doc.data().age);
+            setGender(doc.data().gender);
+            setEthnicity(doc.data().ethnicity);
             setSpotifyToken(doc.data().spotifyToken);
             const pathRef = ref(storage, `images/${doc.data().image}`);
             await getDownloadURL(pathRef).then(async (url) => {
@@ -236,6 +242,20 @@ function Profile() {
               </Typography>
               <Typography variant="h3" style={{ margin: "3%" }} component="div">
                 {email} 
+              </Typography>
+            </CardContent>
+          </Card>
+          <br></br>
+          <Card elevation={3} style={{ backgroundColor: "var(--accent-color)", color: "var(--text-color)", border: `3px solid var(--text-color)`, borderRadius: "8px", height: "200px", width: "100%" }}>
+            <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+              <Typography variant="h3" style={{ margin: "3%" }} component="div">
+                Age: {age}
+              </Typography>
+              <Typography variant="h3" style={{ margin: "3%" }} component="div">
+                Gender: {gender}
+              </Typography>
+              <Typography variant="h3" style={{ margin: "3%" }} component="div">
+                Ethnicity: {ethnicity}
               </Typography>
             </CardContent>
           </Card>

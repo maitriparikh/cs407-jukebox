@@ -29,6 +29,9 @@ function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [securityQuestion, setSecurityQuestion] = useState("");
+  const [age, setAge] = useState("");
+  const [gender, setGender] = useState("");
+  const [ethnicity, setEthnicity] = useState("");
   //const [validPassword, setValidPassword] = useState("");
   //const [validUsername]
   const [validUser, setValidUser] = useState(true);
@@ -54,7 +57,10 @@ function SignUp() {
           email: email,
           securityQuestion: securityQuestion,
           spotifyToken: "",
-          image: "logo.png"
+          image: "logo.png",
+          age: age,
+          gender: gender,
+          ethnicity: ethnicity
         });
         setUser(userCredential.user.uid);
 
@@ -274,6 +280,55 @@ function SignUp() {
                     <MenuItem value={80}>Seoul</MenuItem>
                     <MenuItem value={90}>London</MenuItem>
                     <MenuItem value={100}>Nairobi</MenuItem>
+                  </Select>
+                </FormControl>
+
+              <Typography variant="h4" style={{ textAlign: "left" }}>
+                Demographics
+              </Typography>
+                {/* Age field */}
+                <TextField
+                  label="Age"
+                  onChange={(event) => setAge(event.target.value)} // save password from user input
+                />
+
+                {/* Gender field */}
+                <FormControl>
+                  <InputLabel id="demo-simple-select-label" label="label">
+                    Gender
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="Gender"
+                    onClick={(event) => setGender(event.target.innerText)}
+                  >
+                    <MenuItem value={10}>Male</MenuItem>
+                    <MenuItem value={20}>Female</MenuItem>
+                    <MenuItem value={30}>Other</MenuItem>
+                  </Select>
+                </FormControl>
+                
+
+                {/* Ethnicity */}
+                <FormControl>
+                  <InputLabel id="demo-simple-select-label" label="label">
+                    Ethnicity
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="Ethnicity"
+                    onClick={(event) => setEthnicity(event.target.innerText)}
+                  >
+                    <MenuItem value={10}>White</MenuItem>
+                    <MenuItem value={20}>Asian</MenuItem>
+                    <MenuItem value={30}>Hispanic</MenuItem>
+                    <MenuItem value={40}>American Indian</MenuItem>
+                    <MenuItem value={50}>Black or African American</MenuItem>
+                    <MenuItem value={60}>Middle Eastern or Northern African</MenuItem>
+                    <MenuItem value={70}>Native Hawaiian or Other Pacific Islander</MenuItem>
+                    <MenuItem value={80}>Other</MenuItem>
                   </Select>
                 </FormControl>
 
