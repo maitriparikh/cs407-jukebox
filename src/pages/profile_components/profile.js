@@ -148,13 +148,9 @@ function Profile() {
             console.log(arr);
             setTopFive(arr);
             */
+            
            
-            console.log(
-              topTracks?.map(
-                ({id, name}) =>
-                  `https://open.spotify.com/embed/track/${id}?utm_source=generator for ${name}`
-              )
-            );
+            
             
 
             const docRef = doc(db, "users", user.uid);

@@ -27,6 +27,7 @@ function Homepage() {
     const [spotifyConnected, setSpotifyConnected] = useState(false); // is spotify connected?
     const [spotifyToken, setSpotifyToken] = useState(""); // Spotify Token
     const { user, setUser } = useContext(UserContext);
+    const [topFiveArr, setTopFiveArr] = useState("");
 
     const gameCardHover = {
       transition: "transform 0.2s", 
@@ -55,6 +56,48 @@ function Homepage() {
       });
     }
 
+    const fetchWebApi = async (endpoint, method, body) => {
+      const res = await fetch(`https://api.spotify.com/${endpoint}`, {
+        headers: {
+          Authorization: `Bearer ${spotifyToken}}`,
+        },
+        method,
+        body:JSON.stringify(body)
+      });
+      return await res.json();
+    }
+
+    const getTopTracks = async () => {
+      return (await fetchWebApi('v1/me/top/tracks?time_range=short_term&limit=5', 'GET')).items;
+    }
+
+    const displayTop = async() => {
+      const topTracks = await getTopTracks();
+      console.log("The top tracks are: ", topTracks);
+      setTopFiveArr(topTracks);
+      console.log(topFiveArr)
+      const docRef = doc(db, "users", user);
+      await updateDoc(docRef, {
+        topFive: topTracks,
+        //songList: topFive
+      }, {
+        merge: true
+      }).then(() => {
+        console.log("Document updated")
+      }).catch((error) => {
+        console.log("There was an error updating the doc with spotify token");
+      });
+      
+     /*
+      console.log(
+        topTracks?.map(
+          ({name, artists}) =>
+            `${name} by ${artists.map(artist => artist.name).join(', ')}`
+        )
+      );
+      */
+    }
+
     useEffect(()=>{
       onAuthStateChanged(auth, async (user) => {
         if (user) {
@@ -64,13 +107,17 @@ function Homepage() {
 
           await onSnapshot(doc(db, "users", user.uid), async (doc) => {
             setSpotifyToken(doc.data().spotifyToken);
-            console.log("spotify token got ->", spotifyToken)
+            console.log("spotify token got ->", spotifyToken);
           });
 
           if (spotifyToken != "") {
-            console.log("spotify token got in choose game ->", spotifyToken)
-            setSpotifyConnected(true)
-            console.log("spotify token set to true", spotifyConnected)
+            console.log("spotify token got in choose game ->", spotifyToken);
+            setSpotifyConnected(true);
+            console.log("spotify token set to true", spotifyConnected);
+
+            //try to get top 5 songs
+            
+            displayTop();
           }
         } else {
           console.log("auth state where no user");

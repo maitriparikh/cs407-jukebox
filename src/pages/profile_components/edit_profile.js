@@ -73,9 +73,8 @@ function EditProfile() {
       setImageChanged(imageName);
     };
 
-    const changePicture = () => {
-      console.log("Inside change picture with picture as ", image);
-      console.log("Inside change picture with picture name as ", imageName);
+    const changePicture = async () => {
+
     };
 
     const deleteProfilePicture = async () => {
@@ -95,6 +94,7 @@ function EditProfile() {
       onAuthStateChanged(auth, async (user) => {
         
 
+
         if (user) {
           
           setUser(user.uid);
@@ -109,12 +109,13 @@ function EditProfile() {
             setImageName(doc.data().image);
             setImageChanged("changed");
           });
-          //getting profile picture from storage
+
           if (imageName == "logo.png") {
             setDefaultPic(false);
           } else {
             setDefaultPic(true);
           }
+
           if (imageChanged == "changed") {
             if (imageName) {
               const pathRef = ref(storage, `images/${imageName}`);
