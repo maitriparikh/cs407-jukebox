@@ -17,11 +17,15 @@ import { db } from "../../utils/firebase";
 // STILL TO DO: ensure that the song bank length is >= # of rounds chosen (or else not enough songs for game)
 import io from 'socket.io-client';
 
+import { useTheme } from '@mui/material/styles';
+
     
 
 const socket = io('http://localhost:3001');
 
 function SongRouletteLobby() {
+
+    const theme = useTheme();
 
     /* Navigation for buttons */
     const navigate = useNavigate();
@@ -407,8 +411,8 @@ function SongRouletteLobby() {
           {/* First Row */}
           <Grid item xs={8}>
             <Card elevation={3} sx={{
-              color: "var(--text-color)",
-              border: `2px solid var(--text-color)`,
+              color: "theme.palette.secondary.main",
+              border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
               height: "450px",
               width: "100%",
@@ -431,8 +435,8 @@ function SongRouletteLobby() {
           </Grid>
           <Grid item xs={4}>
             <Card elevation={3} sx={{
-              color: "var(--text-color)",
-              border: `2px solid var(--text-color)`,
+              color: "theme.palette.secondary.main",
+              border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
               height: "450px",
               width: "100%",
@@ -484,7 +488,7 @@ function SongRouletteLobby() {
           variant="contained"
           style={{
             width: 230,
-            color: 'var(--text-color)',
+            color: 'theme.palette.secondary.main',
             backgroundColor: 'var(--accent-color)',
             textTransform: "none",
             fontSize: 15,

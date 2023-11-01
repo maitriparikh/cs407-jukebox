@@ -39,6 +39,7 @@ import SongSnippetLobby from "./pages/song_snippet/song_snippet_lobby";
 
 // Trivia Challenge Game Pages
 import TriviaChallengeLobby from "./pages/trivia_challenge/trivia_challenge_lobby";
+import TriviaChallengeGame from './pages/trivia_challenge/trivia_challenge_game';
 
 // Lyric Challenge Game Pages
 import LyricChallengeLobby from "./pages/lyric_challenge/lyric_challenge_lobby";
@@ -47,6 +48,8 @@ import { useState, createContext, useContext, useEffect } from "react";
 import { onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from "react-router-dom";
 import { auth, storage, db } from './utils/firebase';
+
+import Box from '@mui/material/Box';
 
 export const UserContext = createContext(null);
 
@@ -84,9 +87,15 @@ function App() {
   if (true) {
     console.log("user is :" + user);
       return (
-                <div className="App">
-                  <UserContext.Provider value={{ user: user, setUser: setUser }}>
-                    {conditionalHeader}
+        <Box
+          sx={{
+            backgroundColor: (theme) => theme.palette.background.default,
+            minHeight: '100vh',
+          }}
+        >
+            <div className="App">
+              <UserContext.Provider value={{ user: user, setUser: setUser }}>
+                {conditionalHeader}
 
                     <AuthDetails></AuthDetails>
                     <Routes>
@@ -104,12 +113,14 @@ function App() {
                       <Route path="/pictionarylobby" element={<PictionaryLobby />} />
                       <Route path="/songsnippetlobby" element={<SongSnippetLobby />} />
                       <Route path="/triviachallengelobby" element={<TriviaChallengeLobby />} />
+                      <Route path="/triviachallengegame" element={<TriviaChallengeGame />} />
                       <Route path="/lyricchallengelobby" element={<LyricChallengeLobby />} />
                       <Route path="/forgot_password" element={<ForgotPassword />} />
                     </Routes>
                   </UserContext.Provider>       
                 </div>
-              );
+              </Box>
+            );
   }
   
   else {

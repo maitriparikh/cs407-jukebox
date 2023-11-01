@@ -24,10 +24,15 @@ import { UserContext } from "../../App";
 import { onAuthStateChanged } from "firebase/auth";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { v4 } from "uuid";
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+
+import { useTheme } from '@mui/material/styles';
 
 
 
 function EditProfile() {
+    const theme = useTheme();
+
     const { user, setUser } = useContext(UserContext);
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -146,15 +151,15 @@ function EditProfile() {
         <Grid container spacing={4}>
 
           <Grid item xs={5}>
-            <Card elevation={0} style={{ height: "600px", width: "100%" }}>
+            <Card elevation={0} style={{ height: "600px", width: "100%", backgroundColor: theme.palette.background.default }}>
               <CardContent>
               <div>
               <Avatar
                 src={imageURL}
                 sx={{
-                  width: 270,
-                  height: 270,
-                  border: "3px solid var(--text-color)",
+                  width: 245,
+                  height: 240,
+                  border: `3px solid ${theme.palette.secondary.main}`,
                   borderRadius: "50%", 
                   margin: "auto", 
                 }}
@@ -187,30 +192,45 @@ function EditProfile() {
             </div>
             <div>
               <label htmlFor="profile-picture-submit">
-                  <IconButton
-                    color="primary"
-                    aria-label="submit picture"
-                    component="span"
-                    onClick={editProfilePicture}
-                  >
-                    Submit Changes
-
-                  </IconButton>
-                </label>
+              <Button
+                variant="contained"
+                style={{
+                    width: 230,
+                    color: theme.palette.primary.main,
+                    backgroundColor: theme.palette.secondary.main,
+                    textTransform: "none",
+                    fontSize: 15,
+                    fontWeight: "bold",
+                    margin: "auto"
+                }}
+                onClick={editProfilePicture}
+                >
+                Upload Picture
+              </Button>
+              </label>
             </div>
+
+            <br></br>
 
 
             {defaultPic ? (<div>
               <label htmlFor="profile-picture-delete">
-                  <IconButton
-                    color="primary"
-                    aria-label="delete picture"
-                    component="span"
-                    onClick={deleteProfilePicture}
-                  >
-                    Delete Profile Picture
-                  </IconButton>
-                </label>
+              <Button
+                variant="contained"
+                style={{
+                    width: 230,
+                    color: theme.palette.primary.main,
+                    backgroundColor: theme.palette.secondary.main,
+                    textTransform: "none",
+                    fontSize: 15,
+                    fontWeight: "bold",
+                    margin: "auto"
+                }}
+                onClick={deleteProfilePicture}
+                >
+                <RemoveCircleOutlineIcon/> &nbsp; Delete Profile Picture
+              </Button>
+              </label>
             </div>) : <p></p>
             }
               
@@ -219,7 +239,7 @@ function EditProfile() {
           </Grid>
           
           <Grid item xs={7}>
-          <Card elevation={0} style={{ height: "400px", width: "100%" }}>
+          <Card elevation={0} style={{ height: "400px", width: "100%", backgroundColor: theme.palette.background.default }}>
             <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
             <Stack
                 direction="column"
@@ -231,42 +251,38 @@ function EditProfile() {
               
                 {/* First Name field */}
                 <TextField
-                label="First Name"
-                value={firstName}
-                onChange={(event) => setFirstName(event.target.value)} 
-                InputLabelProps={{
-                    shrink: true,
-                }}
+                  label="First Name"
+                  InputProps={{ style: { color: theme.palette.primary.main } }} 
+                  InputLabelProps={{ shrink: true, style: { color: theme.palette.primary.main } }} 
+                  value={firstName}
+                  onChange={(event) => setFirstName(event.target.value)} 
                 />
 
                 {/* Last Name field */}
                 <TextField
                   label="Last Name"
+                  InputProps={{ style: { color: theme.palette.primary.main } }} 
+                  InputLabelProps={{ shrink: true, style: { color: theme.palette.primary.main } }} 
                   value={lastName}
                   onChange={(event) => setLastName(event.target.value)}
-                  InputLabelProps={{
-                    shrink: true,
-                }}
                 />
 
                 {/* Username field */}
                 <TextField
                   label="Username"
+                  InputProps={{ style: { color: theme.palette.primary.main } }} 
+                  InputLabelProps={{ shrink: true, style: { color: theme.palette.primary.main } }} 
                   value={username}
                   onChange={(event) => setUsername(event.target.value)} 
-                  InputLabelProps={{
-                    shrink: true,
-                }}
                 />
 
                 {/* Email field */}
                 <TextField
                   label="Email"
+                  InputProps={{ style: { color: theme.palette.primary.main } }} 
+                  InputLabelProps={{ shrink: true, style: { color: theme.palette.primary.main } }} 
                   value={email}
                   onChange={(event) => setEmail(event.target.value)} 
-                  InputLabelProps={{
-                    shrink: true,
-                }}
                 />
 
                 <br></br>
@@ -275,8 +291,8 @@ function EditProfile() {
                 variant="contained"
                 style={{
                     width: 230,
-                    color: 'var(--text-color)',
-                    backgroundColor: 'var(--accent-color)',
+                    color: theme.palette.primary.main,
+                    backgroundColor: theme.palette.secondary.main,
                     textTransform: "none",
                     fontSize: 15,
                     fontWeight: "bold",

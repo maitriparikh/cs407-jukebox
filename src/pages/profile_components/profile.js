@@ -27,9 +27,14 @@ import { collection, onSnapshot, getDoc, doc, updateDoc, setDoc } from "firebase
 import { signOut, onAuthStateChanged } from "firebase/auth"; 
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
+import { useTheme } from '@mui/material/styles';
+
+
 const spotify = new SpotifyWebApi();
 
 function Profile() {
+    const theme = useTheme();
+
     const { user, setUser } = useContext(UserContext);
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -57,7 +62,7 @@ function Profile() {
 
     const spotifySubmit_click = () => {
       //console.log(getTokenFromUrl());
-      displayTop();
+      //displayTop();
     };
 
     const settings_click = () => {
@@ -125,7 +130,10 @@ function Profile() {
           });
 
           //handle if spotify token is in url
-          const _spotifyToken = getTokenFromUrl().access_token;
+          const full = getTokenFromUrl();
+          console.log(full)
+          const _spotifyToken = full.access_token;
+          console.log(_spotifyToken);
           window.location.hash = "";
           if(_spotifyToken) {
             setSpotifyToken(_spotifyToken);
@@ -207,7 +215,7 @@ function Profile() {
         <Grid container spacing={4}>
 
           <Grid item xs={3}>
-            <Card elevation={0} style={{ height: "250px", width: "100%" }}>
+            <Card elevation={0} style={{ height: "250px", width: "100%", backgroundColor: theme.palette.background.default }}>
               <CardContent>
               <div>
               <Avatar
@@ -215,7 +223,7 @@ function Profile() {
                 sx={{
                   width: 150,
                   height: 150,
-                  border: "3px solid var(--text-color)",
+                  border: `3px solid ${theme.palette.primary.main}`,
                   borderRadius: "50%", 
                   margin: "auto", 
                 }}
@@ -228,7 +236,7 @@ function Profile() {
           </Grid>
           <Grid item xs={0.5}></Grid>
           <Grid item xs={5}>
-          <Card elevation={3} style={{ backgroundColor: "var(--accent-color)", color: "var(--text-color)", border: `3px solid var(--text-color)`, borderRadius: "8px", height: "200px", width: "100%" }}>
+          <Card elevation={3} style={{ backgroundColor: theme.palette.secondary.main, color: theme.palette.primary.main, border:`3px solid ${theme.palette.primary.main}`, borderRadius: "8px", height: "200px", width: "100%" }}>
             <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
               <Typography variant="h3" style={{ margin: "3%" }} component="div">
                 {firstName} {lastName}
@@ -242,7 +250,7 @@ function Profile() {
             </CardContent>
           </Card>
           <br></br>
-          <Card elevation={3} style={{ backgroundColor: "var(--accent-color)", color: "var(--text-color)", border: `3px solid var(--text-color)`, borderRadius: "8px", height: "200px", width: "100%" }}>
+          <Card elevation={3} style={{ backgroundColor: theme.palette.secondary.main, color: theme.palette.primary.main, border:`3px solid ${theme.palette.primary.main}`, borderRadius: "8px", height: "200px", width: "100%" }}>
             <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
               <Typography variant="h3" style={{ margin: "3%" }} component="div">
                 Age: {age}
@@ -258,7 +266,7 @@ function Profile() {
           </Grid>
           <Grid item xs={0.5}></Grid>
           <Grid item xs={3}>
-            <Card elevation={0} style={{ height: "200px", width: "100%" }}>
+            <Card elevation={0} style={{ height: "200px", width: "100%", backgroundColor: theme.palette.background.default }}>
               <CardContent>
               <Stack spacing={2} direction="column" alignItems="center">
                   <Button
@@ -267,8 +275,8 @@ function Profile() {
                     onClick={spotifySubmit_click}
                     style={{
                       width: 230,
-                      color: 'var(--text-color)',
-                      backgroundColor: 'var(--accent-color)',
+                      color: theme.palette.primary.main,
+                      backgroundColor: theme.palette.secondary.main,
                       textTransform: "none",
                       fontSize: 15,
                       fontWeight: "bold",
@@ -282,8 +290,8 @@ function Profile() {
                     variant="contained"
                     style={{
                       width: 230,
-                      color: 'var(--text-color)',
-                      backgroundColor: 'var(--accent-color)',
+                      color: theme.palette.primary.main,
+                      backgroundColor: theme.palette.secondary.main,
                       textTransform: "none",
                       fontSize: 15,
                       fontWeight: "bold",
@@ -297,8 +305,8 @@ function Profile() {
                     variant="contained"
                     style={{
                       width: 230,
-                      color: 'var(--text-color)',
-                      backgroundColor: 'var(--accent-color)',
+                      color: theme.palette.primary.main,
+                      backgroundColor: theme.palette.secondary.main,
                       textTransform: "none",
                       fontSize: 15,
                       fontWeight: "bold",
@@ -335,7 +343,7 @@ function Profile() {
             style={{
               width: 230,
               color: "#DE6600",
-              backgroundColor: 'var(--accent-color)',
+              backgroundColor: theme.palette.secondary.main,
               textTransform: "none",
               fontSize: 15,
               fontWeight: "bold",

@@ -25,8 +25,13 @@ import { deleteUser, getAuth } from "firebase/auth";
 import { doc, deleteDoc } from "firebase/firestore";
 import { updateEmail, updatePassword } from "firebase/auth";
 
+import { useTheme } from '@mui/material/styles';
+
+
 
 function Settings() {
+    const theme = useTheme();
+
     const [firstName] = useState("");
     const [lastName] = useState("");
     const [username] = useState("");
@@ -38,6 +43,7 @@ function Settings() {
     const [darkMode, setDarkMode] = useState(true);
     const handleDarkModeToggle = () => {
         setDarkMode(!darkMode);
+        console.log("dark mode:" + darkMode)
     };
 
     const [filteredMode, setFilteredMode] = useState(true);
@@ -159,7 +165,8 @@ function Settings() {
               style={{ 
                 height: "250px", 
                 width: "100%",
-                border: `3px solid var(--text-color)`, 
+                backgroundColor: theme.palette.background.default,
+                border: `3px solid ${theme.palette.primary.main}`, 
                 borderRadius: "8px",
                 textTransform: "none",
                 fontSize: 20,
@@ -192,7 +199,8 @@ function Settings() {
                 marginTop: "20px",
                 height: "250px", 
                 width: "100%",
-                border: `3px solid var(--text-color)`, 
+                backgroundColor: theme.palette.background.default,
+                border: `3px solid ${theme.palette.primary.main}`, 
                 borderRadius: "8px",
                 textTransform: "none",
                 fontSize: 20,
@@ -226,7 +234,8 @@ function Settings() {
               style={{ 
                 height: "526px", 
                 width: "100%",
-                border: `3px solid var(--text-color)`, 
+                backgroundColor: theme.palette.background.default,
+                border: `3px solid ${theme.palette.primary.main}`, 
                 borderRadius: "8px",
                 textTransform: "none",
                 fontSize: 20,
@@ -250,24 +259,32 @@ function Settings() {
                 {/* Email Field */}
                 <TextField
                   label="Email"
+                  InputProps={{ style: { color: theme.palette.primary.main } }} 
+                  InputLabelProps={{ style: { color: theme.palette.primary.main } }} 
                   onChange={(event) => setEmail(event.target.value)}
                 />
 
                 {/* Old Password Field */}
                 <TextField
                   label="Old Password"
+                  InputProps={{ style: { color: theme.palette.primary.main } }} 
+                  InputLabelProps={{ style: { color: theme.palette.primary.main } }} 
                   onChange={(event) => setOldPassword(event.target.value)}
                 />
 
                 {/* New Password Field */}
                 <TextField
                   label="New Password"
+                  InputProps={{ style: { color: theme.palette.primary.main } }} 
+                  InputLabelProps={{ style: { color: theme.palette.primary.main } }} 
                   onChange={(event) => setNewPassword(event.target.value)}
                 />
 
                 {/* Confirm New Password Field */}
                 <TextField
                   label="Confirm New Password"
+                  InputProps={{ style: { color: theme.palette.primary.main } }} 
+                  InputLabelProps={{ style: { color: theme.palette.primary.main } }} 
                 />
                 <br></br>
 
@@ -276,8 +293,8 @@ function Settings() {
                   onClick={changePassword}
                   style={{
                     width: 200,
-                    color: 'var(--text-color)',
-                    backgroundColor: 'var(--accent-color)',
+                    color: 'theme.palette.secondary.main',
+                    backgroundColor: theme.palette.secondary.main,
                     textTransform: "none",
                     fontSize: 15,
                     fontWeight: "bold",
@@ -300,7 +317,7 @@ function Settings() {
             style={{
             width: 200,
             color: "#DE6600",
-            backgroundColor: 'var(--accent-color)',
+            backgroundColor: theme.palette.secondary.main,
             textTransform: "none",
             fontSize: 15,
             fontWeight: "bold",
@@ -328,8 +345,8 @@ function Settings() {
         <DialogActions>
           <Button variant="contained"
             style={{
-              color: 'var(--text-color)',
-              backgroundColor: 'var(--accent-color)',
+              color: 'theme.palette.secondary.main',
+              backgroundColor: theme.palette.secondary.main,
               textTransform: "none",
               fontSize: 15,
               fontWeight: "bold"
@@ -340,7 +357,7 @@ function Settings() {
           <Button variant="contained"
             style={{
               color: "#DE6600",
-              backgroundColor: 'var(--accent-color)',
+              backgroundColor: theme.palette.secondary.main,
               textTransform: "none",
               fontSize: 15,
               fontWeight: "bold"
