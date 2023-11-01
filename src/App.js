@@ -48,6 +48,8 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from "react-router-dom";
 import { auth, storage, db } from './utils/firebase';
 
+import Box from '@mui/material/Box';
+
 export const UserContext = createContext(null);
 
 function App() {
@@ -84,32 +86,39 @@ function App() {
   if (true) {
     console.log("user is :" + user);
       return (
-                <div className="App">
-                  <UserContext.Provider value={{ user: user, setUser: setUser }}>
-                    {conditionalHeader}
+        <Box
+          sx={{
+            backgroundColor: (theme) => theme.palette.background.default,
+            minHeight: '100vh',
+          }}
+        >
+            <div className="App">
+              <UserContext.Provider value={{ user: user, setUser: setUser }}>
+                {conditionalHeader}
 
-                    <AuthDetails></AuthDetails>
-                    <Routes>
-                      <Route path="/" element={<SignIn />} />
-                      <Route path="/signup" element={<SignUp />} />
-                      <Route path="/profile" element={<Profile />} />
-                      <Route path="/homepage" element={<Homepage />} />
-                      <Route path="/leaderboard" element={<Leaderboard />} />
-                      <Route path="/settings" element={<Settings />} />
-                      <Route path="/editprofile" element={<EditProfile />} />
-                      <Route path="/dailychallengelobby" element={<DailyChallengeLobby />} />
-                      <Route path="/SongRoulettelobbybrowser" element={<SongRouletteLobbyBrowser />} />
-                      <Route path="/songroulettelobby" element={<SongRouletteLobby />} />
-                      <Route path="/songroulettegame" element={<SongRouletteGame />} />
-                      <Route path="/pictionarylobby" element={<PictionaryLobby />} />
-                      <Route path="/songsnippetlobby" element={<SongSnippetLobby />} />
-                      <Route path="/triviachallengelobby" element={<TriviaChallengeLobby />} />
-                      <Route path="/lyricchallengelobby" element={<LyricChallengeLobby />} />
-                      <Route path="/forgot_password" element={<ForgotPassword />} />
-                    </Routes>
-                  </UserContext.Provider>       
-                </div>
-              );
+                <AuthDetails></AuthDetails>
+                <Routes>
+                  <Route path="/" element={<SignIn />} />
+                  <Route path="/signup" element={<SignUp />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/homepage" element={<Homepage />} />
+                  <Route path="/leaderboard" element={<Leaderboard />} />
+                  <Route path="/settings" element={<Settings />} />
+                  <Route path="/editprofile" element={<EditProfile />} />
+                  <Route path="/dailychallengelobby" element={<DailyChallengeLobby />} />
+                  <Route path="/SongRoulettelobbybrowser" element={<SongRouletteLobbyBrowser />} />
+                  <Route path="/songroulettelobby" element={<SongRouletteLobby />} />
+                  <Route path="/songroulettegame" element={<SongRouletteGame />} />
+                  <Route path="/pictionarylobby" element={<PictionaryLobby />} />
+                  <Route path="/songsnippetlobby" element={<SongSnippetLobby />} />
+                  <Route path="/triviachallengelobby" element={<TriviaChallengeLobby />} />
+                  <Route path="/lyricchallengelobby" element={<LyricChallengeLobby />} />
+                  <Route path="/forgot_password" element={<ForgotPassword />} />
+                </Routes>
+              </UserContext.Provider>       
+            </div>
+          </Box>
+        );
   }
   
   else {

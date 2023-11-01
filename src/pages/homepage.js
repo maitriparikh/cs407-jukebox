@@ -19,8 +19,12 @@ import { UserContext } from "../App";
 import { auth, db } from "../utils/firebase";
 import { collection, onSnapshot, getDoc, doc, updateDoc, setDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
+import { useTheme } from '@mui/material/styles';
+
 
 function Homepage() {
+
+    const theme = useTheme();
 
     const navigate = useNavigate();
     const [alertOpen, setAlertOpen] = useState(false); // show dialog for if spotify is not connected
@@ -197,7 +201,7 @@ function Homepage() {
         <DialogActions>
           <Button variant="contained"
             style={{
-              color: 'var(--text-color)',
+              color: 'theme.palette.secondary.main',
               backgroundColor: 'var(--accent-color)',
               textTransform: "none",
               fontSize: 15,
@@ -208,7 +212,7 @@ function Homepage() {
           </Button>
           <Button variant="contained"
             style={{
-              color: 'var(--text-color)',
+              color: 'theme.palette.secondary.main',
               backgroundColor: 'var(--accent-color)',
               textTransform: "none",
               fontSize: 15,
@@ -224,10 +228,10 @@ function Homepage() {
           sx={{
             width: "15%",
             marginBottom: "20px",
-            color: "var(--text-color)",
-            border: `2px solid var(--text-color)`,
+            color: theme.palette.primary.main,
+            border: `2px solid ${theme.palette.primary.main}`,
             transition: "border-color 0.3s, background-color 0.3s",
-            backgroundColor: "var(--accent-color)",
+            backgroundColor: theme.palette.secondary.main,
             textTransform: "none",
             fontSize: 20,
             fontWeight: "bold",
@@ -237,13 +241,13 @@ function Homepage() {
             },
             "@keyframes flash": {
               "0%": {
-                backgroundColor: "var(--accent-color)",
+                backgroundColor: theme.palette.secondary.main,
               },
               "50%": {
                 backgroundColor: "var(--line-color)",
               },
               "100%": {
-                backgroundColor: "var(--accent-color)",
+                backgroundColor: theme.palette.secondary.main,
               },
             },
             
@@ -261,9 +265,9 @@ function Homepage() {
           <Grid item xs={4}>
             <Card elevation={3} sx={{
               ...gameCardHover,
-              backgroundColor: "var(--accent-color)",
-              color: "var(--text-color)",
-              border: `2px solid var(--text-color)`,
+              backgroundColor: theme.palette.secondary.main,
+              color: theme.palette.primary.main,
+              border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
               height: "250px",
               width: "100%",
@@ -282,9 +286,9 @@ function Homepage() {
           <Grid item xs={4}>
             <Card elevation={3} sx={{
               ...gameCardHover,
-              backgroundColor: "var(--accent-color)",
-              color: "var(--text-color)",
-              border: `2px solid var(--text-color)`,
+              backgroundColor: theme.palette.secondary.main,
+              color: theme.palette.primary.main,
+              border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
               height: "250px",
               width: "100%",
@@ -302,9 +306,9 @@ function Homepage() {
           <Grid item xs={4}>
             <Card elevation={3} sx={{
               ...gameCardHover,
-              backgroundColor: "var(--accent-color)",
-              color: "var(--text-color)",
-              border: `2px solid var(--text-color)`,
+              backgroundColor: theme.palette.secondary.main,
+              color: theme.palette.primary.main,
+              border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
               height: "250px",
               width: "100%",
@@ -324,9 +328,9 @@ function Homepage() {
           <Grid item xs={4}>
             <Card elevation={3} sx={{
               ...gameCardHover,
-              backgroundColor: "var(--accent-color)",
-              color: "var(--text-color)",
-              border: `2px solid var(--text-color)`,
+              backgroundColor: theme.palette.secondary.main,
+              color: theme.palette.primary.main,
+              border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
               height: "250px",
               width: "100%",
@@ -344,9 +348,9 @@ function Homepage() {
           <Grid item xs={4}>
             <Card elevation={3} sx={{
               ...gameCardHover,
-              backgroundColor: "var(--accent-color)",
-              color: "var(--text-color)",
-              border: `2px solid var(--text-color)`,
+              backgroundColor: theme.palette.secondary.main,
+              color: theme.palette.primary.main,
+              border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
               height: "250px",
               width: "100%",
@@ -364,9 +368,9 @@ function Homepage() {
           <Grid item xs={4}>
             <Card elevation={3} sx={{
               ...gameCardHover,
-              backgroundColor: "var(--accent-color)",
-              color: "var(--text-color)",
-              border: `2px solid var(--text-color)`,
+              backgroundColor: theme.palette.secondary.main,
+              color: theme.palette.primary.main,
+              border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
               height: "250px",
               width: "100%",
