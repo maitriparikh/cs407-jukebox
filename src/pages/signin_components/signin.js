@@ -121,7 +121,7 @@ function SignIn() {
 
             <Stack marginX="22%" width="80%">
             <div style={{ marginBottom: '20px' }}>
-             <Typography variant="h2" style={{ textAlign: "left" }}>
+             <Typography variant="h2" style={{ textAlign: "left", color: 'var(--text-color)'}}>
                 Sign In
               </Typography>
               </div>
@@ -138,12 +138,16 @@ function SignIn() {
                 {/* Email field */}
                 <TextField
                   label="Email"
+                  InputProps={{ style: { color: 'var(--text-color)' } }} 
+                  InputLabelProps={{ style: { color: 'var(--text-color)' } }} 
                   onChange={(event) => setEmail(event.target.value)} // save email from user input
                 />
 
                 {/* Password field */}
                 <TextField
                   label="Password"
+                  InputProps={{ style: { color: 'var(--text-color)' } }} 
+                  InputLabelProps={{ style: { color: 'var(--text-color)' } }} 
                   type="password"
                   style= {{ marginBottom: "-25px" }}
                   onChange={(event) => setPassword(event.target.value)} // save password from user input
@@ -162,7 +166,7 @@ function SignIn() {
                       variant="contained"
                       style={{
                         color: "#3366ff",
-                        fontSize: 16,
+                        fontSize: 15,
                         fontWeight: "bold"
                       }}
                       onClick={forgot_password_click}
@@ -193,13 +197,13 @@ function SignIn() {
                 <br></br>
 
                 {/* Sign Up link */}
-                <Typography variant="h4" >
+                <Typography variant="h4" style = {{ color: 'var(--text-color)' }} >
                   Already have an account? {" "}
                   <Link
                     variant="contained"
                     style={{
                       color: "#3366ff",
-                      fontSize: 16,
+                      fontSize: 15,
                       fontWeight: "bold"
                       }}
                     onClick={signup_click}

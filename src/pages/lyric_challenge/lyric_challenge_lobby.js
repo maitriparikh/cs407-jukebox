@@ -70,7 +70,7 @@ function LyricChallengeLobby() {
                 variant="contained"
                 style={{
                     width: 230,
-                    color: 'var(--text-color)',
+                    color: 'theme.palette.secondary.main',
                     backgroundColor: 'var(--accent-color)',
                     textTransform: "none",
                     fontSize: 15,

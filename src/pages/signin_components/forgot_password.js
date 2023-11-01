@@ -51,7 +51,7 @@ function ForgotPassword() {
         <Card 
             style={{ 
             height: "300px", 
-            border: `3px solid var(--text-color)`, 
+            border: `3px solid theme.palette.secondary.main`, 
             borderRadius: "8px",
             textTransform: "none",
             fontWeight: "bold",
@@ -90,7 +90,7 @@ function ForgotPassword() {
             variant="contained"
             style={{
             width: 200,
-            color: 'var(--text-color)',
+            color: 'theme.palette.secondary.main',
             backgroundColor: 'var(--accent-color)',
             textTransform: "none",
             fontSize: 15,

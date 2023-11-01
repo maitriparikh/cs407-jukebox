@@ -49,6 +49,8 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from "react-router-dom";
 import { auth, storage, db } from './utils/firebase';
 
+import Box from '@mui/material/Box';
+
 export const UserContext = createContext(null);
 
 function App() {
@@ -85,9 +87,15 @@ function App() {
   if (true) {
     console.log("user is :" + user);
       return (
-                <div className="App">
-                  <UserContext.Provider value={{ user: user, setUser: setUser }}>
-                    {conditionalHeader}
+        <Box
+          sx={{
+            backgroundColor: (theme) => theme.palette.background.default,
+            minHeight: '100vh',
+          }}
+        >
+            <div className="App">
+              <UserContext.Provider value={{ user: user, setUser: setUser }}>
+                {conditionalHeader}
 
                     <AuthDetails></AuthDetails>
                     <Routes>
@@ -111,7 +119,8 @@ function App() {
                     </Routes>
                   </UserContext.Provider>       
                 </div>
-              );
+              </Box>
+            );
   }
   
   else {

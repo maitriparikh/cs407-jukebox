@@ -188,7 +188,7 @@ function SignUp() {
 
             <Stack marginX="22%" width="80%">
             <div style={{ marginBottom: '20px' }}>
-            <Typography variant="h2" style={{ textAlign: "left" }}>
+            <Typography variant="h2" style={{ textAlign: "left", color: 'var(--text-color)' }}>
                 Create Your Account
               </Typography>   
             </div>        
@@ -202,37 +202,47 @@ function SignUp() {
                 width="70%"
               >
 
-              <Typography variant="h4" style={{ textAlign: "left" }}>
+              <Typography variant="h4" style={{ textAlign: "left", color: 'var(--text-color)' }}>
                 Account Information
               </Typography>
               
                 {/* First Name field */}
                 <TextField
                   label="First Name"
+                  InputProps={{ style: { color: 'var(--text-color)' } }} 
+                  InputLabelProps={{ style: { color: 'var(--text-color)' } }} 
                   onChange={(event) => setFirstName(event.target.value)} // save password from user input
                 />
 
                 {/* Last Name field */}
                 <TextField
                   label="Last Name"
+                  InputProps={{ style: { color: 'var(--text-color)' } }} 
+                  InputLabelProps={{ style: { color: 'var(--text-color)' } }} 
                   onChange={(event) => setLastName(event.target.value)} // save password from user input
                 />
 
                 {/* Username field */}
                 <TextField
                   label="Username"
+                  InputProps={{ style: { color: 'var(--text-color)' } }} 
+                  InputLabelProps={{ style: { color: 'var(--text-color)' } }} 
                   onChange={(event) => setUsername(event.target.value)} // save username from user input
                 />
 
                 {/* Email field */}
                 <TextField
                   label="Email"
+                  InputProps={{ style: { color: 'var(--text-color)' } }} 
+                  InputLabelProps={{ style: { color: 'var(--text-color)' } }} 
                   onChange={(event) => setEmail(event.target.value)} // save email from user input
                 />
 
                 {/* Password field */}
                 <TextField
                   label="Password"
+                  InputProps={{ style: { color: 'var(--text-color)' } }} 
+                  InputLabelProps={{ style: { color: 'var(--text-color)' } }} 
                   type="password"
                   validation={{
                     required: {
@@ -253,19 +263,21 @@ function SignUp() {
                     </Typography>
                   )}
 
-              <Typography variant="h4" style={{ textAlign: "left" }}>
+              <Typography variant="h4" style={{ textAlign: "left", color: 'var(--text-color)' }}>
                 Security Question
               </Typography>
 
                 {/* Security Question */}
                 <FormControl>
-                  <InputLabel id="demo-simple-select-label" label="label">
+                  <InputLabel id="demo-simple-select-label" label="label" InputLabelProps={{ style: { color: 'var(--text-color)' } }}>
                     What is a city you would like to visit?
                   </InputLabel>
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     label="What is a city you would like to visit?"
+                    InputProps={{ style: { color: 'var(--text-color)' } }} 
+                    InputLabelProps={{ style: { color: 'var(--text-color)' } }} 
                     defaultValue={10} // Set the default option by its value
                     onClick={(event) => setSecurityQuestion(event.target.innerText)}
                   >
@@ -283,24 +295,30 @@ function SignUp() {
                   </Select>
                 </FormControl>
 
-              <Typography variant="h4" style={{ textAlign: "left" }}>
+              <Typography variant="h4" style={{ textAlign: "left", color: 'var(--text-color)'}}>
                 Demographics
               </Typography>
+              <Box display="flex" alignItems="center" justifyContent="space-between">
                 {/* Age field */}
                 <TextField
                   label="Age"
-                  onChange={(event) => setAge(event.target.value)} // save password from user input
+                  InputProps={{ style: { color: 'var(--text-color)' } }} 
+                  InputLabelProps={{ style: { color: 'var(--text-color)' } }} 
+                  onChange={(event) => setAge(event.target.value)} 
+                  style={{ flex: 1, marginRight: '10px' }}
                 />
 
                 {/* Gender field */}
-                <FormControl>
-                  <InputLabel id="demo-simple-select-label" label="label">
+                <FormControl style={{ flex: 1, marginRight: '10px' }}>
+                  <InputLabel id="demo-simple-select-label" label="label" InputLabelProps={{ style: { color: 'var(--text-color)' } }}>
                     Gender
                   </InputLabel>
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     label="Gender"
+                    InputProps={{ style: { color: 'var(--text-color)' } }} 
+                    InputLabelProps={{ style: { color: 'var(--text-color)' } }} 
                     onClick={(event) => setGender(event.target.innerText)}
                   >
                     <MenuItem value={10}>Male</MenuItem>
@@ -311,14 +329,16 @@ function SignUp() {
                 
 
                 {/* Ethnicity */}
-                <FormControl>
-                  <InputLabel id="demo-simple-select-label" label="label">
+                <FormControl style={{ flex: 1 }}>
+                  <InputLabel id="demo-simple-select-label" label="label" InputLabelProps={{ style: { color: 'var(--text-color)' } }}>
                     Ethnicity
                   </InputLabel>
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     label="Ethnicity"
+                    InputProps={{ style: { color: 'var(--text-color)' } }} 
+                    InputLabelProps={{ style: { color: 'var(--text-color)' } }} 
                     onClick={(event) => setEthnicity(event.target.innerText)}
                   >
                     <MenuItem value={10}>White</MenuItem>
@@ -331,6 +351,7 @@ function SignUp() {
                     <MenuItem value={80}>Other</MenuItem>
                   </Select>
                 </FormControl>
+                </Box>
 
                 <br></br>
 
@@ -355,13 +376,13 @@ function SignUp() {
                 <br></br>
 
                 {/* Sign In link */}
-                <Typography variant="h4" >
+                <Typography variant="h4" style = {{ color: 'var(--text-color)' }} >
                   Already have an account? {" "}
                   <Link
                     variant="contained"
                     style={{
                       color: "#3366ff",
-                      fontSize: 16,
+                      fontSize: 15,
                       fontWeight: "bold"
                       }}
                     onClick={signin_click}
