@@ -68,7 +68,7 @@ io.on('connection', (socket) => {
         ownerID: id, // The owner is the user who created the lobby
         players: [id], // Include the owner in the players list
         gameType: selectedGameType,
-        gameDate:[],
+        gameData:[],
         playerNames: []
       };
       lobbies.set(lobbyCode, lobbyDetails);
@@ -108,24 +108,54 @@ io.on('connection', (socket) => {
     });
 
 
-  socket.on('disconnect', () => {
-    //console.log('A user disconnected');
 
-    const rooms = socket.rooms;
-    rooms.forEach((room) => {
-      if (lobbies.has(room)) {
-        const lobbyDetails = lobbies.get(room);
-        lobbyDetails.players -= 1;
-
-        // Remove the lobby if there are no players
-        if (lobbyDetails.players <= 0) {
-          lobbies.delete(room);
+    socket.on('delete-lobby', (ownerID) => {
+      for (const [lobbyOwnerID, lobby] of lobbies) {
+        if (lobbyOwnerID === ownerID) {
+          lobbies.delete(lobbyOwnerID);
+          io.emit('update-lobbies', Array.from(lobbies.values()));
+          break;
         }
-
-        // Update the list of lobbies for all clients
-        updateLobbies();
       }
+      console.log(lobbies);
     });
+
+    socket.on('leave-lobby', ({ user, owner }) => {
+      const lobby = lobbies.get(owner);
+
+      if (lobby) {
+        const index = lobby.players.indexOf(user);
+          if (index !== -1) {
+            lobby.players.splice(index, 1);
+            lobbies.set(owner, lobby);
+            io.emit('update-lobbies', Array.from(lobbies.values()));
+        }
+      }
+
+      console.log(lobbies);
+    });
+
+    
+
+
+    socket.on('disconnect', () => {
+      //console.log('A user disconnected');
+
+      const rooms = socket.rooms;
+      rooms.forEach((room) => {
+        if (lobbies.has(room)) {
+          const lobbyDetails = lobbies.get(room);
+          lobbyDetails.players -= 1;
+
+          // Remove the lobby if there are no players
+          if (lobbyDetails.players <= 0) {
+            lobbies.delete(room);
+          }
+
+          // Update the list of lobbies for all clients
+          updateLobbies();
+        }
+      });
 
     // Update the list of lobbies when a user disconnects
     updateLobbies();
