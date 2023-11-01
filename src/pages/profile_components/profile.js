@@ -57,7 +57,7 @@ function Profile() {
 
     const spotifySubmit_click = () => {
       //console.log(getTokenFromUrl());
-      displayTop();
+      //displayTop();
     };
 
     const settings_click = () => {
@@ -125,7 +125,10 @@ function Profile() {
           });
 
           //handle if spotify token is in url
-          const _spotifyToken = getTokenFromUrl().access_token;
+          const full = getTokenFromUrl();
+          console.log(full)
+          const _spotifyToken = full.access_token;
+          console.log(_spotifyToken);
           window.location.hash = "";
           if(_spotifyToken) {
             setSpotifyToken(_spotifyToken);

@@ -39,6 +39,7 @@ import SongSnippetLobby from "./pages/song_snippet/song_snippet_lobby";
 
 // Trivia Challenge Game Pages
 import TriviaChallengeLobby from "./pages/trivia_challenge/trivia_challenge_lobby";
+import TriviaChallengeGame from './pages/trivia_challenge/trivia_challenge_game';
 
 // Lyric Challenge Game Pages
 import LyricChallengeLobby from "./pages/lyric_challenge/lyric_challenge_lobby";
@@ -104,6 +105,7 @@ function App() {
                       <Route path="/pictionarylobby" element={<PictionaryLobby />} />
                       <Route path="/songsnippetlobby" element={<SongSnippetLobby />} />
                       <Route path="/triviachallengelobby" element={<TriviaChallengeLobby />} />
+                      <Route path="/triviachallengegame" element={<TriviaChallengeGame />} />
                       <Route path="/lyricchallengelobby" element={<LyricChallengeLobby />} />
                       <Route path="/forgot_password" element={<ForgotPassword />} />
                     </Routes>
