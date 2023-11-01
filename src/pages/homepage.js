@@ -75,18 +75,21 @@ function Homepage() {
       const topTracks = await getTopTracks();
       console.log("The top tracks are: ", topTracks);
       setTopFiveArr(topTracks);
-      console.log(topFiveArr)
-      const docRef = doc(db, "users", user);
-      await updateDoc(docRef, {
-        topFive: topTracks,
-        //songList: topFive
-      }, {
-        merge: true
-      }).then(() => {
-        console.log("Document updated")
-      }).catch((error) => {
-        console.log("There was an error updating the doc with spotify token");
-      });
+      console.log(topFiveArr);
+      if (topTracks != undefined) {
+        const docRef = doc(db, "users", user);
+        await updateDoc(docRef, {
+          topFive: topTracks,
+          //songList: topFive
+        }, {
+          merge: true
+        }).then(() => {
+          console.log("Document updated")
+        }).catch((error) => {
+          console.log("There was an error updating the doc with spotify token");
+        });
+      }
+      
       
      /*
       console.log(
@@ -107,18 +110,21 @@ function Homepage() {
 
           await onSnapshot(doc(db, "users", user.uid), async (doc) => {
             setSpotifyToken(doc.data().spotifyToken);
+            if (spotifyToken != "") {
+              console.log("spotify token got in choose game ->", spotifyToken);
+              setSpotifyConnected(true);
+              console.log("spotify token set to true", spotifyConnected);
+  
+              //try to get top 5 songs
+              
+              const addTopFive = await displayTop();
+            } else {
+              setSpotifyConnected(false);
+            }
             console.log("spotify token got ->", spotifyToken);
           });
 
-          if (spotifyToken != "") {
-            console.log("spotify token got in choose game ->", spotifyToken);
-            setSpotifyConnected(true);
-            console.log("spotify token set to true", spotifyConnected);
-
-            //try to get top 5 songs
-            
-            displayTop();
-          }
+          
         } else {
           console.log("auth state where no user");
           navigate("/");
