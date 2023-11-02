@@ -15,6 +15,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import TextField from "@mui/material/TextField";
 
 import { useTheme } from '@mui/material/styles';
 
@@ -24,6 +25,22 @@ function DailyChallengeGame() {
 
     const theme = useTheme();
 
+    const location = useLocation();
+
+    const gameMode = location.state.gameMode;
+    console.log("GAME MODE = " + gameMode)
+
+    const [showHint1, setShowHint1] = useState(false);
+    const [showHint2, setShowHint2] = useState(false);
+
+    const revealHint1 = () => {
+        setShowHint1(true);
+      };
+    
+      const revealHint2 = () => {
+        setShowHint2(true);
+      };
+
     /* Navigation for buttons */
     const navigate = useNavigate();
 
@@ -31,8 +48,6 @@ function DailyChallengeGame() {
       console.log("EXIT GAME CLICKED");
       navigate("/dailychallengelobby");
     };
-    
-    const location = useLocation();
 
     const [isDialogOpen, setDialogOpen] = useState(false);
 
@@ -62,6 +77,8 @@ function DailyChallengeGame() {
 
         <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
 
+        
+        {/* RESIZING WINDOW MESSAGE */}
         {isDialogOpen && (
             <Dialog
             open={isDialogOpen}
@@ -81,7 +98,7 @@ function DailyChallengeGame() {
                 </DialogContentText>
             </DialogContent>
             </Dialog>
-      )}
+        )}
 
         <Typography variant="h3" style={{ textAlign: "center"}}>
             Guess the song!
@@ -109,7 +126,8 @@ function DailyChallengeGame() {
             <br></br>
             <br></br>
 
-            {/* STAGE 1 - NO HINTS (ONLY AUDIO) */}
+            {/* STAGE 1 - NO HINTS (ONLY AUDIO) - both game modes */}
+            {(!showHint1 && !showHint2) && (
             <div style={{ position: 'relative' }}>
                 <iframe
                 id="spotify-iframe"
@@ -188,8 +206,10 @@ function DailyChallengeGame() {
                 }}
                 ></div>
             </div>
+            )}
 
-            {/* STAGE 2 - 1 HINT (+ ARTIST NAME(S)) */}
+            {/* STAGE 2 - 1 HINT (+ ARTIST NAME(S)) - only easy mode */}
+            {showHint1 && !showHint2 && (
             <div style={{ position: 'relative' }}>
                 <iframe
                 id="spotify-iframe"
@@ -255,8 +275,10 @@ function DailyChallengeGame() {
                 }}
                 ></div>
             </div>
+            )}
 
-            {/* STAGE 3 - 2 HINTs (+ ALBUM COVER) */}
+            {/* STAGE 3 - 2 HINTs (+ ALBUM COVER) - only easy mode */}
+            {showHint2 && (
             <div style={{ position: 'relative' }}>
                 <iframe
                 id="spotify-iframe"
@@ -309,6 +331,54 @@ function DailyChallengeGame() {
                 }}
                 ></div>
             </div>
+            )}
+
+        
+        {/* Button to reveal hint 1 */}
+          {gameMode === "Easy" && !showHint1 && (
+            <Button variant="contained"
+              style={{
+                width: 230,
+                color: theme.palette.primary.main,
+                backgroundColor: theme.palette.secondary.main,
+                textTransform: "none",
+                fontSize: 15,
+                fontWeight: "bold",
+                marginTop: "-3%",
+                marginBottom: "3%"
+              }}
+              onClick={revealHint1}>
+              Reveal Hint 1 🧨
+            </Button>
+          )}
+
+          {/* Button to reveal hint 2 */}
+          {gameMode === "Easy" && showHint1 && !showHint2 && (
+            <Button variant="contained"
+              style={{
+                width: 230,
+                color: theme.palette.primary.main,
+                backgroundColor: theme.palette.secondary.main,
+                textTransform: "none",
+                fontSize: 15,
+                fontWeight: "bold",
+                marginTop: "-3%",
+                marginBottom: "3%"
+              }}
+              onClick={revealHint2}>
+              Reveal Hint 2 🧨
+            </Button>
+          )}  
+
+          <br></br>
+
+          {/* Text field for answer */}  
+          <TextField
+            label="Your Answer"
+            style={{ width: "50%" }}
+            InputProps={{ style: { color: theme.palette.primary.main } }} 
+            InputLabelProps={{ style: { color: theme.palette.primary.main } }} 
+        />
 
             </CardContent>
         </Card>

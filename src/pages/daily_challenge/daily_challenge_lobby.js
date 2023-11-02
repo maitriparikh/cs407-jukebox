@@ -41,7 +41,7 @@ function DailyChallengeLobby() {
         //await buildSongBank()
         navigate("/dailychallengegame", {
           state: {
-            rounds: numOfRounds,
+            gameMode: gameMode,
           },
         });
       };
@@ -85,9 +85,8 @@ function DailyChallengeLobby() {
                     variant={gameMode === "Easy" ? "contained" : "outlined"} 
                     style={{ 
                         width: 115, 
-                        color: "black",
-                        backgroundColor: gameMode === "Easy" ? "var(--line-color)" : "var(--accent-color)", 
-                        border: `1px solid ${theme.palette.primary.main}`,
+                        backgroundColor: gameMode === "Easy" ? theme.palette.secondary.main : theme.palette.background.default, 
+                        border: `2px solid ${theme.palette.primary.main}`,
                         textTransform: "none", 
                         fontSize: 15, 
                         fontWeight: "bold" 
@@ -98,10 +97,9 @@ function DailyChallengeLobby() {
                     <Button 
                     variant={gameMode === "Hard" ? "contained" : "outlined"} 
                     style={{ 
-                        width: 115, 
-                        color: "black", 
-                        backgroundColor: gameMode === "Hard" ? "var(--line-color)" : "var(--accent-color)", 
-                        border: `1px solid ${theme.palette.primary.main}`,
+                        width: 115,  
+                        backgroundColor: gameMode === "Hard" ? theme.palette.secondary.main : theme.palette.background.default, 
+                        border: `2px solid ${theme.palette.primary.main}`,
                         textTransform: "none", 
                         fontSize: 15, 
                         fontWeight: "bold" 
