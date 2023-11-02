@@ -411,11 +411,12 @@ function SongRouletteLobby() {
           {/* First Row */}
           <Grid item xs={8}>
             <Card elevation={3} sx={{
-              color: "theme.palette.secondary.main",
+              color: theme.palette.secondary.main,
               border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
               height: "450px",
               width: "100%",
+              backgroundColor: theme.palette.background.default
             }}
             >
               <CardContent>
@@ -435,11 +436,12 @@ function SongRouletteLobby() {
           </Grid>
           <Grid item xs={4}>
             <Card elevation={3} sx={{
-              color: "theme.palette.secondary.main",
+              color: theme.palette.secondary.main,
               border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
               height: "450px",
               width: "100%",
+              backgroundColor: theme.palette.background.default
             }}
             >
               <CardContent>

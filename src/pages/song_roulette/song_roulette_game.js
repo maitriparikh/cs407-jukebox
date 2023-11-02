@@ -260,9 +260,9 @@ function SongRouletteGame() {
                         border: `2px solid ${theme.palette.primary.main}`,
                         padding: 1,
                         margin: { xs: 4, sm: 4 },
-                        backgroundColor: person.flag ? 'var(--accent-color)' : 'white',
+                        backgroundColor: person.flag ? theme.palette.secondary.main : theme.palette.background.default,
                         "&:hover": {
-                            backgroundColor: 'var(--accent-color)',
+                            backgroundColor: theme.palette.secondary.main,
                         },
                         //borderWidth: "2px",
                         }}
@@ -278,8 +278,8 @@ function SongRouletteGame() {
           variant="contained"
           style={{
             width: 230,
-            color: 'theme.palette.secondary.main',
-            backgroundColor: 'var(--accent-color)',
+            color: theme.palette.primary.main,
+            backgroundColor: theme.palette.secondary.main,
             textTransform: "none",
             fontSize: 15,
             fontWeight: "bold",
@@ -310,8 +310,8 @@ function SongRouletteGame() {
         <DialogActions>
           <Button variant="contained"
             style={{
-              color: 'theme.palette.secondary.main',
-              backgroundColor: 'var(--accent-color)',
+                color: theme.palette.primary.main,
+                backgroundColor: theme.palette.secondary.main,
               textTransform: "none",
               fontSize: 15,
               fontWeight: "bold"
