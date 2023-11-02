@@ -24,11 +24,14 @@ import {
   ListItemText,
   ListItemIcon,
 } from "@mui/material";
-import { signOut } from "firebase/auth"; 
-import { db, auth } from "../utils/firebase";
+import { onAuthStateChanged, signOut } from "firebase/auth"; 
+import { db, auth, storage } from "../utils/firebase";
 import { UserContext } from "../App";
 
 import { useTheme } from '@mui/material/styles';
+
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { collection, onSnapshot, getDoc, doc, updateDoc, setDoc } from "firebase/firestore";
 
 
 
@@ -40,6 +43,7 @@ function Header() {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [anchor, setAnchor] = React.useState(null);
+  const [imageURL, setImageURL] = useState("");
   const open = Boolean(anchor);
 
   const userSignOut = () => {
@@ -55,6 +59,26 @@ function Header() {
     console.log("SIGNED OUT");
     navigate("/");
   }
+
+  
+  useEffect(() => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        setUser(user.uid);
+        //console.log("user id in header is " + user.uid);
+        await onSnapshot(doc(db, "users", user.uid), async (doc) => {
+          console.log("snapshot image is " + doc.data().image);
+          const pathRef = ref(storage, `images/${doc.data().image}`);
+          console.log("pathRef is " + pathRef);
+          await getDownloadURL(pathRef).then(async (url) => {
+            setImageURL(url);
+          });
+          console.log(doc.data());
+        })
+
+      }
+    })
+  }, []);
 
   return (
     <Box>
@@ -208,7 +232,7 @@ function Header() {
 
             {/* Profile Picture */}
             <Avatar
-                src={AccountCircleIcon}
+                src={imageURL}
                 sx={{ marginLeft: "auto" }}
                 onClick={() => {
                 navigate("/profile");

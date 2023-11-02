@@ -34,10 +34,12 @@ function TriviaChallengeLobby() {
 
     const startgame_click = async () => {
         console.log("START GAME CLICKED");
+        console.log(topFiveArr);
         //await buildSongBank()
         navigate("/triviachallengegame", {
           state: {
-            rounds: numOfRounds
+            rounds: numOfRounds,
+            songbank: topFiveArr
           },
         });
     };
@@ -63,7 +65,7 @@ function TriviaChallengeLobby() {
     }
 
     const getTopTracks = async () => {
-      return (await fetchWebApi('v1/me/top/tracks?time_range=short_term&limit=5', 'GET')).items;
+      return (await fetchWebApi('v1/me/top/tracks?time_range=short_term&limit=10', 'GET')).items;
     }
 
     const displayTop = async() => {
