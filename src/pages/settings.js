@@ -329,13 +329,13 @@ function Settings() {
             <DeleteForeverIcon/> &nbsp; Delete Account
         </Button>
 
-        <Dialog open={alertOpen} onClose={deleteAccountNo}>
+        <Dialog open={alertOpen} onClose={deleteAccountNo} PaperProps={{ style: { backgroundColor: theme.palette.background.default } }}>
         <DialogTitle>
         <Typography variant="h3" style={{ textAlign: "left" }}>
           Are you sure you want to delete your account?
         </Typography>
           </DialogTitle>
-        <DialogContent>
+        <DialogContent >
           <DialogContentText>
           <Typography variant="h4" style={{ textAlign: "left" }}>
             This action is irreversible and will permanently delete your account and all associated data.
@@ -345,7 +345,7 @@ function Settings() {
         <DialogActions>
           <Button variant="contained"
             style={{
-              color: 'theme.palette.secondary.main',
+              color: theme.palette.primary.main,
               backgroundColor: theme.palette.secondary.main,
               textTransform: "none",
               fontSize: 15,

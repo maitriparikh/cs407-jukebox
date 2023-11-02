@@ -80,6 +80,11 @@ function Profile() {
       navigate("/editprofile");
     }
 
+    const musicPreferencesQuiz_click = () => {
+      console.log("GO TO MUSIC PREFERENCES QUIZ");
+      navigate("/musicpreferencesquiz");
+    }
+
     const fetchWebApi = async (endpoint, method, body) => {
       const res = await fetch(`https://api.spotify.com/${endpoint}`, {
         headers: {
@@ -297,6 +302,7 @@ function Profile() {
                       fontWeight: "bold",
                       margin: "3%"
                     }}
+                    onClick={musicPreferencesQuiz_click}
                   >
                     Update Music Preferences
                   </Button>

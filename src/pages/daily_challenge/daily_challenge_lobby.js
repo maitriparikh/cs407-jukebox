@@ -17,7 +17,14 @@ import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import ButtonGroup from '@mui/material/ButtonGroup';
 
+import { useTheme } from '@mui/material/styles';
+
 function DailyChallengeLobby() {
+
+    const theme = useTheme();
+
+    /* Navigation for buttons */
+    const navigate = useNavigate();
 
     const [numOfRounds, setNumOfRounds] = useState("");
 
@@ -28,6 +35,16 @@ function DailyChallengeLobby() {
     const modeSelection = (mode) => {
         setGameMode(mode);
     };
+
+    const startgame_click = async () => {
+        console.log("START GAME CLICKED");
+        //await buildSongBank()
+        navigate("/dailychallengegame", {
+          state: {
+            gameMode: gameMode,
+          },
+        });
+      };
 
     return (
       <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
@@ -41,12 +58,13 @@ function DailyChallengeLobby() {
         <Card 
             style={{ 
             height: "270px", 
-            border: `3px solid theme.palette.secondary.main`, 
+            border: `3px solid ${theme.palette.primary.main}`, 
             borderRadius: "8px",
             textTransform: "none",
             fontWeight: "bold",
             width: "85%", 
             margin: "0 auto", 
+            backgroundColor: theme.palette.background.default
             }}
         >
 
@@ -67,9 +85,8 @@ function DailyChallengeLobby() {
                     variant={gameMode === "Easy" ? "contained" : "outlined"} 
                     style={{ 
                         width: 115, 
-                        color: 'theme.palette.secondary.main', 
-                        backgroundColor: gameMode === "Easy" ? "var(--line-color)" : "var(--accent-color)", 
-                        border: '1px solid theme.palette.secondary.main',
+                        backgroundColor: gameMode === "Easy" ? theme.palette.secondary.main : theme.palette.background.default, 
+                        border: `2px solid ${theme.palette.primary.main}`,
                         textTransform: "none", 
                         fontSize: 15, 
                         fontWeight: "bold" 
@@ -80,10 +97,9 @@ function DailyChallengeLobby() {
                     <Button 
                     variant={gameMode === "Hard" ? "contained" : "outlined"} 
                     style={{ 
-                        width: 115, 
-                        color: 'theme.palette.secondary.main', 
-                        backgroundColor: gameMode === "Hard" ? "var(--line-color)" : "var(--accent-color)", 
-                        border: '1px solid theme.palette.secondary.main',
+                        width: 115,  
+                        backgroundColor: gameMode === "Hard" ? theme.palette.secondary.main : theme.palette.background.default, 
+                        border: `2px solid ${theme.palette.primary.main}`,
                         textTransform: "none", 
                         fontSize: 15, 
                         fontWeight: "bold" 
@@ -101,13 +117,14 @@ function DailyChallengeLobby() {
                 variant="contained"
                 style={{
                     width: 230,
-                    color: 'theme.palette.secondary.main',
-                    backgroundColor: 'var(--accent-color)',
+                    color: theme.palette.primary.main,
+                    backgroundColor: theme.palette.secondary.main,
                     textTransform: "none",
                     fontSize: 15,
                     fontWeight: "bold",
                     margin: "3%"
                 }}
+                onClick={startgame_click}
                 >
                 Start Game!
                 </Button>

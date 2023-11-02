@@ -40,11 +40,12 @@ function PictionaryLobby() {
           {/* First Row */}
           <Grid item xs={8}>
             <Card elevation={3} sx={{
-              color: "theme.palette.secondary.main",
+              color: theme.palette.secondary.main,
               border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
               height: "450px",
               width: "100%",
+              backgroundColor: theme.palette.background.default
             }}
             >
               <CardContent>
@@ -56,11 +57,12 @@ function PictionaryLobby() {
           </Grid>
           <Grid item xs={4}>
             <Card elevation={3} sx={{
-              color: "theme.palette.secondary.main",
+              color: theme.palette.secondary.main,
               border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
               height: "450px",
               width: "100%",
+              backgroundColor: theme.palette.background.default
             }}
             >
               <CardContent>
@@ -81,6 +83,8 @@ function PictionaryLobby() {
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     label="Rounds"
+                    InputProps={{ style: { color: theme.palette.primary.main } }} 
+                    InputLabelProps={{ style: { color: theme.palette.primary.main } }} 
                     defaultValue={3} 
                     style={{ minWidth: '150px' }}
                     onClick={(event) => setNumOfRounds(event.target.innerText)}
@@ -109,8 +113,8 @@ function PictionaryLobby() {
           variant="contained"
           style={{
             width: 230,
-            color: 'theme.palette.secondary.main',
-            backgroundColor: 'var(--accent-color)',
+            color: theme.palette.primary.main,
+            backgroundColor: theme.palette.secondary.main,
             textTransform: "none",
             fontSize: 15,
             fontWeight: "bold",
