@@ -16,9 +16,13 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
+import { useTheme } from '@mui/material/styles';
+
 
 
 function SongRouletteGame() {
+
+    const theme = useTheme();
 
     /* Navigation for buttons */
     const navigate = useNavigate();
@@ -219,11 +223,11 @@ function SongRouletteGame() {
         </Typography>
         <br></br>
             
-          <Card elevation={3} style={{ position: 'relative', border: `2px solid var(--text-color)`, borderRadius: "8px" }}>
+          <Card elevation={3} style={{ position: 'relative', border: `2px solid ${theme.palette.primary.main}`, borderRadius: "8px" }}>
             {/* Cancel Icon */}
             <CancelIcon
                 style={{
-                color: "var(--text-color)",
+                color: "theme.palette.secondary.main",
                 position: 'absolute',
                 top: '15px',
                 right: '15px',
@@ -253,7 +257,7 @@ function SongRouletteGame() {
                         key={person.name}
                         sx={{
                         width: 300,
-                        border: `2px solid var(--text-color)`,
+                        border: `2px solid ${theme.palette.primary.main}`,
                         padding: 1,
                         margin: { xs: 4, sm: 4 },
                         backgroundColor: person.flag ? 'var(--accent-color)' : 'white',
@@ -274,7 +278,7 @@ function SongRouletteGame() {
           variant="contained"
           style={{
             width: 230,
-            color: 'var(--text-color)',
+            color: 'theme.palette.secondary.main',
             backgroundColor: 'var(--accent-color)',
             textTransform: "none",
             fontSize: 15,
@@ -306,7 +310,7 @@ function SongRouletteGame() {
         <DialogActions>
           <Button variant="contained"
             style={{
-              color: 'var(--text-color)',
+              color: 'theme.palette.secondary.main',
               backgroundColor: 'var(--accent-color)',
               textTransform: "none",
               fontSize: 15,

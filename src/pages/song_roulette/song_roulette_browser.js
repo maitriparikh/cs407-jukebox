@@ -208,8 +208,8 @@ const changeID = (id) => {
           {/* First Row */}
           <Grid item xs={8}>
             <Card elevation={3} sx={{
-              color: "var(--text-color)",
-              border: '2px solid var(--text-color)',
+              color: "theme.palette.secondary.main",
+              border: '2px solid theme.palette.secondary.main',
               borderRadius: "8px",
               height: "450px",
               width: "100%",
@@ -226,8 +226,8 @@ const changeID = (id) => {
           </Grid>
           <Grid item xs={4}>
             <Card elevation={3} sx={{
-              color: "var(--text-color)",
-              border: '2px solid var(--text-color)',
+              color: "theme.palette.secondary.main",
+              border: '2px solid theme.palette.secondary.main',
               borderRadius: "8px",
               height: "450px",
               width: "100%",
@@ -247,7 +247,7 @@ const changeID = (id) => {
           variant="contained"
           style={{
             width: 230,
-            color: 'var(--text-color)',
+            color: 'theme.palette.secondary.main',
             backgroundColor: 'var(--accent-color)',
             textTransform: "none",
             fontSize: 15,
@@ -263,7 +263,7 @@ const changeID = (id) => {
           variant="contained"
           style={{
             width: 230,
-            color: 'var(--text-color)',
+            color: 'theme.palette.secondary.main',
             backgroundColor: 'var(--accent-color)',
             textTransform: "none",
             fontSize: 15,
@@ -289,7 +289,7 @@ const changeID = (id) => {
         variant="contained"
         style={{
           width: 230,
-          color: 'var(--text-color)',
+          color: 'theme.palette.secondary.main',
           backgroundColor: 'var(--accent-color)',
           textTransform: "none",
           fontSize: 15,

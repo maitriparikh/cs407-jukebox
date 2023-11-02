@@ -17,11 +17,15 @@ import { db } from "../../utils/firebase";
 // STILL TO DO: ensure that the song bank length is >= # of rounds chosen (or else not enough songs for game)
 import io from 'socket.io-client';
 
+import { useTheme } from '@mui/material/styles';
+
     
 
 const socket = io('http://localhost:3001');
 
 function SongRouletteLobby() {
+
+    const theme = useTheme();
 
     /* Navigation for buttons */
     const navigate = useNavigate();
@@ -97,6 +101,16 @@ function SongRouletteLobby() {
         },
       });
     };
+
+
+    
+    const deleteLobby = (ownerID) => {
+      socket.emit('delete-lobby', ownerID);
+    };
+
+    const leaveLobby = (user, owner) => {
+      socket.emit('leave-lobby', { user, owner });
+    }
 
 
 
@@ -186,39 +200,79 @@ function SongRouletteLobby() {
       console.log("myPlaylistFinal", myPlaylistFinal);
 
 
-      // Fill people data structure 
-      const person = {
-        name: "Shreya",
-        flag: false,
-        points: 0,
-        playlist: myPlaylistFinal
-      }
-      people.push(person) // add person to people data structure, in multiplayer add other people too
+      if (!currentLobby) {
+        const person = {
+          name: currentLobby.playerNames[0],
+          flag: false,
+          points: 0,
+          myPlaylistFinal
+        }
+        people.push(person);
+        const person2 = {
+          name: currentLobby.playerNames[1],
+          flag: false,
+          points: 0,
+          myPlaylistFinal2
+        }
 
-      // add hardcoded other person to the data structure, other people will come to multiplayer later
-      const person2 = {
-        name: "Maitri",
-        flag: false,
-        points: 0,
-        playlist: myPlaylistFinal2
-      }
-      people.push(person2) 
+        people.push(person2);
 
-      const person3 = {
-        name: "Francisco",
-        flag: false,
-        points: 0,
-        playlist: myPlaylistFinal3
-      }
-      people.push(person3) 
+        /*
+        const person3 = {
+          name: currentLobby.playerNames[2],
+          flag: false,
+          points: 0,
+          myPlaylistFinal
+        }
 
-      const person4 = {
-        name: "Sean",
-        flag: false,
-        points: 0,
-        playlist: myPlaylistFinal4
+                people.push(person3);
+
+        const person4 = {
+          name: currentLobby.playerNames[3],
+          flag: false,
+          points: 0,
+          myPlaylistFinal
+        }
+                people.push(person4);
+
+                */
+
       }
-      people.push(person4) 
+      else {
+        // Fill people data structure 
+        const person = {
+          name: "Shreya",
+          flag: false,
+          points: 0,
+          playlist: myPlaylistFinal
+        }
+        people.push(person) // add person to people data structure, in multiplayer add other people too
+
+        // add hardcoded other person to the data structure, other people will come to multiplayer later
+        const person2 = {
+          name: "Maitri",
+          flag: false,
+          points: 0,
+          playlist: myPlaylistFinal2
+        }
+        people.push(person2) 
+
+        const person3 = {
+          name: "Francisco",
+          flag: false,
+          points: 0,
+          playlist: myPlaylistFinal3
+        }
+        people.push(person3) 
+
+        const person4 = {
+          name: "Sean",
+          flag: false,
+          points: 0,
+          playlist: myPlaylistFinal4
+        }
+        people.push(person4) 
+      }
 
       console.log(people)
 
@@ -317,7 +371,8 @@ function SongRouletteLobby() {
     },[lobbies]);
 
 
-    const isButtonDisabled = currentLobby && currentLobby.players && currentLobby.players.length === 4 && currentLobby.ownerID === user;
+    const isButtonDisabled = currentLobby && currentLobby.players && currentLobby.players.length === 2 && currentLobby.ownerID === user;
+    const isButtonDisabledOwner = currentLobby && currentLobby.ownerID === user;
 
     return (
 
@@ -356,8 +411,8 @@ function SongRouletteLobby() {
           {/* First Row */}
           <Grid item xs={8}>
             <Card elevation={3} sx={{
-              color: "var(--text-color)",
-              border: `2px solid var(--text-color)`,
+              color: "theme.palette.secondary.main",
+              border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
               height: "450px",
               width: "100%",
@@ -380,8 +435,8 @@ function SongRouletteLobby() {
           </Grid>
           <Grid item xs={4}>
             <Card elevation={3} sx={{
-              color: "var(--text-color)",
-              border: `2px solid var(--text-color)`,
+              color: "theme.palette.secondary.main",
+              border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
               height: "450px",
               width: "100%",
@@ -433,7 +488,7 @@ function SongRouletteLobby() {
           variant="contained"
           style={{
             width: 230,
-            color: 'var(--text-color)',
+            color: 'theme.palette.secondary.main',
             backgroundColor: 'var(--accent-color)',
             textTransform: "none",
             fontSize: 15,
@@ -445,6 +500,14 @@ function SongRouletteLobby() {
         >
           Start Game!
         </Button>
+        <div> {/* Button to delete lobby */}
+        {/* Button to delete lobby */}
+        <button onClick={() => deleteLobby(currentLobby.ownerID)}
+         disabled={!isButtonDisabledOwner}
+         >Delete Lobby</button>
+        {/* Button to leave lobby */}
+        <button onClick={() => leaveLobby(user, currentLobby.ownerID)}>Leave Lobby</button>
+        </div>
         <ul>
           { /*lobbyUsers.map((player, index) => (
             <li key={index}>{player}</li>

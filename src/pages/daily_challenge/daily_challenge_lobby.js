@@ -41,7 +41,7 @@ function DailyChallengeLobby() {
         <Card 
             style={{ 
             height: "270px", 
-            border: `3px solid var(--text-color)`, 
+            border: `3px solid theme.palette.secondary.main`, 
             borderRadius: "8px",
             textTransform: "none",
             fontWeight: "bold",
@@ -67,9 +67,9 @@ function DailyChallengeLobby() {
                     variant={gameMode === "Easy" ? "contained" : "outlined"} 
                     style={{ 
                         width: 115, 
-                        color: 'var(--text-color)', 
+                        color: 'theme.palette.secondary.main', 
                         backgroundColor: gameMode === "Easy" ? "var(--line-color)" : "var(--accent-color)", 
-                        border: '1px solid var(--text-color)',
+                        border: '1px solid theme.palette.secondary.main',
                         textTransform: "none", 
                         fontSize: 15, 
                         fontWeight: "bold" 
@@ -81,9 +81,9 @@ function DailyChallengeLobby() {
                     variant={gameMode === "Hard" ? "contained" : "outlined"} 
                     style={{ 
                         width: 115, 
-                        color: 'var(--text-color)', 
+                        color: 'theme.palette.secondary.main', 
                         backgroundColor: gameMode === "Hard" ? "var(--line-color)" : "var(--accent-color)", 
-                        border: '1px solid var(--text-color)',
+                        border: '1px solid theme.palette.secondary.main',
                         textTransform: "none", 
                         fontSize: 15, 
                         fontWeight: "bold" 
@@ -101,7 +101,7 @@ function DailyChallengeLobby() {
                 variant="contained"
                 style={{
                     width: 230,
-                    color: 'var(--text-color)',
+                    color: 'theme.palette.secondary.main',
                     backgroundColor: 'var(--accent-color)',
                     textTransform: "none",
                     fontSize: 15,
