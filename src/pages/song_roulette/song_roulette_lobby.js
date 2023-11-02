@@ -106,6 +106,7 @@ function SongRouletteLobby() {
     
     const deleteLobby = (ownerID) => {
       socket.emit('delete-lobby', ownerID);
+      navigate("/songroulettelobbybrowser");
     };
 
     const leaveLobby = (user, owner) => {
@@ -345,6 +346,12 @@ function SongRouletteLobby() {
 
     useEffect(() => {
       socket.emit('fetch-lobbies');
+
+      socket.on('lobby-deleted', (ownerID) => {
+        if(currentLobby.ownerID !== ownerID){
+          navigate("/songroulettelobbybrowser");
+        }
+      });
       socket.on('update-lobbies', (updatedLobbies) => {
           setLobbies(updatedLobbies);
           //setLobbyUsers(lobbies.);
@@ -356,6 +363,7 @@ function SongRouletteLobby() {
           getCurrentLobby();
           //setLobbyUsers(currentLobby.players);
       });
+
 
 
       return () => {

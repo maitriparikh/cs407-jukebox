@@ -13,7 +13,7 @@ const io = socketIo(server, {cors: {origin: "*"}});
 const PORT =3001;
 var count = 0;
 
-const lobbies = new Map();
+var lobbies = new Map();
 
 app2.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -108,8 +108,25 @@ io.on('connection', (socket) => {
     });
 
 
+    const removeLobbyByOwnerID = (ownerID) => {
+      const updatedLobbiesTemp = new Map(lobbies); // Create a copy of the lobbies map
+
+      // Iterate through the map and find the lobby with the specified ownerID
+      for (const [lobbyCode, lobbyDetails] of updatedLobbiesTemp) {
+        if (lobbyDetails.ownerID === ownerID) {
+          updatedLobbiesTemp.delete(lobbyCode); // Remove the lobby with the matching ownerID
+          break; // Assuming there is only one lobby per ownerID, break after finding it
+        }
+      }
+      lobbies = updatedLobbiesTemp;
+
+   }
+
+
+
 
     socket.on('delete-lobby', (ownerID) => {
+      /*
       for (const [lobbyOwnerID, lobby] of lobbies) {
         if (lobbyOwnerID === ownerID) {
           lobbies.delete(lobbyOwnerID);
@@ -117,7 +134,12 @@ io.on('connection', (socket) => {
           break;
         }
       }
+      */
+      removeLobbyByOwnerID(ownerID);
       console.log(lobbies);
+      lobbyExists = false;
+      io.emit('lobby-deleted', ownerID);
+      io.emit('update-lobbies', Array.from(lobbies.values()));
     });
 
     socket.on('leave-lobby', ({ user, owner }) => {
