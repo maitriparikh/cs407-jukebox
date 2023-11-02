@@ -23,6 +23,9 @@ function DailyChallengeLobby() {
 
     const theme = useTheme();
 
+    /* Navigation for buttons */
+    const navigate = useNavigate();
+
     const [numOfRounds, setNumOfRounds] = useState("");
 
     const [gameMode, setGameMode] = useState("Easy");
@@ -32,6 +35,16 @@ function DailyChallengeLobby() {
     const modeSelection = (mode) => {
         setGameMode(mode);
     };
+
+    const startgame_click = async () => {
+        console.log("START GAME CLICKED");
+        //await buildSongBank()
+        navigate("/dailychallengegame", {
+          state: {
+            rounds: numOfRounds,
+          },
+        });
+      };
 
     return (
       <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
@@ -113,6 +126,7 @@ function DailyChallengeLobby() {
                     fontWeight: "bold",
                     margin: "3%"
                 }}
+                onClick={startgame_click}
                 >
                 Start Game!
                 </Button>

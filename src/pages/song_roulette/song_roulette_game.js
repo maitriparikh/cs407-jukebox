@@ -223,11 +223,11 @@ function SongRouletteGame() {
         </Typography>
         <br></br>
             
-          <Card elevation={3} style={{ position: 'relative', border: `2px solid ${theme.palette.primary.main}`, borderRadius: "8px" }}>
+          <Card elevation={3} style={{ position: 'relative', border: `2px solid ${theme.palette.primary.main}`, borderRadius: "8px", backgroundColor: theme.palette.background.default }}>
             {/* Cancel Icon */}
             <CancelIcon
                 style={{
-                color: "theme.palette.secondary.main",
+                color: theme.palette.primary.main,
                 position: 'absolute',
                 top: '15px',
                 right: '15px',

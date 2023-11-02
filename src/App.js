@@ -25,6 +25,7 @@ import MusicPreferencesQuiz from "./pages/profile_components/music_preference_qu
 
 // Daily Challenge Game Pages
 import DailyChallengeLobby from "./pages/daily_challenge/daily_challenge_lobby";
+import DailyChallengeGame from "./pages/daily_challenge/daily_challenge_game";
 
 // Song Roulette Game Pages
 import SongRouletteLobby from "./pages/song_roulette/song_roulette_lobby";
@@ -110,6 +111,7 @@ function App() {
                       <Route path="/editprofile" element={<EditProfile />} />
                       <Route path="/musicpreferencesquiz" element={<MusicPreferencesQuiz />} />
                       <Route path="/dailychallengelobby" element={<DailyChallengeLobby />} />
+                      <Route path="/dailychallengegame" element={<DailyChallengeGame />} />
                       <Route path="/SongRoulettelobbybrowser" element={<SongRouletteLobbyBrowser />} />
                       <Route path="/songroulettelobby" element={<SongRouletteLobby />} />
                       <Route path="/songroulettegame" element={<SongRouletteGame />} />
