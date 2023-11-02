@@ -23,6 +23,7 @@ import { UserContext } from "../../App";
 import { db } from "../../utils/firebase";
 import { collection, onSnapshot, getDoc, doc, updateDoc, setDoc } from "firebase/firestore";
 
+import { useTheme } from '@mui/material/styles';
 
 
 
@@ -40,6 +41,8 @@ function generateUserID() {
 }
 
 function SongRouletteLobbyBrowser() {
+
+  const theme = useTheme();
 
   const { user, setUser } = useContext(UserContext);
   const [creatingLobby, setCreatingLobby] = useState(false);
@@ -197,7 +200,7 @@ const changeID = (id) => {
     return (
       <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
 
-        <Typography variant="h1" style={{ textAlign: "center" }}>
+        <Typography variant="h2" style={{ textAlign: "center" }}>
             Song Roulette
         </Typography>
 
@@ -208,11 +211,12 @@ const changeID = (id) => {
           {/* First Row */}
           <Grid item xs={8}>
             <Card elevation={3} sx={{
-              color: "theme.palette.secondary.main",
-              border: '2px solid theme.palette.secondary.main',
+              color: theme.palette.secondary.main,
+              border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
               height: "450px",
               width: "100%",
+              backgroundColor: theme.palette.background.default
             }}
             >
               <CardContent>
@@ -226,11 +230,12 @@ const changeID = (id) => {
           </Grid>
           <Grid item xs={4}>
             <Card elevation={3} sx={{
-              color: "theme.palette.secondary.main",
-              border: '2px solid theme.palette.secondary.main',
+              color: theme.palette.secondary.main,
+              border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
               height: "450px",
               width: "100%",
+              backgroundColor: theme.palette.background.default
             }}
             >
 
@@ -247,8 +252,8 @@ const changeID = (id) => {
           variant="contained"
           style={{
             width: 230,
-            color: 'theme.palette.secondary.main',
-            backgroundColor: 'var(--accent-color)',
+            color: theme.palette.primary.main,
+            backgroundColor: theme.palette.secondary.main,
             textTransform: "none",
             fontSize: 15,
             fontWeight: "bold",
@@ -263,8 +268,8 @@ const changeID = (id) => {
           variant="contained"
           style={{
             width: 230,
-            color: 'theme.palette.secondary.main',
-            backgroundColor: 'var(--accent-color)',
+            color: theme.palette.primary.main,
+            backgroundColor: theme.palette.secondary.main,
             textTransform: "none",
             fontSize: 15,
             fontWeight: "bold",
@@ -277,6 +282,8 @@ const changeID = (id) => {
 
         <div><TextField
         label="Room Code"
+        InputProps={{ style: { color: theme.palette.primary.main } }} 
+        InputLabelProps={{ style: { color: theme.palette.primary.main } }} 
         variant="outlined"
         fullWidth
         value={roomCode}
@@ -289,8 +296,8 @@ const changeID = (id) => {
         variant="contained"
         style={{
           width: 230,
-          color: 'theme.palette.secondary.main',
-          backgroundColor: 'var(--accent-color)',
+          color: theme.palette.primary.main,
+          backgroundColor: theme.palette.secondary.main,
           textTransform: "none",
           fontSize: 15,
           fontWeight: "bold",

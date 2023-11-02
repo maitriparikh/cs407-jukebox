@@ -16,7 +16,11 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 
+import { useTheme } from '@mui/material/styles';
+
 function LyricChallengeLobby() {
+
+    const theme = useTheme();
 
     const [numOfRounds, setNumOfRounds] = useState("");
 
@@ -70,8 +74,8 @@ function LyricChallengeLobby() {
                 variant="contained"
                 style={{
                     width: 230,
-                    color: 'theme.palette.secondary.main',
-                    backgroundColor: 'var(--accent-color)',
+                    color: theme.palette.primary.main,
+                    backgroundColor: theme.palette.secondary.main,
                     textTransform: "none",
                     fontSize: 15,
                     fontWeight: "bold",

@@ -19,7 +19,11 @@ import { db } from "../../utils/firebase";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { UserContext } from "../../App";
 
+import { useTheme } from '@mui/material/styles';
+
 function TriviaChallengeLobby() {
+
+    const theme = useTheme();
 
     const navigate = useNavigate();
     const [numOfRounds, setNumOfRounds] = useState(3);
@@ -139,8 +143,8 @@ function TriviaChallengeLobby() {
                 variant="contained"
                 style={{
                     width: 230,
-                    color: 'theme.palette.secondary.main',
-                    backgroundColor: 'var(--accent-color)',
+                    color: theme.palette.primary.main,
+                    backgroundColor: theme.palette.secondary.main,
                     textTransform: "none",
                     fontSize: 15,
                     fontWeight: "bold",

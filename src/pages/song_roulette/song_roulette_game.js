@@ -290,7 +290,7 @@ function SongRouletteGame() {
           Submit
         </Button>
 
-        <Dialog open={alertOpen} onClose={handleNextQuestion}>
+        <Dialog open={alertOpen} onClose={handleNextQuestion} PaperProps={{ style: { backgroundColor: theme.palette.background.default } }}>
         <DialogTitle>
         <Typography variant="h3" style={{ textAlign: "center", marginBottom: "-15px" }}>
             Results

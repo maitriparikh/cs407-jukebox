@@ -17,7 +17,11 @@ import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import ButtonGroup from '@mui/material/ButtonGroup';
 
+import { useTheme } from '@mui/material/styles';
+
 function DailyChallengeLobby() {
+
+    const theme = useTheme();
 
     const [numOfRounds, setNumOfRounds] = useState("");
 
@@ -41,12 +45,13 @@ function DailyChallengeLobby() {
         <Card 
             style={{ 
             height: "270px", 
-            border: `3px solid theme.palette.secondary.main`, 
+            border: `3px solid ${theme.palette.primary.main}`, 
             borderRadius: "8px",
             textTransform: "none",
             fontWeight: "bold",
             width: "85%", 
             margin: "0 auto", 
+            backgroundColor: theme.palette.background.default
             }}
         >
 
@@ -67,9 +72,9 @@ function DailyChallengeLobby() {
                     variant={gameMode === "Easy" ? "contained" : "outlined"} 
                     style={{ 
                         width: 115, 
-                        color: 'theme.palette.secondary.main', 
+                        color: "black",
                         backgroundColor: gameMode === "Easy" ? "var(--line-color)" : "var(--accent-color)", 
-                        border: '1px solid theme.palette.secondary.main',
+                        border: `1px solid ${theme.palette.primary.main}`,
                         textTransform: "none", 
                         fontSize: 15, 
                         fontWeight: "bold" 
@@ -81,9 +86,9 @@ function DailyChallengeLobby() {
                     variant={gameMode === "Hard" ? "contained" : "outlined"} 
                     style={{ 
                         width: 115, 
-                        color: 'theme.palette.secondary.main', 
+                        color: "black", 
                         backgroundColor: gameMode === "Hard" ? "var(--line-color)" : "var(--accent-color)", 
-                        border: '1px solid theme.palette.secondary.main',
+                        border: `1px solid ${theme.palette.primary.main}`,
                         textTransform: "none", 
                         fontSize: 15, 
                         fontWeight: "bold" 
@@ -101,8 +106,8 @@ function DailyChallengeLobby() {
                 variant="contained"
                 style={{
                     width: 230,
-                    color: 'theme.palette.secondary.main',
-                    backgroundColor: 'var(--accent-color)',
+                    color: theme.palette.primary.main,
+                    backgroundColor: theme.palette.secondary.main,
                     textTransform: "none",
                     fontSize: 15,
                     fontWeight: "bold",

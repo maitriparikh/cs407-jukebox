@@ -191,7 +191,7 @@ function Homepage() {
 
         <br></br>
 
-        <Dialog open={alertOpen} onClose={handleDialogStayOnHomepage}>
+        <Dialog open={alertOpen} onClose={handleDialogStayOnHomepage} PaperProps={{ style: { backgroundColor: theme.palette.background.default } }}>
         <DialogTitle>
         <Typography variant="h3" style={{ textAlign: "left" }}>
           You need to complete your music profile to play a game!
@@ -207,8 +207,8 @@ function Homepage() {
         <DialogActions>
           <Button variant="contained"
             style={{
-              color: 'theme.palette.secondary.main',
-              backgroundColor: 'var(--accent-color)',
+              color: theme.palette.primary.main,
+              backgroundColor: theme.palette.secondary.main,
               textTransform: "none",
               fontSize: 15,
               fontWeight: "bold"
@@ -218,8 +218,8 @@ function Homepage() {
           </Button>
           <Button variant="contained"
             style={{
-              color: 'theme.palette.secondary.main',
-              backgroundColor: 'var(--accent-color)',
+              color: theme.palette.primary.main,
+              backgroundColor: theme.palette.secondary.main,
               textTransform: "none",
               fontSize: 15,
               fontWeight: "bold"

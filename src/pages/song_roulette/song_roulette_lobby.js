@@ -437,8 +437,8 @@ function SongRouletteLobby() {
           variant="contained"
           style={{
             width: 230,
-            color: 'theme.palette.secondary.main',
-            backgroundColor: 'var(--accent-color)',
+            color: theme.palette.primary.main,
+            backgroundColor: theme.palette.secondary.main,
             textTransform: "none",
             fontSize: 15,
             fontWeight: "bold",
