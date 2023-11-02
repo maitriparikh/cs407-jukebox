@@ -1,5 +1,5 @@
 import Button from "@mui/material/Button";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CircularProgress, Grid } from "@mui/material";
 import { Box, Stack } from "@mui/system";
@@ -16,19 +16,33 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import TextField from "@mui/material/TextField";
-
 import { useTheme } from '@mui/material/styles';
-
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "../../utils/firebase";
+import { UserContext } from "../../App";
 
 
 function DailyChallengeGame() {
 
     const theme = useTheme();
-
+    const { user, setUser } = useContext(UserContext);
     const location = useLocation();
 
+    const [myPlaylist, setMyPlaylist] = useState([]); // intermediate playlist array
+    const [spotifyToken, setSpotifyToken] = useState(""); // Spotify Token
+
+
     const gameMode = location.state.gameMode;
+    const songInfo = location.state.songInfo
     console.log("GAME MODE = " + gameMode)
+    console.log("SONG INFO = ", songInfo)
+    // 0 = previewURL, 1 = artistName, 2 = album cover, 3 = song name
+
+    // temp hardcoded song for iframe display
+    const songName = songInfo[3];
+    const songArtist = songInfo[1];
+    const songAlbumPic = songInfo[2];
+    const songAudio = songInfo[0];
 
     const [showHint1, setShowHint1] = useState(false);
     const [showHint2, setShowHint2] = useState(false);
@@ -77,37 +91,15 @@ function DailyChallengeGame() {
 
         <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
 
-        
-        {/* RESIZING WINDOW MESSAGE */}
-        {isDialogOpen && (
-            <Dialog
-            open={isDialogOpen}
-            onClose={closeDialog}
-            PaperProps={{ style: { backgroundColor: theme.palette.background.default } }}
-            >
-            <DialogTitle>
-                <Typography variant="h3" style={{ textAlign: "left" }}>
-                Heads Up!
-                </Typography>
-            </DialogTitle>
-            <DialogContent>
-                <DialogContentText>
-                <Typography variant="h4" style={{ textAlign: "left" }}>
-                    In order to ensure an optimal playing experience, do not resize the browser window!
-                </Typography>
-                </DialogContentText>
-            </DialogContent>
-            </Dialog>
-        )}
 
         <Typography variant="h3" style={{ textAlign: "center"}}>
             Guess the song!
         </Typography>
         <br></br>
-            
+
         <Card elevation={3} style={{ position: 'relative', border: `2px solid ${theme.palette.primary.main}`, borderRadius: "8px", backgroundColor: theme.palette.background.default }}>
-            {/* Cancel Icon */}
-            <CancelIcon
+          {/* Cancel Icon */}
+          <CancelIcon
                 style={{
                 color: theme.palette.primary.main,
                 position: 'absolute',
@@ -120,6 +112,64 @@ function DailyChallengeGame() {
                 }}
                 onClick={() => exitgame_click()} 
             />
+            <br></br>
+            <br></br>
+            <br></br>
+          <CardContent>
+
+            <div
+              style={{
+                position: 'relative',
+                border: `2px solid ${theme.palette.background.default}`,
+                borderRadius: '12px',
+                backgroundColor: '#282828',
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                padding: '15px',
+                maxWidth: '1100px', 
+                margin: '0 auto',
+              }}
+            >
+              {/* Album Cover */}
+              <img
+                src={songAlbumPic}
+                alt="Album Cover"
+                style={{
+                  width: '180px',
+                  height: '180px',
+                  borderRadius: '12px',
+                  marginRight: '16px',
+                }}
+              />
+
+          <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                marginLeft: '1%'
+              }}
+            >
+              {/* Song Name */}
+              <Typography variant="h3" style={{ color: 'white', marginBottom: "2%" }}>{songName}</Typography>
+
+              {/* Artist */}
+              <Typography variant="h4" style={{ color: 'white', marginBottom: "2%" }}>{songArtist}</Typography>
+
+              {/* Audio Preview */}
+              <audio controls style={{ width: '280%', borderRadius: '8px', marginTop: "7%" }}>
+                <source src={songAudio} type="audio/mpeg" />
+                Your browser does not support the audio element.
+              </audio>
+            </div>
+            </div>
+
+          </CardContent>
+        </Card>
+            
+        <Card elevation={3} style={{ position: 'relative', border: `2px solid ${theme.palette.primary.main}`, borderRadius: "8px", backgroundColor: theme.palette.background.default }}>
+            
             
             <CardContent>
             <br></br>
@@ -308,7 +358,7 @@ function DailyChallengeGame() {
                 style={{
                     position: 'absolute',
                     top: '55%', // Adjust the top position as needed
-                    left: '22%', // Adjust the left position as needed
+                    left: '1%', // Adjust the left position as needed
                     width: '69%', // Adjust the width as needed
                     height: '13%', // Adjust the height as needed
                     backdropFilter: 'blur(100px)', // Apply a blur effect to cover the song name

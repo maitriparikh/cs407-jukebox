@@ -40,9 +40,3 @@
     transform: rotate(360deg);
   }
 }
-
-@media (max-width: 1600px) {
-  #spotify-iframe {
-    display: none;
-  }
-}

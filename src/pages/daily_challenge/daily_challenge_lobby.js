@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -16,18 +16,20 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import ButtonGroup from '@mui/material/ButtonGroup';
-
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "../../utils/firebase";
 import { useTheme } from '@mui/material/styles';
+import { UserContext } from "../../App";
+
 
 function DailyChallengeLobby() {
-
+    const { user, setUser } = useContext(UserContext);
     const theme = useTheme();
-
     /* Navigation for buttons */
     const navigate = useNavigate();
-
     const [numOfRounds, setNumOfRounds] = useState("");
-
+    const [songIndex, setSongIndex] = useState(32);
+    const [songInfo, setSongInfo] = useState([])
     const [gameMode, setGameMode] = useState("Easy");
     // verifying that default daily challenge game mode is "Easy" if nothing is selected
     console.log("Daily Challenge Game Mode: ", gameMode);
@@ -36,15 +38,130 @@ function DailyChallengeLobby() {
         setGameMode(mode);
     };
 
+    
+
+    /* SPOTIFY STUFF */
+    const [myPlaylist, setMyPlaylist] = useState([]); // intermediate playlist array
+    const [spotifyToken, setSpotifyToken] = useState(""); // Spotify Token
+
+    const getSpotifyToken = async () => {
+    const unsubUserDoc = await onSnapshot(doc(db, "users", user), async (doc) => {
+        setSpotifyToken(doc.data().spotifyToken);
+        //userNameTemp = doc.data().username;
+        //console.log('username is:' + userNameTemp);
+        
+    });
+    };
+
+    const fetchWebApi = async (endpoint, method, body) => {
+    const res = await fetch(`https://api.spotify.com/v1/${endpoint}`, {
+        headers: {
+        Authorization: `Bearer ${spotifyToken}`,
+        },
+        method,
+        body: JSON.stringify(body),
+    });
+    return await res.json();
+    };
+    
+    const getAllPlaylistTracks = async (playlistId) => {
+        let allTracks = [];
+        let nextUrl = `playlists/37i9dQZF1DXcBWIGoYBM5M/tracks`; // HARDCODED SPECIFIC PLAYLIST ............
+
+        while (nextUrl) {
+            const response = await fetchWebApi(nextUrl, 'GET');
+            const { items, next } = response;
+        
+            if (items && Array.isArray(items)) {
+                allTracks = [...allTracks, ...items];
+            } else {
+                // Handle the case where items is not iterable (e.g., it may be undefined or not an array)
+                console.error('Items is not iterable:', items);
+            }
+        
+            if (next) {
+                nextUrl = new URL(next).pathname.substr(1); // Extract the next URL path
+            } else {
+            nextUrl = null;
+        }
+    };
+    
+    //console.log("ALL MY TRACKS: ", allTracks)
+
+    // Extract track codes from allTracks and put them in myPlaylist
+    
+    /*const trackURIs = allTracks.map((track) => track.track.uri);
+
+    const myPlaylistFinal = trackURIs.map((uri) => {
+        return "https://open.spotify.com/embed/track/" + uri.substring(14) + "?utm_source=generator";
+    });
+
+    // Now you have myPlaylistFinal properly populated
+    console.log("myPlaylistFinal", myPlaylistFinal);
+    setMyPlaylist(myPlaylistFinal); */
+
+    const song = allTracks[songIndex];
+    console.log(song);
+
+    // audio clip
+    const previewURL = song.track.preview_url;
+    console.log(previewURL);
+    songInfo.push(previewURL);
+
+    // artist name
+    const artist = song.track.artists[0].name;
+    console.log(artist);
+    songInfo.push(artist);
+
+    // album picture
+    const albumPic = song.track.album.images[0].url;
+    console.log(albumPic);
+    songInfo.push(albumPic);
+
+    // song name
+    const songName1 = song.track.name;
+    console.log(songName1);
+    songInfo.push(songName1);
+
+    /*const updatedSongInfo = [{
+        songPreview: previewURL,
+        songArtist: artist,
+        songAlbumCover: albumPic,
+        songName: songName1,
+    }];
+    
+    //setSongInfo(updatedSongInfo);
+    songInfo.push(updatedSongInfo);*/
+    //console.log("1", updatedSongInfo)
+    //console.log("2", songInfo)
+
+    return allTracks;
+
+    };
+
     const startgame_click = async () => {
         console.log("START GAME CLICKED");
-        //await buildSongBank()
+        await getAllPlaylistTracks()
         navigate("/dailychallengegame", {
           state: {
             gameMode: gameMode,
+            songInfo: songInfo
           },
         });
       };
+
+
+    useEffect(()=>{
+
+        getSpotifyToken()
+        if (spotifyToken) {
+            console.log("spotify token got in song roulette game lobby ->", spotifyToken)
+            // get specific playlist code (user entered or from firebase?) (future sprint) (hard-coded)
+            /* make song_bank data structure */
+        
+        }
+    
+    }, [spotifyToken]);
 
     return (
       <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
