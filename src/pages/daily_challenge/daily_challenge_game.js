@@ -158,7 +158,7 @@ function DailyChallengeGame() {
               <Typography variant="h4" style={{ color: 'white', marginBottom: "2%" }}>{songArtist}</Typography>
 
               {/* Audio Preview */}
-              <audio controls style={{ width: '280%', borderRadius: '8px', marginTop: "7%" }}>
+              <audio controls style={{ width: '880px', borderRadius: '12px', marginTop: "1%" }}>
                 <source src={songAudio} type="audio/mpeg" />
                 Your browser does not support the audio element.
               </audio>
@@ -169,219 +169,213 @@ function DailyChallengeGame() {
         </Card>
             
         <Card elevation={3} style={{ position: 'relative', border: `2px solid ${theme.palette.primary.main}`, borderRadius: "8px", backgroundColor: theme.palette.background.default }}>
-            
+            {/* Cancel Icon */}
+          <CancelIcon
+                style={{
+                color: theme.palette.primary.main,
+                position: 'absolute',
+                top: '15px',
+                right: '15px',
+                height: '40px',
+                width: '40px',
+                cursor: 'pointer',
+                zIndex: 1, 
+                }}
+                onClick={() => exitgame_click()} 
+            />
             
             <CardContent>
             <br></br>
             <br></br>
             <br></br>
 
-            {/* STAGE 1 - NO HINTS (ONLY AUDIO) - both game modes */}
             {(!showHint1 && !showHint2) && (
-            <div style={{ position: 'relative' }}>
-                <iframe
-                id="spotify-iframe"
-                style={{ borderRadius: '12px', width: '90%', height: '320px' }}
-                src="https://open.spotify.com/embed/track/1BxfuPKGuaTgP7aM0Bbdwr?utm_source=generator&theme=0"
-                frameBorder="0"
-                allowFullScreen
-                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                loading="lazy"
-                ></iframe>
-            
-                {/* ALBUM COVER */}
-                <div
-                style={{
-                    position: 'absolute',
-                    top: '2%', // Adjust the top position as needed
-                    left: '5.5%', // Adjust the left position as needed
-                    width: '16.5%', // Adjust the width as needed
-                    height: '68%', // Adjust the height as needed
-                    backdropFilter: 'blur(40px)', // Apply a blur effect to cover the album art
-                    backgroundColor: 'rgba(0, 0, 0, 1)', // Translucent background
-                    borderRadius: '12px'
-                }}
-                ></div>
-                {/* SONG TITLE - NEVER REVEALED */}
-                <div
-                style={{
-                    position: 'absolute',
-                    top: '6%', // Adjust the top position as needed
-                    left: '22.5%', // Adjust the left position as needed
-                    width: '50%', // Adjust the width as needed
-                    height: '22%', // Adjust the height as needed
-                    backdropFilter: 'blur(40px)', // Apply a blur effect to cover the artist name
-                    backgroundColor: 'rgba(0, 0, 0, 0.9)', // Translucent background
-                    borderRadius: '12px'
-                }}
-                ></div>
-                {/* ARTIST NAME */}
-                <div
-                style={{
-                    position: 'absolute',
-                    top: '30%', // Adjust the top position as needed
-                    left: '22.5%', // Adjust the left position as needed
-                    width: '20%', // Adjust the width as needed
-                    height: '22%', // Adjust the height as needed
-                    backdropFilter: 'blur(40px)', // Apply a blur effect to cover the song name
-                    backgroundColor: 'rgba(0, 0, 0, 0.9)', // Translucent background
-                    borderRadius: '12px'
-                }}
-                ></div>
-                {/* TINY 3 DOT MENU / BOTTOM BAR IDK??  */}
-                <div
-                style={{
-                    position: 'absolute',
-                    top: '55%', // Adjust the top position as needed
-                    left: '22%', // Adjust the left position as needed
-                    width: '69%', // Adjust the width as needed
-                    height: '13%', // Adjust the height as needed
-                    backdropFilter: 'blur(100px)', // Apply a blur effect to cover the song name
-                    //backgroundColor: 'rgba(255, 191, 0, 0.9)', // yellow background
-                    backgroundColor: 'rgba(36, 36, 36, 1)', // grey background
-                }}
-                ></div>
-                {/* ALBUM DISPLAY ON RIGHT SIDE */}
-                <div
-                style={{
-                    position: 'absolute',
-                    top: '1%', // Adjust the top position as needed
-                    left: '75%', // Adjust the left position as needed
-                    width: '20%', // Adjust the width as needed
-                    height: '51%', // Adjust the height as needed
-                    backdropFilter: 'blur(100px)', // Apply a blur effect to cover the song name
-                    //backgroundColor: 'rgba(255, 191, 0, 0.9)', // Translucent background
-                    backgroundColor: 'rgba(36, 36, 36, 1)', // Translucent background
-                    borderRadius: '12px'
-                }}
-                ></div>
+            <div
+              style={{
+                position: 'relative',
+                border: `2px solid ${theme.palette.background.default}`,
+                borderRadius: '12px',
+                backgroundColor: '#282828',
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                padding: '15px',
+                maxWidth: '1100px', 
+                margin: '0 auto',
+              }}
+            >
+              {/* Album Cover */}
+              <div
+              style={{
+                width: '180px',
+                height: '180px',
+                background: 'black', 
+                borderRadius: '12px',
+                marginRight: '16px',
+              }}
+            ></div>
+
+          <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                marginLeft: '1%'
+              }}
+            >
+              {/* Song Name */}
+              <div
+              style={{
+                width: '880px', // Adjust the width as needed
+                height: '34px', // Adjust the height as needed
+                background: 'black', // Replace with your desired background color
+                marginBottom: "2%",
+                borderRadius: '12px'
+              }}
+            ></div>
+
+              {/* Artist */}
+              <div
+              style={{
+                width: '880px', // Adjust the width as needed
+                height: '20px', // Adjust the height as needed
+                background: 'black', // Replace with your desired background color
+                marginBottom: "2%",
+                borderRadius: '12px'
+              }}
+            ></div>
+
+              {/* Audio Preview */}
+              <audio controls style={{ width: '880px', borderRadius: '12px', marginTop: "1%" }}>
+                <source src={songAudio} type="audio/mpeg" />
+                Your browser does not support the audio element.
+              </audio>
+            </div>
             </div>
             )}
 
+
             {/* STAGE 2 - 1 HINT (+ ARTIST NAME(S)) - only easy mode */}
             {showHint1 && !showHint2 && (
-            <div style={{ position: 'relative' }}>
-                <iframe
-                id="spotify-iframe"
-                style={{ borderRadius: '12px', width: '90%', height: '320px' }}
-                src="https://open.spotify.com/embed/track/1BxfuPKGuaTgP7aM0Bbdwr?utm_source=generator&theme=0"
-                frameBorder="0"
-                allowFullScreen
-                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                loading="lazy"
-                ></iframe>
-                
-                {/* ALBUM COVER */}
-                <div
-                style={{
-                    position: 'absolute',
-                    top: '2%', // Adjust the top position as needed
-                    left: '5.5%', // Adjust the left position as needed
-                    width: '16.5%', // Adjust the width as needed
-                    height: '68%', // Adjust the height as needed
-                    backdropFilter: 'blur(40px)', // Apply a blur effect to cover the album art
-                    backgroundColor: 'rgba(0, 0, 0, 1)', // Translucent background
-                    borderRadius: '12px'
-                }}
-                ></div>
-                {/* SONG TITLE - NEVER REVEALED */}
-                <div
-                style={{
-                    position: 'absolute',
-                    top: '6%', // Adjust the top position as needed
-                    left: '22.5%', // Adjust the left position as needed
-                    width: '50%', // Adjust the width as needed
-                    height: '22%', // Adjust the height as needed
-                    backdropFilter: 'blur(40px)', // Apply a blur effect to cover the artist name
-                    backgroundColor: 'rgba(0, 0, 0, 0.9)', // Translucent background
-                    borderRadius: '12px'
-                }}
-                ></div>
-                {/* TINY 3 DOT MENU / BOTTOM BAR IDK??  */}
-                <div
-                style={{
-                    position: 'absolute',
-                    top: '55%', // Adjust the top position as needed
-                    left: '22%', // Adjust the left position as needed
-                    width: '69%', // Adjust the width as needed
-                    height: '13%', // Adjust the height as needed
-                    backdropFilter: 'blur(100px)', // Apply a blur effect to cover the song name
-                    //backgroundColor: 'rgba(255, 191, 0, 0.9)', // yellow background
-                    backgroundColor: 'rgba(36, 36, 36, 1)', // grey background
-                }}
-                ></div>
-                {/* ALBUM DISPLAY ON RIGHT SIDE */}
-                <div
-                style={{
-                    position: 'absolute',
-                    top: '1%', // Adjust the top position as needed
-                    left: '75%', // Adjust the left position as needed
-                    width: '20%', // Adjust the width as needed
-                    height: '51%', // Adjust the height as needed
-                    backdropFilter: 'blur(100px)', // Apply a blur effect to cover the song name
-                    //backgroundColor: 'rgba(255, 191, 0, 0.9)', // Translucent background
-                    backgroundColor: 'rgba(36, 36, 36, 1)', // Translucent background
-                    borderRadius: '12px'
-                }}
-                ></div>
+              <div
+              style={{
+                position: 'relative',
+                border: `2px solid ${theme.palette.background.default}`,
+                borderRadius: '12px',
+                backgroundColor: '#282828',
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                padding: '15px',
+                maxWidth: '1100px', 
+                margin: '0 auto',
+              }}
+            >
+              {/* Album Cover */}
+              <div
+              style={{
+                width: '180px',
+                height: '180px',
+                background: 'black', 
+                borderRadius: '12px',
+                marginRight: '16px',
+              }}
+            ></div>
+
+          <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                marginLeft: '1%',
+                borderRadius: '12px'
+              }}
+            >
+              {/* Song Name */}
+              <div
+              style={{
+                width: '880px', 
+                height: '34px', 
+                background: 'black', 
+                marginBottom: "2%",
+                borderRadius: '12px'
+              }}
+            ></div>
+
+              {/* Artist */}
+              <Typography variant="h4" style={{ color: 'white', marginBottom: "2%" }}>{songArtist}</Typography>
+
+              {/* Audio Preview */}
+              <audio controls style={{ width: '880px', borderRadius: '12px', marginTop: "1%" }}>
+                <source src={songAudio} type="audio/mpeg" />
+                Your browser does not support the audio element.
+              </audio>
+            </div>
             </div>
             )}
 
             {/* STAGE 3 - 2 HINTs (+ ALBUM COVER) - only easy mode */}
             {showHint2 && (
-            <div style={{ position: 'relative' }}>
-                <iframe
-                id="spotify-iframe"
-                style={{ borderRadius: '12px', width: '90%', height: '320px' }}
-                src="https://open.spotify.com/embed/track/1BxfuPKGuaTgP7aM0Bbdwr?utm_source=generator&theme=0"
-                frameBorder="0"
-                allowFullScreen
-                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                loading="lazy"
-                ></iframe>
-                
-                {/* SONG TITLE - NEVER REVEALED */}
-                <div
-                style={{
-                    position: 'absolute',
-                    top: '6%', // Adjust the top position as needed
-                    left: '22.5%', // Adjust the left position as needed
-                    width: '50%', // Adjust the width as needed
-                    height: '22%', // Adjust the height as needed
-                    backdropFilter: 'blur(40px)', // Apply a blur effect to cover the artist name
-                    backgroundColor: 'rgba(0, 0, 0, 0.9)', // Translucent background
-                    borderRadius: '12px'
-                }}
-                ></div>
-                {/* TINY 3 DOT MENU / BOTTOM BAR IDK??  */}
-                <div
-                style={{
-                    position: 'absolute',
-                    top: '55%', // Adjust the top position as needed
-                    left: '1%', // Adjust the left position as needed
-                    width: '69%', // Adjust the width as needed
-                    height: '13%', // Adjust the height as needed
-                    backdropFilter: 'blur(100px)', // Apply a blur effect to cover the song name
-                    //backgroundColor: 'rgba(255, 191, 0, 0.9)', // yellow background
-                    backgroundColor: 'rgba(36, 36, 36, 1)', // grey background
-                }}
-                ></div>
-                {/* ALBUM DISPLAY ON RIGHT SIDE */}
-                <div
-                style={{
-                    position: 'absolute',
-                    top: '1%', // Adjust the top position as needed
-                    left: '75%', // Adjust the left position as needed
-                    width: '20%', // Adjust the width as needed
-                    height: '51%', // Adjust the height as needed
-                    backdropFilter: 'blur(100px)', // Apply a blur effect to cover the song name
-                    //backgroundColor: 'rgba(255, 191, 0, 0.9)', // Translucent background
-                    backgroundColor: 'rgba(36, 36, 36, 1)', // Translucent background
-                    borderRadius: '12px'
-                }}
-                ></div>
-            </div>
+            <div
+            style={{
+              position: 'relative',
+              border: `2px solid ${theme.palette.background.default}`,
+              borderRadius: '12px',
+              backgroundColor: '#282828',
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              padding: '15px',
+              maxWidth: '1100px', 
+              margin: '0 auto',
+            }}
+          >
+            {/* Album Cover */}
+            <img
+              src={songAlbumPic}
+              alt="Album Cover"
+              style={{
+                width: '180px',
+                height: '180px',
+                borderRadius: '12px',
+                marginRight: '16px',
+              }}
+            />
+
+        <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              marginLeft: '1%'
+            }}
+          >
+            {/* Song Name */}
+            <div
+              style={{
+                width: '880px', 
+                height: '34px', 
+                background: 'black', 
+                marginBottom: "2%",
+                borderRadius: '12px'
+              }}
+            ></div>
+
+            {/* Artist */}
+            <Typography variant="h4" style={{ color: 'white', marginBottom: "2%" }}>{songArtist}</Typography>
+
+            {/* Audio Preview */}
+            <audio controls style={{ width: '880px', borderRadius: '12px', marginTop: "1%" }}>
+              <source src={songAudio} type="audio/mpeg" />
+              Your browser does not support the audio element.
+            </audio>
+          </div>
+          </div>
             )}
+
+        <br></br>
+        <br></br>
+        <br></br>
 
         
         {/* Button to reveal hint 1 */}

@@ -28,7 +28,7 @@ function DailyChallengeLobby() {
     /* Navigation for buttons */
     const navigate = useNavigate();
     const [numOfRounds, setNumOfRounds] = useState("");
-    const [songIndex, setSongIndex] = useState(32);
+    const [songIndex, setSongIndex] = useState(15);
     const [songInfo, setSongInfo] = useState([])
     const [gameMode, setGameMode] = useState("Easy");
     // verifying that default daily challenge game mode is "Easy" if nothing is selected
