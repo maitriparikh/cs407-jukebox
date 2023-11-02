@@ -20,6 +20,8 @@ import Homepage from "./pages/homepage";
 import Leaderboard from "./pages/leaderboard";
 import Settings from "./pages/settings";
 import EditProfile from "./pages/profile_components/edit_profile";
+import MusicPreferencesQuiz from "./pages/profile_components/music_preference_quiz";
+
 
 // Daily Challenge Game Pages
 import DailyChallengeLobby from "./pages/daily_challenge/daily_challenge_lobby";
@@ -97,6 +99,7 @@ function App() {
                       <Route path="/leaderboard" element={<Leaderboard />} />
                       <Route path="/settings" element={<Settings />} />
                       <Route path="/editprofile" element={<EditProfile />} />
+                      <Route path="/musicpreferencesquiz" element={<MusicPreferencesQuiz />} />
                       <Route path="/dailychallengelobby" element={<DailyChallengeLobby />} />
                       <Route path="/SongRoulettelobbybrowser" element={<SongRouletteLobbyBrowser />} />
                       <Route path="/songroulettelobby" element={<SongRouletteLobby />} />
