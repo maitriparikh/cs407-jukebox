@@ -231,7 +231,28 @@ function EditProfile() {
                 <RemoveCircleOutlineIcon/> &nbsp; Delete Profile Picture
               </Button>
               </label>
-            </div>) : <p></p>
+            </div>) : 
+            (
+              <div>
+              <label htmlFor="profile-picture-delete">
+              <Button disabled
+                variant="contained"
+                style={{
+                    width: 230,
+                    color: "gray",
+                    backgroundColor: theme.palette.secondary.main,
+                    textTransform: "none",
+                    fontSize: 15,
+                    fontWeight: "bold",
+                    margin: "auto"
+                }}
+                
+                >
+                <RemoveCircleOutlineIcon/> &nbsp; Delete Profile Picture
+              </Button>
+              </label>
+            </div>
+            )
             }
               
               </CardContent>
