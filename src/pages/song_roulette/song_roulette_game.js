@@ -29,12 +29,12 @@ function SongRouletteGame() {
 
     const exitgame_click = () => {
       console.log("EXIT GAME CLICKED");
-      navigate("/songroulettelobby");
+      navigate("/songroulettelobbybrowser");
     };
 
     const replayGame = () => {
       console.log("REPLAY GAME CLICKED");
-      navigate("/songroulettelobby");
+      navigate("/songroulettelobbybrowser");
     };
     
     const location = useLocation();
