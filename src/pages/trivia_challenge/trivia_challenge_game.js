@@ -192,6 +192,11 @@ function TriviaChallengeGame() {
         return arr;
     }
 
+    const replayGame = () => {
+        console.log("REPLAY GAME CLICKED");
+        navigate("/triviachallengelobby");
+    }
+
     useEffect (() => {
         if (answers.length == 0) {
             var temp = [];
@@ -390,6 +395,22 @@ function TriviaChallengeGame() {
                  <Typography variant="h3" style={{ textAlign: "center" }}>
                     End of game: You earned {totalPoints} points this game!!!
                 </Typography>
+                <Button
+                    sx={{
+                    width: 300,
+                    border: `2px solid ${theme.palette.primary.main}`,
+                    padding: 1,
+                    margin: { xs: 4, sm: 4 },
+                    backgroundColor: 'white',
+                    "&:hover": {
+                        backgroundColor: 'var(--accent-color)',
+                    },
+                    borderWidth: "2px",
+                    }}
+                    onClick={replayGame}
+                >
+                Replay
+                </Button>
                 
             </div>
         )}
