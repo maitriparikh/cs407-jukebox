@@ -27,8 +27,12 @@ import { UserContext } from "../../App";
 import { collection, query, where, getDocs, updateDoc, doc, getDoc, onSnapshot, setDoc } from "firebase/firestore";
 import { auth, db, storage } from "../../utils/firebase";
 
+import { useTheme } from '@mui/material/styles';
+
 
 function MusicPreferencesQuiz() {
+
+    const theme = useTheme();
 
     const navigate = useNavigate();
     const { user, setUser } = useContext(UserContext);
@@ -203,8 +207,8 @@ function MusicPreferencesQuiz() {
             <DialogActions style={{ justifyContent: "center" }}>
             <Button variant="contained"
                 style={{
-                color: 'var(--text-color)',
-                backgroundColor: 'var(--accent-color)',
+                color: theme.palette.primary.main,
+                backgroundColor: theme.palette.secondary.main,
                 textTransform: "none",
                 fontSize: 15,
                 fontWeight: "bold"
@@ -239,8 +243,8 @@ function MusicPreferencesQuiz() {
             variant="contained"
             style={{
                 width: 230,
-                color: 'var(--text-color)',
-                backgroundColor: 'var(--accent-color)',
+                color: theme.palette.primary.main,
+                backgroundColor: theme.palette.secondary.main,
                 textTransform: "none",
                 fontSize: 15,
                 fontWeight: "bold",
@@ -257,20 +261,25 @@ function MusicPreferencesQuiz() {
         ) : (
         <Stack direction="row" justifyContent="center" alignItems="center">
         
-        <Dialog open={noneSelected} onClose={handleNoneSelected}>
+        <Dialog open={noneSelected} onClose={handleNoneSelected} PaperProps={{ style: { backgroundColor: theme.palette.background.default } }}>
+        <DialogTitle>
+            <Typography variant="h3" style={{ textAlign: "left" }}>
+                No Answer Chosen
+            </Typography>
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            <Typography variant="h3" style={{ textAlign: "left" }}>
-                Please select at least one option.
+          <Typography variant="h4" style={{ textAlign: "left" }}>
+            Please select at least one option to move to the next question.
             </Typography>
           </DialogContentText>
         </DialogContent>
     
-        <DialogActions style={{ justifyContent: "center" }}>
+        <DialogActions >
           <Button variant="contained"
             style={{
-              color: 'var(--text-color)',
-              backgroundColor: 'var(--accent-color)',
+                color: theme.palette.primary.main,
+                backgroundColor: theme.palette.secondary.main,
               textTransform: "none",
               fontSize: 15,
               fontWeight: "bold"
@@ -298,11 +307,11 @@ function MusicPreferencesQuiz() {
             
             </ArrowCircleLeftIcon>
             
-            <Card elevation={3} style={{ position: 'relative', border: `2px solid var(--text-color)`, borderRadius: "8px"}}>
+            <Card elevation={3} style={{ position: 'relative', border: `2px solid ${theme.palette.primary.main}`, borderRadius: "8px", backgroundColor: theme.palette.background.default }}>
             {/* Cancel Icon */}
             <CancelIcon
                 style={{
-                color: "var(--text-color)",
+                color: theme.palette.primary.main,
                 position: 'absolute',
                 top: '15px',
                 right: '15px',
@@ -332,12 +341,12 @@ function MusicPreferencesQuiz() {
                       
                       sx={{
                         width: 230,
-                        border: `2px solid var(--text-color)`,
+                        border: `2px solid ${theme.palette.primary.main}`,
                         padding: 1,
                         margin: { xs: 4, sm: 4 },
-                        backgroundColor: answerOption.answerFlag ? 'var(--accent-color)' : 'white',
+                        backgroundColor: answerOption.answerFlag ? theme.palette.secondary.main : theme.palette.background.default,
                         "&:hover": {
-                            backgroundColor: 'var(--accent-color)',
+                            backgroundColor: theme.palette.secondary.main,
                         },
                         //borderWidth: "2px",
                         }}
@@ -356,7 +365,7 @@ function MusicPreferencesQuiz() {
             style={{
                 width: 50,
                 height: 50,
-                color: 'var(--text-color)',
+                color: theme.palette.primary.main,
                 textTransform: "none",
                 fontSize: 15,
                 fontWeight: "bold",
