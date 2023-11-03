@@ -34,6 +34,7 @@ function DailyChallengeGame() {
     const [spotifyToken, setSpotifyToken] = useState(""); // Spotify Token
 
     const [answer, setAnswer] = useState("");
+    const [isCorrect, setIsCorrect] = useState(false);
 
     const gameMode = location.state.gameMode;
     const songInfo = location.state.songInfo
@@ -53,7 +54,7 @@ function DailyChallengeGame() {
     const [showHint2, setShowHint2] = useState(false);
 
     const hint1Delay = 10000; // 10 seconds
-    const hint2Delay = 20000; // 20 seconds
+    const hint2Delay = 10000; // 10 seconds
 
     const [canRevealHint1, setCanRevealHint1] = useState(false);
     const [canRevealHint2, setCanRevealHint2] = useState(false);
@@ -94,17 +95,17 @@ function DailyChallengeGame() {
         clearTimeout(hint2Timer);
         clearInterval(countdownTimer);
       };
-    }, [canRevealHint1, canRevealHint2, hint1Revealed, showHint1, showHint2]);
-     
+    }, [canRevealHint1, canRevealHint2, hint1Revealed, showHint1, showHint2]);    
   
 
     const revealHint1 = () => {
-        setShowHint1(true);
-      };
+      setShowHint1(true);
+      setHint1Revealed(true); // to start timer for hint 2
+    };
     
-      const revealHint2 = () => {
-        setShowHint2(true);
-      };
+    const revealHint2 = () => {
+      setShowHint2(true);
+    };
 
     /* Navigation for buttons */
     const navigate = useNavigate();
@@ -114,8 +115,11 @@ function DailyChallengeGame() {
       console.log(answer)
       console.log(songName)
       if (answer === songName) {
+        setIsCorrect(true);
+        setAlertOpen(true);
         console.log("CORRECT ANSWER!")
       } else {
+        setAlertOpen(true);
         console.log("INCORRECT ANSWER!")
       }
   };
@@ -125,11 +129,21 @@ function DailyChallengeGame() {
       navigate("/dailychallengelobby");
     };
 
+    const [alertOpen, setAlertOpen] = useState(false); 
     const [isDialogOpen, setDialogOpen] = useState(false);
     
-      const closeDialog = () => {
-        setDialogOpen(false);
-      };
+    const closeDialog = () => {
+      setDialogOpen(false);
+    };
+
+    const handleDialogStayOnGamePage = () => {
+      setAlertOpen(false)
+    }
+
+    const handleDialogGoHomepage = () => {
+      navigate("/homepage")
+      setAlertOpen(false)
+    }
     
     return (
 
@@ -142,7 +156,7 @@ function DailyChallengeGame() {
         <br></br>
 
         <Card elevation={3} style={{ position: 'relative', border: `2px solid ${theme.palette.primary.main}`, borderRadius: "8px", backgroundColor: theme.palette.background.default }}>
-          {/* Cancel Icon */}
+            {/* Cancel Icon */}
           <CancelIcon
                 style={{
                 color: theme.palette.primary.main,
@@ -156,12 +170,204 @@ function DailyChallengeGame() {
                 }}
                 onClick={() => exitgame_click()} 
             />
+            
+            <CardContent>
             <br></br>
             <br></br>
             <br></br>
-          <CardContent>
+
+            {!isCorrect && (
+              <div>
+                {/* STAGE 1 - NO HINTS (ONLY AUDIO) - both game modes */}
+                {(!showHint1 && !showHint2) && (
+                <div
+                  style={{
+                    position: 'relative',
+                    border: `2px solid ${theme.palette.background.default}`,
+                    borderRadius: '12px',
+                    backgroundColor: '#282828',
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    padding: '15px',
+                    maxWidth: '1100px', 
+                    margin: '0 auto',
+                  }}
+                >
+                  {/* Album Cover */}
+                  <div
+                  style={{
+                    width: '180px',
+                    height: '180px',
+                    background: 'black', 
+                    borderRadius: '12px',
+                    marginRight: '16px',
+                  }}
+                ></div>
+
+              <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'flex-start',
+                    marginLeft: '1%'
+                  }}
+                >
+                  {/* Song Name */}
+                  <div
+                  style={{
+                    width: '880px', // Adjust the width as needed
+                    height: '34px', // Adjust the height as needed
+                    background: 'black', // Replace with your desired background color
+                    marginBottom: "2%",
+                    borderRadius: '12px'
+                  }}
+                ></div>
+
+                  {/* Artist */}
+                  <div
+                  style={{
+                    width: '880px', // Adjust the width as needed
+                    height: '20px', // Adjust the height as needed
+                    background: 'black', // Replace with your desired background color
+                    marginBottom: "2%",
+                    borderRadius: '12px'
+                  }}
+                ></div>
+
+                  {/* Audio Preview */}
+                  <audio controls style={{ width: '880px', borderRadius: '12px', marginTop: "1%" }}>
+                    <source src={songAudio} type="audio/mpeg" />
+                    Your browser does not support the audio element.
+                  </audio>
+                </div>
+                </div>
+                )}
+
+                {/* STAGE 2 - 1 HINT (+ ARTIST NAME(S)) - only easy mode */}
+                {showHint1 && !showHint2 && (
+                  <div
+                  style={{
+                    position: 'relative',
+                    border: `2px solid ${theme.palette.background.default}`,
+                    borderRadius: '12px',
+                    backgroundColor: '#282828',
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    padding: '15px',
+                    maxWidth: '1100px', 
+                    margin: '0 auto',
+                  }}
+                >
+                  {/* Album Cover */}
+                  <div
+                  style={{
+                    width: '180px',
+                    height: '180px',
+                    background: 'black', 
+                    borderRadius: '12px',
+                    marginRight: '16px',
+                  }}
+                ></div>
+
+              <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'flex-start',
+                    marginLeft: '1%',
+                    borderRadius: '12px'
+                  }}
+                >
+                  {/* Song Name */}
+                  <div
+                  style={{
+                    width: '880px', 
+                    height: '34px', 
+                    background: 'black', 
+                    marginBottom: "2%",
+                    borderRadius: '12px'
+                  }}
+                ></div>
+
+                  {/* Artist */}
+                  <Typography variant="h4" style={{ color: 'white', marginBottom: "2%" }}>{songArtist}</Typography>
+
+                  {/* Audio Preview */}
+                  <audio controls style={{ width: '880px', borderRadius: '12px', marginTop: "1%" }}>
+                    <source src={songAudio} type="audio/mpeg" />
+                    Your browser does not support the audio element.
+                  </audio>
+                </div>
+                </div>
+                )}
+
+                {/* STAGE 3 - 2 HINTs (+ ALBUM COVER) - only easy mode */}
+                {showHint2 && (
+                <div
+                style={{
+                  position: 'relative',
+                  border: `2px solid ${theme.palette.background.default}`,
+                  borderRadius: '12px',
+                  backgroundColor: '#282828',
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  padding: '15px',
+                  maxWidth: '1100px', 
+                  margin: '0 auto',
+                }}
+              >
+                {/* Album Cover */}
+                <img
+                  src={songAlbumPic}
+                  alt="Album Cover"
+                  style={{
+                    width: '180px',
+                    height: '180px',
+                    borderRadius: '12px',
+                    marginRight: '16px',
+                  }}
+                />
 
             <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                  marginLeft: '1%'
+                }}
+              >
+                {/* Song Name */}
+                <div
+                  style={{
+                    width: '880px', 
+                    height: '34px', 
+                    background: 'black', 
+                    marginBottom: "2%",
+                    borderRadius: '12px'
+                  }}
+                ></div>
+
+                {/* Artist */}
+                <Typography variant="h4" style={{ color: 'white', marginBottom: "2%" }}>{songArtist}</Typography>
+
+                {/* Audio Preview */}
+                <audio controls style={{ width: '880px', borderRadius: '12px', marginTop: "1%" }}>
+                  <source src={songAudio} type="audio/mpeg" />
+                  Your browser does not support the audio element.
+                </audio>
+              </div>
+              </div>
+                )}
+              </div>
+            )}
+
+
+            {/* STAGE 4 - CORRECT ANSWER */}
+            {isCorrect && (
+              <div
               style={{
                 position: 'relative',
                 border: `2px solid ${theme.palette.background.default}`,
@@ -208,214 +414,8 @@ function DailyChallengeGame() {
               </audio>
             </div>
             </div>
-
-          </CardContent>
-        </Card>
-            
-        <Card elevation={3} style={{ position: 'relative', border: `2px solid ${theme.palette.primary.main}`, borderRadius: "8px", backgroundColor: theme.palette.background.default }}>
-            {/* Cancel Icon */}
-          <CancelIcon
-                style={{
-                color: theme.palette.primary.main,
-                position: 'absolute',
-                top: '15px',
-                right: '15px',
-                height: '40px',
-                width: '40px',
-                cursor: 'pointer',
-                zIndex: 1, 
-                }}
-                onClick={() => exitgame_click()} 
-            />
-            
-            <CardContent>
-            <br></br>
-            <br></br>
-            <br></br>
-
-            {/* STAGE 1 - NO HINTS (ONLY AUDIO) - both game modes */}
-            {(!showHint1 && !showHint2) && (
-            <div
-              style={{
-                position: 'relative',
-                border: `2px solid ${theme.palette.background.default}`,
-                borderRadius: '12px',
-                backgroundColor: '#282828',
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                padding: '15px',
-                maxWidth: '1100px', 
-                margin: '0 auto',
-              }}
-            >
-              {/* Album Cover */}
-              <div
-              style={{
-                width: '180px',
-                height: '180px',
-                background: 'black', 
-                borderRadius: '12px',
-                marginRight: '16px',
-              }}
-            ></div>
-
-          <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                marginLeft: '1%'
-              }}
-            >
-              {/* Song Name */}
-              <div
-              style={{
-                width: '880px', // Adjust the width as needed
-                height: '34px', // Adjust the height as needed
-                background: 'black', // Replace with your desired background color
-                marginBottom: "2%",
-                borderRadius: '12px'
-              }}
-            ></div>
-
-              {/* Artist */}
-              <div
-              style={{
-                width: '880px', // Adjust the width as needed
-                height: '20px', // Adjust the height as needed
-                background: 'black', // Replace with your desired background color
-                marginBottom: "2%",
-                borderRadius: '12px'
-              }}
-            ></div>
-
-              {/* Audio Preview */}
-              <audio controls style={{ width: '880px', borderRadius: '12px', marginTop: "1%" }}>
-                <source src={songAudio} type="audio/mpeg" />
-                Your browser does not support the audio element.
-              </audio>
-            </div>
-            </div>
             )}
 
-            {/* STAGE 2 - 1 HINT (+ ARTIST NAME(S)) - only easy mode */}
-            {showHint1 && !showHint2 && (
-              <div
-              style={{
-                position: 'relative',
-                border: `2px solid ${theme.palette.background.default}`,
-                borderRadius: '12px',
-                backgroundColor: '#282828',
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                padding: '15px',
-                maxWidth: '1100px', 
-                margin: '0 auto',
-              }}
-            >
-              {/* Album Cover */}
-              <div
-              style={{
-                width: '180px',
-                height: '180px',
-                background: 'black', 
-                borderRadius: '12px',
-                marginRight: '16px',
-              }}
-            ></div>
-
-          <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                marginLeft: '1%',
-                borderRadius: '12px'
-              }}
-            >
-              {/* Song Name */}
-              <div
-              style={{
-                width: '880px', 
-                height: '34px', 
-                background: 'black', 
-                marginBottom: "2%",
-                borderRadius: '12px'
-              }}
-            ></div>
-
-              {/* Artist */}
-              <Typography variant="h4" style={{ color: 'white', marginBottom: "2%" }}>{songArtist}</Typography>
-
-              {/* Audio Preview */}
-              <audio controls style={{ width: '880px', borderRadius: '12px', marginTop: "1%" }}>
-                <source src={songAudio} type="audio/mpeg" />
-                Your browser does not support the audio element.
-              </audio>
-            </div>
-            </div>
-            )}
-
-            {/* STAGE 3 - 2 HINTs (+ ALBUM COVER) - only easy mode */}
-            {showHint2 && (
-            <div
-            style={{
-              position: 'relative',
-              border: `2px solid ${theme.palette.background.default}`,
-              borderRadius: '12px',
-              backgroundColor: '#282828',
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              padding: '15px',
-              maxWidth: '1100px', 
-              margin: '0 auto',
-            }}
-          >
-            {/* Album Cover */}
-            <img
-              src={songAlbumPic}
-              alt="Album Cover"
-              style={{
-                width: '180px',
-                height: '180px',
-                borderRadius: '12px',
-                marginRight: '16px',
-              }}
-            />
-
-        <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-start',
-              marginLeft: '1%'
-            }}
-          >
-            {/* Song Name */}
-            <div
-              style={{
-                width: '880px', 
-                height: '34px', 
-                background: 'black', 
-                marginBottom: "2%",
-                borderRadius: '12px'
-              }}
-            ></div>
-
-            {/* Artist */}
-            <Typography variant="h4" style={{ color: 'white', marginBottom: "2%" }}>{songArtist}</Typography>
-
-            {/* Audio Preview */}
-            <audio controls style={{ width: '880px', borderRadius: '12px', marginTop: "1%" }}>
-              <source src={songAudio} type="audio/mpeg" />
-              Your browser does not support the audio element.
-            </audio>
-          </div>
-          </div>
-            )}
 
         <br></br>
         <br></br>
@@ -513,6 +513,67 @@ function DailyChallengeGame() {
         >
         Submit
         </Button>
+
+        <br></br>
+
+        {isCorrect && (
+          <Dialog open={alertOpen} onClose={handleDialogStayOnGamePage} PaperProps={{ style: { backgroundColor: theme.palette.background.default } }}>
+          <DialogTitle>
+          <Typography variant="h3" style={{ textAlign: "left" }}>
+            Congratulations!
+          </Typography>
+            </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+            <Typography variant="h4" style={{ textAlign: "left" }}>
+              You have correctly identified the mystery song! Come back tomorrow to play another round of the Daily Challenge.
+              </Typography>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button variant="contained"
+              style={{
+                color: theme.palette.primary.main,
+                backgroundColor: theme.palette.secondary.main,
+                textTransform: "none",
+                fontSize: 15,
+                fontWeight: "bold"
+                }} 
+              onClick={handleDialogGoHomepage}>
+              OK
+            </Button>
+          </DialogActions>
+          </Dialog>
+        )}
+        {!isCorrect && (
+          <Dialog open={alertOpen} onClose={handleDialogStayOnGamePage} PaperProps={{ style: { backgroundColor: theme.palette.background.default } }}>
+          <DialogTitle>
+          <Typography variant="h3" style={{ textAlign: "left" }}>
+            Try Again!
+          </Typography>
+            </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+            <Typography variant="h4" style={{ textAlign: "left" }}>
+              You have not yet identified the mystery song - take another guess.
+              </Typography>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button variant="contained"
+              style={{
+                color: theme.palette.primary.main,
+                backgroundColor: theme.palette.secondary.main,
+                textTransform: "none",
+                fontSize: 15,
+                fontWeight: "bold"
+                }} 
+              onClick={handleDialogStayOnGamePage}>
+              OK
+            </Button>
+          </DialogActions>
+          </Dialog>
+        )}
 
         </Stack>
 
