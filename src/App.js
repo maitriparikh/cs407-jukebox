@@ -21,6 +21,8 @@ import Leaderboard from "./pages/leaderboard";
 import Settings from "./pages/settings";
 import EditProfile from "./pages/profile_components/edit_profile";
 import MusicPreferencesQuiz from "./pages/profile_components/music_preference_quiz";
+import FullLogoLight from "../src/jukebox_logo_light.png";
+import FullLogoDark from "../src/jukebox_logo_dark.png";
 
 
 // Daily Challenge Game Pages
@@ -53,17 +55,58 @@ import { useState, createContext, useContext, useEffect } from "react";
 import { onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from "react-router-dom";
 import { auth, storage, db } from './utils/firebase';
+import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+
 
 import Box from '@mui/material/Box';
 
+import { ThemeProvider } from "@mui/material/styles";
+import JukeboxTheme from "./theme"; 
+
 export const UserContext = createContext(null);
 
+
 function App() {
+  const [mode, setMode] = useState("light");
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log("auth state changed");
+        console.log("the passed thru user is: ", user);
+        setCurrentUser(user);
+        setUser(user.uid);
+
+        const userDocRef = doc(db, "users", user.uid);
+
+        // Ensure that setMode is defined and not null/undefined.
+        if (setMode) {
+          const unsubscribe = onSnapshot(userDocRef, (doc) => {
+            const userData = doc.data();
+
+            // Check if doc.data() and doc.data().mode are defined.
+            if (userData && userData.mode) {
+              setMode(userData.mode);
+              console.log('mode FROM FIREBASE: ' + userData.mode);
+            } else {
+              console.error('Mode not found in the document.');
+            }
+          });
+        } else {
+          console.error('setMode is not defined.');
+        }
+
+      } else {
+        console.log("auth state where no user");
+        navigate("/");
+      }
+    })
+  }, []);
+
   const location = useLocation();
   const conditionalHeader =
     location.pathname === "/" ||
-    location.pathname === "/signup" ? null : (
-      <Header></Header>
+    location.pathname === "/signup" ? null : ( 
+      <Header logo={mode === "light" ? FullLogoLight : FullLogoDark} />
     );
   const [user, setUser] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
@@ -72,24 +115,8 @@ function App() {
   
 
   
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log("auth state changed");
-        console.log("the passed thru user is: ", user);
-        setCurrentUser(user);
-        setUser(user.uid);
-      } else {
-        console.log("auth state where no user");
-        navigate("/");
-      }
-    })
-  }, []);
   
   
-
-  
-  if (true) {
     console.log("user is :" + user);
       return (
         <Box
@@ -100,64 +127,55 @@ function App() {
         >
             <div className="App">
               <UserContext.Provider value={{ user: user, setUser: setUser }}>
+              <ThemeProvider theme={JukeboxTheme(mode)}>
+                    <Box
+                    sx={{
+                      backgroundColor: (theme) => theme.palette.background.default,
+                      minHeight: '100vh',
+                    }}
+                  >
                 {conditionalHeader}
+                
+                
 
                     <AuthDetails></AuthDetails>
                     <Routes>
                       <Route path="/" element={<SignIn />} />
                       <Route path="/signup" element={<SignUp />} />
+                      <Route path="/homepage" element={<Homepage />} /> 
                       <Route path="/profile" element={<Profile />} />
-                      <Route path="/homepage" element={<Homepage />} />
+                      
                       <Route path="/leaderboard" element={<Leaderboard />} />
-                      <Route path="/settings" element={<Settings />} />
-                      <Route path="/editprofile" element={<EditProfile />} />
-                      <Route path="/musicpreferencesquiz" element={<MusicPreferencesQuiz />} />
-                      <Route path="/dailychallengelobby" element={<DailyChallengeLobby />} />
-                      <Route path="/dailychallengegame" element={<DailyChallengeGame />} />
-                      <Route path="/SongRoulettelobbybrowser" element={<SongRouletteLobbyBrowser />} />
-                      <Route path="/songroulettelobby" element={<SongRouletteLobby />} />
-                      <Route path="/songroulettegame" element={<SongRouletteGame />} />
-                      <Route path="/pictionarylobby" element={<PictionaryLobby />} />
-                      <Route path="/songsnippetlobby" element={<SongSnippetLobby />} />
-                      <Route path="/songsnippetgame" element={<SongSnippetGame />} />
-                      <Route path="/triviachallengelobby" element={<TriviaChallengeLobby />} />
-                      <Route path="/triviachallengegame" element={<TriviaChallengeGame />} />
-                      <Route path="/lyricchallengelobby" element={<LyricChallengeLobby />} />
+
+                      
+                        <Route path="/settings" element={<Settings />} />
+
+                        
+                        <Route path="/editprofile" element={<EditProfile />} /> 
+
+                        
+                        <Route path="/musicpreferencesquiz" element={<MusicPreferencesQuiz />} />
+                        
+                        <Route path="/dailychallengelobby" element={<DailyChallengeLobby />} />
+                        <Route path="/dailychallengegame" element={<DailyChallengeGame />} />
+                        <Route path="/SongRoulettelobbybrowser" element={<SongRouletteLobbyBrowser />} />
+                        <Route path="/songroulettelobby" element={<SongRouletteLobby />} />
+                        <Route path="/songroulettegame" element={<SongRouletteGame />} />
+                        <Route path="/pictionarylobby" element={<PictionaryLobby />} />
+                        <Route path="/songsnippetlobby" element={<SongSnippetLobby />} />
+                        <Route path="/songsnippetgame" element={<SongSnippetGame />} />
+                        <Route path="/triviachallengelobby" element={<TriviaChallengeLobby />} />
+                        <Route path="/triviachallengegame" element={<TriviaChallengeGame />} />
+                        <Route path="/lyricchallengelobby" element={<LyricChallengeLobby />} />
                       <Route path="/forgot_password" element={<ForgotPassword />} />
                     </Routes>
+                    </Box>
+                    </ThemeProvider >
                   </UserContext.Provider>       
                 </div>
               </Box>
             );
-  }
   
-  else {
-    console.log("no user logged in");
-    
-    // If var "user" is null then dont allow them to access any routes(pages)
-    // besides login and signup
-    //  <Route path="*" element={<Navigate replace to="/" />} />
-    // path="*" - means all other pahts
-    // to="/" - redirect to "/" which is the signin page
-    
-      return (
-    <div className="App">
-      <UserContext.Provider value={{ user: user, setUser: setUser }}>
-        {conditionalHeader}
-
-        
-        <Routes>
-          <Route path="/" element={<SignIn />} />
-          <Route path="/forgot_password" element={<ForgotPassword />} />
-          <Route path="/signup" element={<SignUp />} />
-         <Route path="*" element={<Navigate replace to="/" />} />
-
-        </Routes>
-      </UserContext.Provider>       
-    </div>
-  );
-  }
-
 
 }
 
