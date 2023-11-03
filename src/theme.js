@@ -2,7 +2,7 @@ import { createTheme } from '@mui/material/styles';
 
 const JukeboxTheme = (darkMode) => {
 
-  const isDarkMode = true;
+  const isDarkMode = false;
 
   console.log("dark mode? " + isDarkMode)
 
