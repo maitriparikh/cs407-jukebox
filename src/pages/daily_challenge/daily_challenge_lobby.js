@@ -28,7 +28,7 @@ function DailyChallengeLobby() {
     /* Navigation for buttons */
     const navigate = useNavigate();
     const [numOfRounds, setNumOfRounds] = useState("");
-    const [songIndex, setSongIndex] = useState(15);
+    const [songIndex, setSongIndex] = useState(0);
     const [songInfo, setSongInfo] = useState([])
     const [gameMode, setGameMode] = useState("Easy");
     // verifying that default daily challenge game mode is "Easy" if nothing is selected
@@ -66,7 +66,7 @@ function DailyChallengeLobby() {
     
     const getAllPlaylistTracks = async (playlistId) => {
         let allTracks = [];
-        let nextUrl = `playlists/37i9dQZF1DXcBWIGoYBM5M/tracks`; // HARDCODED SPECIFIC PLAYLIST ............
+        let nextUrl = `playlists/${playlistId}/tracks`; // HARDCODED SPECIFIC PLAYLIST ............ 
 
         while (nextUrl) {
             const response = await fetchWebApi(nextUrl, 'GET');
@@ -86,20 +86,18 @@ function DailyChallengeLobby() {
         }
     };
     
-    //console.log("ALL MY TRACKS: ", allTracks)
 
-    // Extract track codes from allTracks and put them in myPlaylist
     
-    /*const trackURIs = allTracks.map((track) => track.track.uri);
+    /* Send all song names to game  */
+    const allSongNames = allTracks.map((track) => track.track.name);
+    console.log("allSongNames", allSongNames);
 
-    const myPlaylistFinal = trackURIs.map((uri) => {
-        return "https://open.spotify.com/embed/track/" + uri.substring(14) + "?utm_source=generator";
+    allSongNames.map((name) => {
+        myPlaylist.push(name);
     });
+    console.log("myPlaylist", myPlaylist)
 
-    // Now you have myPlaylistFinal properly populated
-    console.log("myPlaylistFinal", myPlaylistFinal);
-    setMyPlaylist(myPlaylistFinal); */
-
+    /* Get specific song info to send to game  */
     const song = allTracks[songIndex];
     console.log(song);
 
@@ -123,29 +121,18 @@ function DailyChallengeLobby() {
     console.log(songName1);
     songInfo.push(songName1);
 
-    /*const updatedSongInfo = [{
-        songPreview: previewURL,
-        songArtist: artist,
-        songAlbumCover: albumPic,
-        songName: songName1,
-    }];
-    
-    //setSongInfo(updatedSongInfo);
-    songInfo.push(updatedSongInfo);*/
-    //console.log("1", updatedSongInfo)
-    //console.log("2", songInfo)
-
     return allTracks;
 
     };
 
     const startgame_click = async () => {
         console.log("START GAME CLICKED");
-        await getAllPlaylistTracks()
+        await getAllPlaylistTracks("37i9dQZF1DXcBWIGoYBM5M")
         navigate("/dailychallengegame", {
           state: {
             gameMode: gameMode,
-            songInfo: songInfo
+            songInfo: songInfo,
+            allSongs: myPlaylist
           },
         });
       };

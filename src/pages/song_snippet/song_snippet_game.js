@@ -24,7 +24,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 
 
 
-function DailyChallengeGame() {
+function SongSnippetLobby() {
 
     const theme = useTheme();
     const { user, setUser } = useContext(UserContext);
@@ -64,18 +64,18 @@ function DailyChallengeGame() {
     const [hint2Countdown, setHint2Countdown] = useState(hint2Delay / 1000);
 
     useEffect(() => {
-      let hint1Timer;
+      const hint1Timer = setInterval(() => {
+        setCanRevealHint1(true);
+        clearInterval(hint1Timer); // Stop the timer once it reaches 0
+        setHint1Revealed(true); // Mark Hint 1 as revealed
+      }, hint1Delay);
+    
       let hint2Timer;
     
-      if (!hint1Revealed && !showHint1) {
-        hint1Timer = setTimeout(() => {
-          setCanRevealHint1(true);
-        }, hint1Delay);
-      }
-    
-      if (hint1Revealed && !showHint2 && canRevealHint1) {
-        hint2Timer = setTimeout(() => {
+      if (hint1Revealed) {
+        hint2Timer = setInterval(() => {
           setCanRevealHint2(true);
+          clearInterval(hint2Timer); // Stop the timer once it reaches 0
         }, hint2Delay);
       }
     
@@ -90,13 +90,12 @@ function DailyChallengeGame() {
       }, 1000);
     
       return () => {
-        clearTimeout(hint1Timer);
-        clearTimeout(hint2Timer);
+        clearInterval(hint1Timer);
+        clearInterval(hint2Timer);
         clearInterval(countdownTimer);
       };
-    }, [canRevealHint1, canRevealHint2, hint1Revealed, showHint1, showHint2]);
-     
-  
+    }, [canRevealHint1, canRevealHint2, hint1Revealed]);    
+    
 
     const revealHint1 = () => {
         setShowHint1(true);
@@ -521,4 +520,4 @@ function DailyChallengeGame() {
     );
 }
 
-export default DailyChallengeGame;
+export default SongSnippetGame;
