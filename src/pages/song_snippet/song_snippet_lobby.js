@@ -98,6 +98,7 @@ function SongSnippetLobby() {
         /* Get array of song info to send to game  */
 
 
+        const songInfoArrayTemp = []
         for (var i = 0; i < allTracks.length; i++) {
 
             // Song info for song i
@@ -122,22 +123,28 @@ function SongSnippetLobby() {
                 songAudio: previewURL
             };
 
-            // add song i to songInfoArray
-            songInfoArray.push(songInfo1)
+            // add song i to songInfoArrayTemp
+            songInfoArrayTemp.push(songInfo1)
         }
 
-        console.log("songInfoArray before removing songs", songInfoArray)
+        console.log("songInfoArrayTemp before removing songs", songInfoArrayTemp)
 
         // remove random songs until length matches rounds
-        while (songInfoArray.length > numOfRounds) {
+        while (songInfoArrayTemp.length > numOfRounds) {
 
-            const indexToRemove = Math.floor(Math.random() * songInfoArray.length);
+            const indexToRemove = Math.floor(Math.random() * songInfoArrayTemp.length);
             //remove that element from the array
-            songInfoArray.splice(indexToRemove, 1);
+            songInfoArrayTemp.splice(indexToRemove, 1);
         }
-        console.log("songInfoArray", songInfoArray)
-        const tempSongInfoArray = shuffleArray(songInfoArray);
-        setSongInfoArray(tempSongInfoArray);
+        console.log("songInfoArrayTemp", songInfoArrayTemp)
+        
+        const songInfoArrayTemp2 = shuffleArray(songInfoArrayTemp)
+        console.log("songInfoArrayTemp2 Shuffled", songInfoArrayTemp2)
+
+        songInfoArrayTemp2.map((songInfoTemp) => {
+            songInfoArray.push(songInfoTemp)
+        });
+
         console.log("songInfoArray FINAL", songInfoArray)
 
 
@@ -209,7 +216,7 @@ function SongSnippetLobby() {
       <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
 
         <Typography variant="h2" style={{ textAlign: "center" }}>
-            Song Snippet
+            Song Snippet Challenge
         </Typography>
 
         <br></br>

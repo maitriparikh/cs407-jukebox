@@ -134,9 +134,12 @@ function SongSnippetGame() {
       setAlertOpen(false)
     }
 
-    const handleDialogGoHomepage = () => {
+    const handleGoHomepage = () => {
       navigate("/homepage")
-      setAlertOpen(false)
+    }
+
+    const handleReplay = () => {
+      navigate("/songsnippetlobby")
     }
 
     const handleNextRound = () => {
@@ -176,20 +179,59 @@ function SongSnippetGame() {
           console.log("INCORRECT ANSWER!")
         }
     };
+
     
     return (
 
         <div>
         {showEnd ? (
-        <Typography variant="h3" style={{ textAlign: "center"}}>
-            end
-        </Typography>
+        <div style={{ marginTop: "10%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
+            
+            <Typography variant="h2" style={{ textAlign: "center"}}>
+                Congratulations! You completed the Song Snippet Challenge
+            </Typography>
+
+            <br></br>
+
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="center"
+              spacing={2}
+              style={{ minHeight: '10vh' }} // Adjust the height as needed
+            >
+
+            <Button variant="contained"
+            style={{
+                color: theme.palette.primary.main,
+                backgroundColor: theme.palette.secondary.main,
+              textTransform: "none",
+              fontSize: 15,
+              fontWeight: "bold"
+              }}  
+            onClick={handleReplay} >
+            Replay
+            </Button>
+
+            <Button variant="contained"
+            style={{
+                color: theme.palette.primary.main,
+                backgroundColor: theme.palette.secondary.main,
+              textTransform: "none",
+              fontSize: 15,
+              fontWeight: "bold"
+              }}  
+            onClick={handleGoHomepage} >
+            Back to Home
+            </Button>
+
+            </Stack>
+          </div>
         ) : (
             <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
 
-
         <Typography variant="h3" style={{ textAlign: "center"}}>
-            Guess the song!
+           Round {currentRound + 1} of {songInfoArray.length}
         </Typography>
         <br></br>
 
