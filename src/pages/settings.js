@@ -22,11 +22,10 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { auth, db } from "../utils/firebase";
 import { UserContext } from "../App";
 import { deleteUser, getAuth } from "firebase/auth";
-import { doc, deleteDoc } from "firebase/firestore";
+import { doc, getDoc, deleteDoc, updateDoc } from "firebase/firestore";
 import { updateEmail, updatePassword } from "firebase/auth";
 
 import { useTheme } from '@mui/material/styles';
-
 
 
 function Settings() {
@@ -40,11 +39,24 @@ function Settings() {
     const [oldPassword, setOldPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
 
-    const [darkMode, setDarkMode] = useState(true);
+    const [mode, setMode] = useState("light")
+    const [darkMode, setDarkMode] = useState(false);
+
     const handleDarkModeToggle = () => {
-        setDarkMode(!darkMode);
-        console.log("dark mode:" + darkMode)
+      const newMode = darkMode ? "dark" : "light";
+      setDarkMode(!darkMode);
+      setMode(newMode);
+      console.log("NEW MODE: " + newMode);
+      updateMode(newMode); 
     };
+
+    const updateMode = async () => {
+      const docRef = doc(db, "users", user);
+      await updateDoc(docRef, {
+          mode: mode
+      }).then(() => console.log("Document updated"));      
+    }
+
 
     const [filteredMode, setFilteredMode] = useState(true);
     const handleFilteredModeToggle = () => {
@@ -145,6 +157,7 @@ function Settings() {
         console.log("GO TO SETTINGS");
         navigate("/");
     };
+    
 
     return (
       <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "7%", marginRight: "7%" }}>
