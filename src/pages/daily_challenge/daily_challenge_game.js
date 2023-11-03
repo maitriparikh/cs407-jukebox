@@ -17,11 +17,10 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import TextField from "@mui/material/TextField";
 import { useTheme } from '@mui/material/styles';
-import { doc, onSnapshot } from "firebase/firestore";
+import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../../utils/firebase";
 import { UserContext } from "../../App";
 import Autocomplete from '@mui/material/Autocomplete';
-
 
 
 function DailyChallengeGame() {
@@ -110,6 +109,13 @@ function DailyChallengeGame() {
     /* Navigation for buttons */
     const navigate = useNavigate();
 
+    const updatePlayedDailyChallenge = async () => {
+      const docRef = doc(db, "users", user);
+      await updateDoc(docRef, {
+          playedDailyChallenge: true
+      }).then(() => console.log("Document updated"));      
+  }
+
     const handleSubmitButtonClick = () => { 
       // check user's answer
       console.log(answer)
@@ -117,6 +123,7 @@ function DailyChallengeGame() {
       if (answer === songName) {
         setIsCorrect(true);
         setAlertOpen(true);
+        updatePlayedDailyChallenge();
         console.log("CORRECT ANSWER!")
       } else {
         setAlertOpen(true);
@@ -427,8 +434,8 @@ function DailyChallengeGame() {
             <Button variant="contained"
               style={{
                 width: 230,
-                color: canRevealHint1 ? theme.palette.primary.main : 'dark gray',
-                backgroundColor: canRevealHint1 ? theme.palette.secondary.main : 'gray',
+                color: canRevealHint1 ? theme.palette.primary.main : 'gray',
+                backgroundColor: canRevealHint1 ? theme.palette.secondary.main : 'light gray',
                 textTransform: "none",
                 fontSize: 15,
                 fontWeight: "bold",
@@ -446,8 +453,8 @@ function DailyChallengeGame() {
             <Button variant="contained"
               style={{
                 width: 230,
-                color: canRevealHint2 ? theme.palette.primary.main : 'dark gray',
-                backgroundColor: canRevealHint2 ? theme.palette.secondary.main : 'gray',
+                color: canRevealHint2 ? theme.palette.primary.main : 'gray',
+                backgroundColor: canRevealHint2 ? theme.palette.secondary.main : 'light gray',
                 textTransform: "none",
                 fontSize: 15,
                 fontWeight: "bold",

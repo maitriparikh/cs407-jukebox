@@ -20,6 +20,11 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../../utils/firebase";
 import { useTheme } from '@mui/material/styles';
 import { UserContext } from "../../App";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 
 function DailyChallengeLobby() {
@@ -52,6 +57,16 @@ function DailyChallengeLobby() {
         
     });
     };
+
+    const [playedDailyChallenge, setPlayedDailyChallenge] = useState(false); // already played daily challenge?
+
+    const getPlayedDailyChallenge = async () => {
+    const unsubUserDoc = onSnapshot(doc(db, "users", user), async (doc) => {
+        setPlayedDailyChallenge(doc.data().playedDailyChallenge);
+        console.log('played daily challenge? ' + doc.data().playedDailyChallenge);
+    });
+    };
+      
 
     const fetchWebApi = async (endpoint, method, body) => {
     const res = await fetch(`https://api.spotify.com/v1/${endpoint}`, {
@@ -137,8 +152,30 @@ function DailyChallengeLobby() {
         });
       };
 
+    const [alertOpen, setAlertOpen] = useState(false); 
+    const [isDialogOpen, setDialogOpen] = useState(false);
+    
+    const closeDialog = () => {
+    setDialogOpen(false);
+    };
+
+    const handleDialogStayOnGamePage = () => {
+    setAlertOpen(false)
+    }
+
+    const handleDialogGoHomepage = () => {
+    navigate("/homepage")
+    setAlertOpen(false)
+    }
+
 
     useEffect(()=>{
+
+        getPlayedDailyChallenge()
+        if (playedDailyChallenge) {
+            setAlertOpen(true);
+            console.log("CANNOT PLAY DAILY CHALLENGE AGAIN");
+        }
 
         getSpotifyToken()
         if (spotifyToken) {
@@ -148,7 +185,7 @@ function DailyChallengeLobby() {
         
         }
     
-    }, [spotifyToken]);
+    }, [spotifyToken, playedDailyChallenge]);
 
     return (
       <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
@@ -159,7 +196,40 @@ function DailyChallengeLobby() {
 
         <br></br>
 
-        <Card 
+        {/* ALREADY PLAYED THE GAME - DON'T LET USER PLAY AGAIN */}
+        {playedDailyChallenge && (
+        <Dialog open={alertOpen} onClose={handleDialogGoHomepage} PaperProps={{ style: { backgroundColor: theme.palette.background.default } }}>
+        <DialogTitle>
+        <Typography variant="h3" style={{ textAlign: "left" }}>
+            Oops!
+        </Typography>
+            </DialogTitle>
+        <DialogContent>
+            <DialogContentText>
+            <Typography variant="h4" style={{ textAlign: "left" }}>
+            You have already played today's challenge! Come back tomorrow to play another round of the Daily Challenge.
+            </Typography>
+            </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+            <Button variant="contained"
+            style={{
+                color: theme.palette.primary.main,
+                backgroundColor: theme.palette.secondary.main,
+                textTransform: "none",
+                fontSize: 15,
+                fontWeight: "bold"
+                }} 
+            onClick={handleDialogGoHomepage}>
+            OK
+            </Button>
+        </DialogActions>
+        </Dialog>
+        )}
+
+    
+        <div>
+            <Card 
             style={{ 
             height: "270px", 
             border: `3px solid ${theme.palette.primary.main}`, 
@@ -179,7 +249,7 @@ function DailyChallengeLobby() {
                     Welcome to Jukebox's daily challenge! Your task will be to guess a particular song with as few hints as possible. First, choose a game mode below. 
                 </Typography>
                 <Typography variant="h4" style={{ textAlign: "center" }}>
-                    In easy mode, we will start you off with an an audio snippet from the mystery song. If you recognize the tune, enter it in the box that appears on your screen. If you can't, don't worry - we will continue giving you more hints (visual, lyrical, trivia-y, etc). For hard mode, you must guess the song from the audio snippet alone! Good luck!
+                    In easy mode, we will start you off with an an audio snippet from the mystery song. If you recognize the tune, enter it in the box that appears on your screen. If you can't, don't worry - we will continue giving you more hints. For hard mode, you must guess the song from the audio snippet alone! Good luck!
                 </Typography>
             </Grid>
 
@@ -217,23 +287,25 @@ function DailyChallengeLobby() {
             </Card>
 
             <Grid item xs={12}>
-                <Button
-                variant="contained"
-                style={{
-                    width: 230,
-                    color: theme.palette.primary.main,
-                    backgroundColor: theme.palette.secondary.main,
-                    textTransform: "none",
-                    fontSize: 15,
-                    fontWeight: "bold",
-                    margin: "3%"
-                }}
-                onClick={startgame_click}
-                >
-                Start Game!
-                </Button>
+            <Button
+            variant="contained"
+            style={{
+                width: 230,
+                color: theme.palette.primary.main,
+                backgroundColor: theme.palette.secondary.main,
+                textTransform: "none",
+                fontSize: 15,
+                fontWeight: "bold",
+                margin: "3%"
+            }}
+            onClick={startgame_click}
+            >
+            Start Game!
+            </Button>
+
             </Grid>
-   
+         </div>
+
         </div>
       );
     }
