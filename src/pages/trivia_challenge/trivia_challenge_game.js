@@ -1,5 +1,5 @@
 import Button from "@mui/material/Button";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CircularProgress, Grid } from "@mui/material";
 import { Box, Stack } from "@mui/system";
@@ -17,11 +17,16 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { useTheme } from '@mui/material/styles';
 import FullLogoLight from "../../jukebox_logo_light.png";
+import { collection, query, where, getDocs, updateDoc, doc, getDoc, onSnapshot, setDoc, arrayUnion } from "firebase/firestore";
+import { auth, db, storage } from "../../utils/firebase";
+import { UserContext } from "../../App";
+
 
 function TriviaChallengeGame() {
     const location = useLocation();
     const theme = useTheme();
     const navigate = useNavigate();
+    const { user, setUser } = useContext(UserContext);
 
     
 
@@ -192,8 +197,20 @@ function TriviaChallengeGame() {
         return arr;
     }
 
-    const replayGame = () => {
+    const sendGameScore = async () => {
+        const docRef = doc(db, "users", user);
+        await updateDoc(docRef, {
+            triviaGameScore: arrayUnion({
+                rounds: rounds,
+                score: totalPoints
+            })
+        }).then(() => console.log("Document updated"));
+    }
+
+    const replayGame = async () => {
         console.log("REPLAY GAME CLICKED");
+        //need to handle sending game data to firebase
+        await sendGameScore();
         navigate("/triviachallengelobby");
     }
 
