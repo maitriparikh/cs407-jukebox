@@ -42,6 +42,9 @@ function Settings() {
     const [mode, setMode] = useState("light")
     const [darkMode, setDarkMode] = useState(false);
 
+    const [fMode, setFMode] = useState("explicit");
+    const [filteredMode, setFilteredMode] = useState(false);
+
     const handleDarkModeToggle = () => {
       const newMode = darkMode ? "dark" : "light";
       setDarkMode(!darkMode);
@@ -57,10 +60,20 @@ function Settings() {
       }).then(() => console.log("Document updated"));      
     }
 
+    const updateExplicitMode = async () => {
+      const docRef = doc(db, "users", user);
+      await updateDoc(docRef, {
+          explicit: fMode
+      }).then(() => console.log("Document updated"));      
+    }
 
-    const [filteredMode, setFilteredMode] = useState(true);
+    
     const handleFilteredModeToggle = () => {
+        const newMode = filteredMode ? "filtered" : "explicit";
         setFilteredMode(!filteredMode);
+        setFMode(newMode);
+        console.log("NEW MODE: " + newMode);
+        updateExplicitMode(newMode); 
     };
 
     const [alertOpen, setAlertOpen] = useState(false);
