@@ -67,7 +67,12 @@ export const UserContext = createContext(null);
 
 
 function App() {
-  const [mode, setMode] = useState("light");
+  // for light/dark mode (default = light mode)
+  const [appearance, setAppearance] = useState("light");
+
+  // for explicit/filtered mode (default = explicit mode)
+  const [contentFilter, setContentFilter] = useState("explicit");
+
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -78,22 +83,26 @@ function App() {
 
         const userDocRef = doc(db, "users", user.uid);
 
-        // Ensure that setMode is defined and not null/undefined.
-        if (setMode) {
-          const unsubscribe = onSnapshot(userDocRef, (doc) => {
-            const userData = doc.data();
+        const unsubscribe = onSnapshot(userDocRef, (doc) => {
+          const userData = doc.data();
 
-            // Check if doc.data() and doc.data().mode are defined.
-            if (userData && userData.mode) {
-              setMode(userData.mode);
-              console.log('mode FROM FIREBASE: ' + userData.mode);
+          if (userData) {
+            // check if appearance is defined in Firebase
+            if (userData.appearance) {
+              setAppearance(userData.appearance);
+              console.log('APPEARANCE FROM FIREBASE: ' + userData.appearance);
             } else {
-              console.error('Mode not found in the document.');
+              console.log('APPEARANCE NOT FOUND IN FIREBASE!');
             }
-          });
-        } else {
-          console.error('setMode is not defined.');
-        }
+            // check if contentFilter is defined in Firebase
+            if (userData.contentFilter) {
+              setContentFilter(userData.contentFilter);
+              console.log('CONTENT FILTER FROM FIREBASE: ' + userData.contentFilter);
+            } else {
+              console.log('CONTENT FILTER NOT FOUND IN FIREBASE!');
+            }
+          }
+        });
 
       } else {
         console.log("auth state where no user");
@@ -106,18 +115,13 @@ function App() {
   const conditionalHeader =
     location.pathname === "/" ||
     location.pathname === "/signup" ? null : ( 
-      <Header logo={mode === "light" ? FullLogoLight : FullLogoDark} />
+      <Header logo={appearance === "light" ? FullLogoLight : FullLogoDark} />
     );
   const [user, setUser] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const navigate = useNavigate();
-
-  
-
-  
-  
-  
-    console.log("user is :" + user);
+    
+  console.log("user is :" + user);
       return (
         <Box
           sx={{
@@ -127,7 +131,7 @@ function App() {
         >
             <div className="App">
               <UserContext.Provider value={{ user: user, setUser: setUser }}>
-              <ThemeProvider theme={JukeboxTheme(mode)}>
+              <ThemeProvider theme={JukeboxTheme(appearance)}>
                     <Box
                     sx={{
                       backgroundColor: (theme) => theme.palette.background.default,
@@ -148,7 +152,7 @@ function App() {
                       <Route path="/leaderboard" element={<Leaderboard />} />
 
                       
-                        <Route path="/settings" element={<Settings />} />
+                        <Route path="/settings" element={<Settings appearanceSelection={appearance} contentFilterSelection={contentFilter} />} />
 
                         
                         <Route path="/editprofile" element={<EditProfile />} /> 

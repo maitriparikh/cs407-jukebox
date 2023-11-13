@@ -28,7 +28,7 @@ import { updateEmail, updatePassword } from "firebase/auth";
 import { useTheme } from '@mui/material/styles';
 
 
-function Settings() {
+function Settings( {appearanceSelection, contentFilterSelection} ) {
     const theme = useTheme();
 
     const [firstName] = useState("");
@@ -39,42 +39,54 @@ function Settings() {
     const [oldPassword, setOldPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
 
-    const [mode, setMode] = useState("light")
+    // if appearanceSelection (from App.js) is defined in Firebase mode will be APPEARANCESELECTION VALUE
+    // if appearanceSelection (from App.js) is not defined (new acc, mode not changed) mode will be LIGHT
+    const [appearance, setAppearance] = useState(appearanceSelection || "light")
     const [darkMode, setDarkMode] = useState(false);
 
-    const [fMode, setFMode] = useState("explicit");
+    const [contentFilter, setContentFilter] = useState(contentFilterSelection || "explicit");
     const [filteredMode, setFilteredMode] = useState(false);
 
     const handleDarkModeToggle = () => {
       const newMode = darkMode ? "dark" : "light";
       setDarkMode(!darkMode);
-      setMode(newMode);
-      console.log("NEW MODE: " + newMode);
-      updateMode(newMode); 
+      setAppearance(newMode);
+      console.log("NEW APPEARANCE MODE: " + newMode);
+      updateAppearance(newMode); 
     };
 
-    const updateMode = async () => {
+    const updateAppearance = async () => {
       const docRef = doc(db, "users", user);
       await updateDoc(docRef, {
-          mode: mode
+          appearance: appearance
       }).then(() => console.log("Document updated"));      
     }
-
-    const updateExplicitMode = async () => {
-      const docRef = doc(db, "users", user);
-      await updateDoc(docRef, {
-          explicit: fMode
-      }).then(() => console.log("Document updated"));      
-    }
-
     
     const handleFilteredModeToggle = () => {
         const newMode = filteredMode ? "filtered" : "explicit";
         setFilteredMode(!filteredMode);
-        setFMode(newMode);
-        console.log("NEW MODE: " + newMode);
-        updateExplicitMode(newMode); 
+        setContentFilter(newMode);
+        console.log("NEW CONTENT FILTER MODE: " + newMode);
+        updateContentFilter(newMode); 
     };
+
+    const updateContentFilter = async () => {
+      const docRef = doc(db, "users", user);
+      await updateDoc(docRef, {
+          contentFilter: contentFilter
+      }).then(() => console.log("Document updated"));      
+    }
+
+    useEffect(() => {
+      // Update darkMode based on appearanceSelection after the component mounts (so persists even after reloading)
+      if (appearanceSelection) {
+        setDarkMode(appearanceSelection === "dark");
+      }
+      // Update filteredMode based on contentFilterSelection after the component mounts (so persists even after reloading)
+      if (contentFilterSelection) {
+        setFilteredMode(contentFilterSelection === "filtered");
+      }
+    }, [appearanceSelection, contentFilterSelection]);
 
     const [alertOpen, setAlertOpen] = useState(false);
     const deleteAccount = () => {
