@@ -38,6 +38,11 @@ function Leaderboard() {
     const [triviaGamesArray, setTriviaGamesArray] = useState([]);
     const [totalRounds, setTotalRounds] = useState(0);
     const [totalPoints, setTotalPoints] = useState(0);
+    const [avgPtsPerRound, setAvgPtsPerRound] = useState(0);
+
+    const averagePointsPerRound = (totalPts, totalRound) => {
+        return (totalPts / totalRound);
+    }
 
     const triviaChallengeStats = (triviaArray) => {
         if (triviaArray.length != 0) {
@@ -49,6 +54,7 @@ function Leaderboard() {
                 rds += parseInt(triviaArray[i].rounds, 10);
                 pts += parseInt(triviaArray[i].score, 10);
             }
+            setAvgPtsPerRound(Math.round(averagePointsPerRound(pts, rds) * 100) / 100);
             setTotalRounds(rds);
             setTotalPoints(pts);
         }
@@ -78,6 +84,7 @@ function Leaderboard() {
                 <div>
                     <h3>Total Rounds: {totalRounds} </h3>
                     <h3>Total Points: {totalPoints} </h3>
+                    <h3>Average Points Per Round (Max is 50 points): {avgPtsPerRound}</h3>
                 </div>
             </div>
         </div>
