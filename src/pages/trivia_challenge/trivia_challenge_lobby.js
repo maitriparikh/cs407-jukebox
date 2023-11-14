@@ -21,6 +21,9 @@ import { UserContext } from "../../App";
 
 import { useTheme } from '@mui/material/styles';
 
+import StartGameSound from "../../sounds/start_game.mp3";
+
+
 function TriviaChallengeLobby() {
 
     const theme = useTheme();
@@ -93,6 +96,8 @@ function TriviaChallengeLobby() {
         console.log("START GAME CLICKED");
         console.log(topFiveArr);
         //await buildSongBank()
+        const audio = new Audio(StartGameSound);
+        audio.play();
         navigate("/triviachallengegame", {
           state: {
             rounds: numOfRounds,

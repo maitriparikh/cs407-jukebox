@@ -13,6 +13,8 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../App";
 import { db } from "../../utils/firebase";
 
+import StartGameSound from "../../sounds/start_game.mp3";
+
 
 // STILL TO DO: ensure that the song bank length is >= # of rounds chosen (or else not enough songs for game)
 import io from 'socket.io-client';
@@ -93,6 +95,8 @@ function SongRouletteLobby() {
     const startgame_click = async () => {
       console.log("START GAME CLICKED");
       await buildSongBank()
+      const audio = new Audio(StartGameSound);
+      audio.play();
       navigate("/songroulettegame", {
         state: {
           rounds: numOfRounds,

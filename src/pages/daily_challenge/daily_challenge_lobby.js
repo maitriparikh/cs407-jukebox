@@ -26,6 +26,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
+import StartGameSound from "../../sounds/start_game.mp3";
+
 
 function DailyChallengeLobby() {
     const { user, setUser } = useContext(UserContext);
@@ -143,6 +145,8 @@ function DailyChallengeLobby() {
     const startgame_click = async () => {
         console.log("START GAME CLICKED");
         await getAllPlaylistTracks("37i9dQZF1DXcBWIGoYBM5M")
+        const audio = new Audio(StartGameSound);
+        audio.play();
         navigate("/dailychallengegame", {
           state: {
             gameMode: gameMode,

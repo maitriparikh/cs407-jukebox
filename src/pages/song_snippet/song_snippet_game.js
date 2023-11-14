@@ -22,7 +22,9 @@ import { db } from "../../utils/firebase";
 import { UserContext } from "../../App";
 import Autocomplete from '@mui/material/Autocomplete';
 
-
+import CorrectAnswerSound from "../../sounds/correct_answer.mp3";
+import WrongAnswerSound from "../../sounds/wrong_answer.mp3";
+import FanfareSound from "../../sounds/fanfare.mp3";
 
 function SongSnippetGame() {
 
@@ -163,6 +165,8 @@ function SongSnippetGame() {
             setCurrentRound(nextRound);
         } else {
             setShowEnd(true);
+            const audio = new Audio(FanfareSound);
+            audio.play();
         }
     }
 
@@ -174,9 +178,13 @@ function SongSnippetGame() {
           setIsCorrect(true);
           setAlertOpen(true);
           console.log("CORRECT ANSWER!")
+          const audio = new Audio(CorrectAnswerSound);
+          audio.play();
         } else {
           setAlertOpen(true);
           console.log("INCORRECT ANSWER!")
+          const audio = new Audio(WrongAnswerSound);
+          audio.play();
         }
     };
 

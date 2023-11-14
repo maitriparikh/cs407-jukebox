@@ -21,6 +21,9 @@ import { collection, query, where, getDocs, updateDoc, doc, getDoc, onSnapshot, 
 import { auth, db, storage } from "../../utils/firebase";
 import { UserContext } from "../../App";
 
+import CorrectAnswerSound from "../../sounds/correct_answer.mp3";
+import WrongAnswerSound from "../../sounds/wrong_answer.mp3";
+import FanfareSound from "../../sounds/fanfare.mp3";
 
 function TriviaChallengeGame() {
     const location = useLocation();
@@ -120,7 +123,8 @@ function TriviaChallengeGame() {
 
         if (currentQuestion == rounds - 1) { // Max rounds reached
             setShowGame(!showGame);
-            
+            const audio = new Audio(FanfareSound);
+            audio.play(); 
         } 
         else if (currentQuestion < rounds - 1) { // Change question to next question
             console.log("Current question number is " + currentQuestion)
@@ -137,8 +141,12 @@ function TriviaChallengeGame() {
                 setCurrentPoints(50);
                 setTotalPoints(totalPoints + 50);
                 console.log(currentPoints);
+                const audio = new Audio(CorrectAnswerSound);
+            audio.play();
             } else {
                 setCurrentPoints(0);
+                const audio = new Audio(WrongAnswerSound);
+                audio.play();
             }
         } else if (questionsIndex == 0) {
             console.log("questions index is " + questionsIndex)
@@ -150,8 +158,12 @@ function TriviaChallengeGame() {
                 setCurrentPoints(50);
                 setTotalPoints(totalPoints + 50);
                 console.log(currentPoints);
+                const audio = new Audio(CorrectAnswerSound);
+                audio.play();
             } else {
                 setCurrentPoints(0);
+                const audio = new Audio(WrongAnswerSound);
+                audio.play();
             }
         } else {
             //checking if song name is correct for preview
@@ -159,8 +171,12 @@ function TriviaChallengeGame() {
                 setCurrentPoints(50);
                 setTotalPoints(totalPoints + 50);
                 console.log(currentPoints);
+                const audio = new Audio(CorrectAnswerSound);
+                audio.play();
             } else {
                 setCurrentPoints(0);
+                const audio = new Audio(WrongAnswerSound);
+                audio.play();
             }
         }
         
@@ -433,7 +449,7 @@ function TriviaChallengeGame() {
         ) : (
             <div>
                 <Typography variant="h2" style={{ textAlign: "center" }}>
-                    Trivial Challenge Summary
+                    Trivia Challenge Summary
                 </Typography>
                 <br></br>
                  <Typography variant="h3" style={{ textAlign: "center" }}>
