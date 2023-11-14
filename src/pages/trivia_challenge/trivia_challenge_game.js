@@ -79,6 +79,8 @@ function TriviaChallengeGame() {
     const previews = location.state.previews
     const albumImages = location.state.albumImages;
 
+    const [highScore, setHighScore] = useState(0);
+
 
 
     const handleOptionClick = (answerOption) => {
@@ -198,8 +200,33 @@ function TriviaChallengeGame() {
     }
 
     const sendGameScore = async () => {
+        var hs = 0;
         const docRef = doc(db, "users", user);
+        await onSnapshot(docRef, async (doc) => {
+            hs = doc.data().triviaHighScore;
+        });
+
+        if (totalPoints > hs) {
+            await updateDoc(docRef, {
+                triviaHighScore: totalPoints,
+                triviaGameScore: arrayUnion({
+                    rounds: rounds,
+                    score: totalPoints
+                })
+            }).then(() => console.log("Document updated with new high score"));
+        } else {
+            await updateDoc(docRef, {
+                triviaGameScore: arrayUnion({
+                    rounds: rounds,
+                    score: totalPoints
+                })
+            }).then(() => console.log("Document updated with no new high score"));
+        }
+
+        
+
         await updateDoc(docRef, {
+            triviaHighScore: hs,
             triviaGameScore: arrayUnion({
                 rounds: rounds,
                 score: totalPoints

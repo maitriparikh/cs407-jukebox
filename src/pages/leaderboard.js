@@ -60,6 +60,24 @@ function Leaderboard() {
         }
     }
 
+    const getHighScores = async () => {
+        var triviaHSArray = [];
+        console.log("inside High Scores");
+        const q = query(collection(db, "users"));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+            // doc.data() is never undefined for query doc snapshots
+            //console.log(doc.id, " => ", doc.data());
+            if (doc.data().triviaHighScore) {
+                console.log("user high score" + doc.data().triviaHighScore);
+                triviaHSArray.push({username: doc.data().username, score: doc.data().triviaHighScore});
+            }
+        });
+        triviaHSArray = triviaHSArray.sort((a,b) => b.score - a.score);
+        const slicedArray = triviaHSArray.slice(0, 10);
+        setTriviaGamesArray(slicedArray);
+    }
+
     useEffect (() => {
         onAuthStateChanged (auth, async (user) => {
             if (user) {
@@ -69,22 +87,38 @@ function Leaderboard() {
                     console.log(doc.data().triviaGameScore);
                     triviaChallengeStats(doc.data().triviaGameScore);
                 });
-                console.log("Rounds are " + totalRounds);
-                console.log("Points are " + totalPoints);
+                await getHighScores();
             }
-        })
+        })        
     }, [])
 
     return(
         
         <div>
-            <h1>Leaderboard</h1>
             <div>
-                <h2>Trivia Challenge Statisitics</h2>
+                <h1>Music Game Leaderboards</h1>
                 <div>
-                    <h3>Total Rounds: {totalRounds} </h3>
-                    <h3>Total Points: {totalPoints} </h3>
-                    <h3>Average Points Per Round (Max is 50 points): {avgPtsPerRound}</h3>
+                    <h2>Trivia Challenge Leaderboard</h2>
+                    {
+                        triviaGamesArray.map(highScore => (
+                            <p>
+                                <h3>{highScore.username}: {highScore.score}</h3>
+                            </p>
+
+                        ))
+                    }
+                </div>
+            </div>
+            <br></br>
+            <div>
+                <h1>Playing Statisitics</h1>
+                <div>
+                    <h2>Trivia Challenge Statisitics</h2>
+                    <div>
+                        <h3>Total Rounds: {totalRounds} </h3>
+                        <h3>Total Points: {totalPoints} </h3>
+                        <h3>Average Points Per Round (Max is 50 points): {avgPtsPerRound}</h3>
+                    </div>
                 </div>
             </div>
         </div>
