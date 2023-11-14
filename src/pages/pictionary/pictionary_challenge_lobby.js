@@ -23,8 +23,16 @@ function PictionaryLobby() {
 
    const theme = useTheme();
 
+   /* Navigation for buttons */
+   const navigate = useNavigate();
+
     const [numOfRounds, setNumOfRounds] = useState("");
 
+    const startgame_click = async () => {
+      console.log("START GAME CLICKED");
+      navigate("/pictionarygame", {
+      });
+    };
 
     return (
       <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
@@ -120,6 +128,7 @@ function PictionaryLobby() {
             fontWeight: "bold",
             margin: "3%"
           }}
+          onClick={startgame_click}
         >
           Start Game!
         </Button>

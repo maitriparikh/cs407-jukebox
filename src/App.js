@@ -38,6 +38,7 @@ import LobbyViewer from "./pages/song_roulette/song_roulette_lobby_viewer";
 
 // Pictionary Game Pages
 import PictionaryLobby from "./pages/pictionary/pictionary_challenge_lobby";
+import PictionaryGame from "./pages/pictionary/pictionary_challenge_game";
 
 // Song Snippet Game Pages
 import SongSnippetLobby from "./pages/song_snippet/song_snippet_lobby";
@@ -166,6 +167,7 @@ function App() {
                         <Route path="/songroulettelobby" element={<SongRouletteLobby />} />
                         <Route path="/songroulettegame" element={<SongRouletteGame />} />
                         <Route path="/pictionarylobby" element={<PictionaryLobby />} />
+                        <Route path="/pictionarygame" element={<PictionaryGame />} />
                         <Route path="/songsnippetlobby" element={<SongSnippetLobby />} />
                         <Route path="/songsnippetgame" element={<SongSnippetGame />} />
                         <Route path="/triviachallengelobby" element={<TriviaChallengeLobby />} />

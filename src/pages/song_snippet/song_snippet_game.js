@@ -120,7 +120,7 @@ function SongSnippetGame() {
 
     const exitgame_click = () => {
       console.log("EXIT GAME CLICKED");
-      navigate("/dailychallengelobby");
+      navigate("/songsnippetlobby");
     };
 
     const [alertOpen, setAlertOpen] = useState(false); 

@@ -59,7 +59,7 @@ function Settings( {appearanceSelection, contentFilterSelection} ) {
       const docRef = doc(db, "users", user);
       await updateDoc(docRef, {
           appearance: appearance
-      }).then(() => console.log("Document updated"));      
+      }).then(() => console.log("appearance updated in Firebase"));      
     }
     
     const handleFilteredModeToggle = () => {
@@ -74,7 +74,7 @@ function Settings( {appearanceSelection, contentFilterSelection} ) {
       const docRef = doc(db, "users", user);
       await updateDoc(docRef, {
           contentFilter: contentFilter
-      }).then(() => console.log("Document updated"));      
+      }).then(() => console.log("contentFilter updated in Firebase"));      
     }
 
     useEffect(() => {
