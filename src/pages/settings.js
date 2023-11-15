@@ -22,14 +22,13 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { auth, db } from "../utils/firebase";
 import { UserContext } from "../App";
 import { deleteUser, getAuth } from "firebase/auth";
-import { doc, deleteDoc } from "firebase/firestore";
+import { doc, getDoc, deleteDoc, updateDoc } from "firebase/firestore";
 import { updateEmail, updatePassword } from "firebase/auth";
 
 import { useTheme } from '@mui/material/styles';
 
 
-
-function Settings() {
+function Settings( {appearanceSelection, contentFilterSelection} ) {
     const theme = useTheme();
 
     const [firstName] = useState("");
@@ -40,16 +39,54 @@ function Settings() {
     const [oldPassword, setOldPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
 
-    const [darkMode, setDarkMode] = useState(true);
+    // if appearanceSelection (from App.js) is defined in Firebase mode will be APPEARANCESELECTION VALUE
+    // if appearanceSelection (from App.js) is not defined (new acc, mode not changed) mode will be LIGHT
+    const [appearance, setAppearance] = useState(appearanceSelection || "light")
+    const [darkMode, setDarkMode] = useState(false);
+
+    const [contentFilter, setContentFilter] = useState(contentFilterSelection || "explicit");
+    const [filteredMode, setFilteredMode] = useState(false);
+
     const handleDarkModeToggle = () => {
-        setDarkMode(!darkMode);
-        console.log("dark mode:" + darkMode)
+      const newMode = darkMode ? "dark" : "light";
+      setDarkMode(!darkMode);
+      setAppearance(newMode);
+      console.log("NEW APPEARANCE MODE: " + newMode);
+      updateAppearance(newMode); 
     };
 
-    const [filteredMode, setFilteredMode] = useState(true);
+    const updateAppearance = async () => {
+      const docRef = doc(db, "users", user);
+      await updateDoc(docRef, {
+          appearance: appearance
+      }).then(() => console.log("appearance updated in Firebase"));      
+    }
+    
     const handleFilteredModeToggle = () => {
+        const newMode = filteredMode ? "filtered" : "explicit";
         setFilteredMode(!filteredMode);
+        setContentFilter(newMode);
+        console.log("NEW CONTENT FILTER MODE: " + newMode);
+        updateContentFilter(newMode); 
     };
+
+    const updateContentFilter = async () => {
+      const docRef = doc(db, "users", user);
+      await updateDoc(docRef, {
+          contentFilter: contentFilter
+      }).then(() => console.log("contentFilter updated in Firebase"));      
+    }
+
+    useEffect(() => {
+      // Update darkMode based on appearanceSelection after the component mounts (so persists even after reloading)
+      if (appearanceSelection) {
+        setDarkMode(appearanceSelection === "dark");
+      }
+      // Update filteredMode based on contentFilterSelection after the component mounts (so persists even after reloading)
+      if (contentFilterSelection) {
+        setFilteredMode(contentFilterSelection === "filtered");
+      }
+    }, [appearanceSelection, contentFilterSelection]);
 
     const [alertOpen, setAlertOpen] = useState(false);
     const deleteAccount = () => {
@@ -145,6 +182,7 @@ function Settings() {
         console.log("GO TO SETTINGS");
         navigate("/");
     };
+    
 
     return (
       <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "7%", marginRight: "7%" }}>

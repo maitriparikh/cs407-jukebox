@@ -35,7 +35,12 @@ function SongRouletteGame() {
 
     const exitgame_click = () => {
       console.log("EXIT GAME CLICKED");
-      navigate("/songroulettelobby");
+      navigate("/songroulettelobbybrowser");
+    };
+
+    const replayGame = () => {
+      console.log("REPLAY GAME CLICKED");
+      navigate("/songroulettelobbybrowser");
     };
     
     const location = useLocation();
@@ -348,6 +353,8 @@ function SongRouletteGame() {
       
       
     }, [spotifyToken]);
+
+    
     
     return (
     <div>
@@ -476,6 +483,23 @@ function SongRouletteGame() {
              <Typography variant="h3" style={{ textAlign: "center" }}>
                 {winner} 
             </Typography>
+
+            <Button
+                    sx={{
+                    width: 300,
+                    border: `2px solid ${theme.palette.primary.main}`,
+                    padding: 1,
+                    margin: { xs: 4, sm: 4 },
+                    backgroundColor: 'white',
+                    "&:hover": {
+                        backgroundColor: 'var(--accent-color)',
+                    },
+                    borderWidth: "2px",
+                    }}
+                    onClick={replayGame}
+                >
+                Replay
+                </Button>
             
         </div>
     )}

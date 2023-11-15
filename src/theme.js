@@ -1,8 +1,14 @@
 import { createTheme } from '@mui/material/styles';
 
-const JukeboxTheme = (darkMode) => {
+const JukeboxTheme = (mode) => {
 
-  const isDarkMode = false;
+  let isDarkMode = ""
+
+  if (mode === "light") {
+    isDarkMode = false;
+  } else {
+    isDarkMode = true;
+  }
 
   console.log("dark mode? " + isDarkMode)
 

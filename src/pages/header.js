@@ -35,7 +35,7 @@ import { collection, onSnapshot, getDoc, doc, updateDoc, setDoc } from "firebase
 
 
 
-function Header() {
+function Header({logo}) {
 
   const theme = useTheme();
 
@@ -109,7 +109,7 @@ function Header() {
                 <List>
                   <ListItem disablePadding id="text">
                     <img
-                    src={FullLogoLight}
+                    src={logo}
                     alt="Logo"
                     style={{ paddingLeft: '10px', height: 60 }}
                     onClick={() => {
@@ -221,7 +221,7 @@ function Header() {
             {/* Logo */}
             <img
             //src={WhiteLogo}
-            src={FullLogoLight}
+            src={logo}
             alt="Logo"
             height={70}
             onClick={() => {

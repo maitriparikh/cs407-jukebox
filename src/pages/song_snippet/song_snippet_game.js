@@ -17,7 +17,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import TextField from "@mui/material/TextField";
 import { useTheme } from '@mui/material/styles';
-import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../../utils/firebase";
 import { UserContext } from "../../App";
 import Autocomplete from '@mui/material/Autocomplete';
@@ -26,8 +26,7 @@ import CorrectAnswerSound from "../../sounds/correct_answer.mp3";
 import WrongAnswerSound from "../../sounds/wrong_answer.mp3";
 import FanfareSound from "../../sounds/fanfare.mp3";
 
-
-function DailyChallengeGame() {
+function SongSnippetGame() {
 
     const theme = useTheme();
     const { user, setUser } = useContext(UserContext);
@@ -39,19 +38,25 @@ function DailyChallengeGame() {
     const [answer, setAnswer] = useState("");
     const [isCorrect, setIsCorrect] = useState(false);
 
+    const [showEnd, setShowEnd] = useState(false);
     const gameMode = location.state.gameMode;
     const songInfo = location.state.songInfo
     const allSongs = location.state.allSongs
-    console.log("GAME MODE = " + gameMode)
-    console.log("SONG INFO = ", songInfo)
-    console.log("ALL SONGS = ", allSongs)
-    // 0 = previewURL, 1 = artistName, 2 = album cover, 3 = song name
+    const songInfoArray = location.state.songInfoArray
+    //console.log("GAME MODE = " + gameMode)
+    //console.log("SONG INFO = ", songInfo)
+    //console.log("ALL SONGS = ", allSongs)
+    //console.log("SONG INFO ARRAY = ", songInfoArray)
 
+    // 0 = previewURL, 1 = artistName, 2 = album cover, 3 = song name
     // temp hardcoded song for iframe display
-    const songName = songInfo[3];
-    const songArtist = songInfo[1];
-    const songAlbumPic = songInfo[2];
-    const songAudio = songInfo[0];
+    const songName = songInfoArray[0].songName;
+    const songArtist = songInfoArray[0].songArtist;
+    const songAlbumPic = songInfoArray[0].songAlbumPic;
+    const songAudio = songInfoArray[0].songAudio;
+    console.log("SONG NAME", songName)
+
+    const [currentRound, setCurrentRound] = useState(0);
 
     const [showHint1, setShowHint1] = useState(false);
     const [showHint2, setShowHint2] = useState(false);
@@ -113,35 +118,11 @@ function DailyChallengeGame() {
     /* Navigation for buttons */
     const navigate = useNavigate();
 
-    const updatePlayedDailyChallenge = async () => {
-      const docRef = doc(db, "users", user);
-      await updateDoc(docRef, {
-          playedDailyChallenge: true
-      }).then(() => console.log("Document updated"));      
-  }
-
-    const handleSubmitButtonClick = () => { 
-      // check user's answer
-      console.log(answer)
-      console.log(songName)
-      if (answer === songName) {
-        setIsCorrect(true);
-        setAlertOpen(true);
-        updatePlayedDailyChallenge();
-        console.log("CORRECT ANSWER!")
-        const audio = new Audio(CorrectAnswerSound);
-        audio.play();
-      } else {
-        setAlertOpen(true);
-        console.log("INCORRECT ANSWER!")
-        const audio = new Audio(WrongAnswerSound);
-        audio.play();
-      }
-  };
+    
 
     const exitgame_click = () => {
       console.log("EXIT GAME CLICKED");
-      navigate("/dailychallengelobby");
+      navigate("/songsnippetlobby");
     };
 
     const [alertOpen, setAlertOpen] = useState(false); 
@@ -155,18 +136,110 @@ function DailyChallengeGame() {
       setAlertOpen(false)
     }
 
-    const handleDialogGoHomepage = () => {
+    const handleGoHomepage = () => {
       navigate("/homepage")
-      setAlertOpen(false)
     }
+
+    const handleReplay = () => {
+      navigate("/songsnippetlobby")
+    }
+
+    const handleNextRound = () => {
+        if (currentRound < songInfoArray.length - 1) {
+            setAlertOpen(false);
+
+            setShowHint1(false);
+            setShowHint2(false);
+
+            setCanRevealHint1(false);
+            setCanRevealHint2(false);
+
+            setHint1Revealed(false);
+
+            setHint1Countdown(hint1Delay / 1000)
+            setHint2Countdown(hint2Delay / 1000)
+
+            setIsCorrect(false);
+
+            const nextRound = currentRound + 1;
+            setCurrentRound(nextRound);
+        } else {
+            setShowEnd(true);
+            const audio = new Audio(FanfareSound);
+            audio.play();
+        }
+    }
+
+    const handleSubmitButtonClick = () => { 
+        // check user's answer
+        console.log(answer)
+        console.log(songInfoArray[currentRound].songName)
+        if (answer === songInfoArray[currentRound].songName) {
+          setIsCorrect(true);
+          setAlertOpen(true);
+          console.log("CORRECT ANSWER!")
+          const audio = new Audio(CorrectAnswerSound);
+          audio.play();
+        } else {
+          setAlertOpen(true);
+          console.log("INCORRECT ANSWER!")
+          const audio = new Audio(WrongAnswerSound);
+          audio.play();
+        }
+    };
+
     
     return (
 
-        <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
+        <div>
+        {showEnd ? (
+        <div style={{ marginTop: "10%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
+            
+            <Typography variant="h2" style={{ textAlign: "center"}}>
+                Congratulations! You completed the Song Snippet Challenge
+            </Typography>
 
+            <br></br>
+
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="center"
+              spacing={2}
+              style={{ minHeight: '10vh' }} // Adjust the height as needed
+            >
+
+            <Button variant="contained"
+            style={{
+                color: theme.palette.primary.main,
+                backgroundColor: theme.palette.secondary.main,
+              textTransform: "none",
+              fontSize: 15,
+              fontWeight: "bold"
+              }}  
+            onClick={handleReplay} >
+            Replay
+            </Button>
+
+            <Button variant="contained"
+            style={{
+                color: theme.palette.primary.main,
+                backgroundColor: theme.palette.secondary.main,
+              textTransform: "none",
+              fontSize: 15,
+              fontWeight: "bold"
+              }}  
+            onClick={handleGoHomepage} >
+            Back to Home
+            </Button>
+
+            </Stack>
+          </div>
+        ) : (
+            <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
 
         <Typography variant="h3" style={{ textAlign: "center"}}>
-            Guess the song!
+           Round {currentRound + 1} of {songInfoArray.length}
         </Typography>
         <br></br>
 
@@ -252,7 +325,7 @@ function DailyChallengeGame() {
 
                   {/* Audio Preview */}
                   <audio controls style={{ width: '880px', borderRadius: '12px', marginTop: "1%" }}>
-                    <source src={songAudio} type="audio/mpeg" />
+                    <source src={songInfoArray[currentRound].songAudio} type="audio/mpeg" />
                     Your browser does not support the audio element.
                   </audio>
                 </div>
@@ -307,11 +380,11 @@ function DailyChallengeGame() {
                 ></div>
 
                   {/* Artist */}
-                  <Typography variant="h4" style={{ color: 'white', marginBottom: "2%" }}>{songArtist}</Typography>
+                  <Typography variant="h4" style={{ color: 'white', marginBottom: "2%" }}>{songInfoArray[currentRound].songArtist}</Typography>
 
                   {/* Audio Preview */}
                   <audio controls style={{ width: '880px', borderRadius: '12px', marginTop: "1%" }}>
-                    <source src={songAudio} type="audio/mpeg" />
+                    <source src={songInfoArray[currentRound].songAudio} type="audio/mpeg" />
                     Your browser does not support the audio element.
                   </audio>
                 </div>
@@ -336,7 +409,7 @@ function DailyChallengeGame() {
               >
                 {/* Album Cover */}
                 <img
-                  src={songAlbumPic}
+                  src={songInfoArray[currentRound].songAlbumPic}
                   alt="Album Cover"
                   style={{
                     width: '180px',
@@ -366,11 +439,11 @@ function DailyChallengeGame() {
                 ></div>
 
                 {/* Artist */}
-                <Typography variant="h4" style={{ color: 'white', marginBottom: "2%" }}>{songArtist}</Typography>
+                <Typography variant="h4" style={{ color: 'white', marginBottom: "2%" }}>{songInfoArray[currentRound].songArtist}</Typography>
 
                 {/* Audio Preview */}
                 <audio controls style={{ width: '880px', borderRadius: '12px', marginTop: "1%" }}>
-                  <source src={songAudio} type="audio/mpeg" />
+                  <source src={songInfoArray[currentRound].songAudio} type="audio/mpeg" />
                   Your browser does not support the audio element.
                 </audio>
               </div>
@@ -398,7 +471,7 @@ function DailyChallengeGame() {
             >
               {/* Album Cover */}
               <img
-                src={songAlbumPic}
+                src={songInfoArray[currentRound].songAlbumPic}
                 alt="Album Cover"
                 style={{
                   width: '180px',
@@ -417,14 +490,14 @@ function DailyChallengeGame() {
               }}
             >
               {/* Song Name */}
-              <Typography variant="h3" style={{ color: 'white', marginBottom: "2%" }}>{songName}</Typography>
+              <Typography variant="h3" style={{ color: 'white', marginBottom: "2%" }}>{songInfoArray[currentRound].songName}</Typography>
 
               {/* Artist */}
-              <Typography variant="h4" style={{ color: 'white', marginBottom: "2%" }}>{songArtist}</Typography>
+              <Typography variant="h4" style={{ color: 'white', marginBottom: "2%" }}>{songInfoArray[currentRound].songArtist}</Typography>
 
               {/* Audio Preview */}
               <audio controls style={{ width: '880px', borderRadius: '12px', marginTop: "1%" }}>
-                <source src={songAudio} type="audio/mpeg" />
+                <source src={songInfoArray[currentRound].songAudio} type="audio/mpeg" />
                 Your browser does not support the audio element.
               </audio>
             </div>
@@ -532,7 +605,7 @@ function DailyChallengeGame() {
         <br></br>
 
         {isCorrect && (
-          <Dialog open={alertOpen} onClose={handleDialogStayOnGamePage} PaperProps={{ style: { backgroundColor: theme.palette.background.default } }}>
+          <Dialog open={alertOpen} onClose={handleNextRound} PaperProps={{ style: { backgroundColor: theme.palette.background.default } }}>
           <DialogTitle>
           <Typography variant="h3" style={{ textAlign: "left" }}>
             Congratulations!
@@ -541,7 +614,7 @@ function DailyChallengeGame() {
           <DialogContent>
             <DialogContentText>
             <Typography variant="h4" style={{ textAlign: "left" }}>
-              You have correctly identified the mystery song! Come back tomorrow to play another round of the Daily Challenge.
+              You have correctly identified the mystery song!
               </Typography>
             </DialogContentText>
           </DialogContent>
@@ -554,8 +627,8 @@ function DailyChallengeGame() {
                 fontSize: 15,
                 fontWeight: "bold"
                 }} 
-              onClick={handleDialogGoHomepage}>
-              OK
+              onClick={handleNextRound}>
+              Next
             </Button>
           </DialogActions>
           </Dialog>
@@ -594,7 +667,12 @@ function DailyChallengeGame() {
 
         
         </div>
+        )}
+        
+
+        
+        </div>
     );
 }
 
-export default DailyChallengeGame;
+export default SongSnippetGame;

@@ -21,6 +21,9 @@ import { UserContext } from "../../App";
 
 import { useTheme } from '@mui/material/styles';
 
+import StartGameSound from "../../sounds/start_game.mp3";
+
+
 function TriviaChallengeLobby() {
 
     const theme = useTheme();
@@ -29,17 +32,81 @@ function TriviaChallengeLobby() {
     const [numOfRounds, setNumOfRounds] = useState(3);
     const { user, setUser } = useContext(UserContext);
     const [spotifyToken, setSpotifyToken] = useState(""); // Spotify Token
-    const [song_bank, setSong_bank] = useState([]);
+    const [songbank, setSongbank] = useState([]);
     const [topFiveArr, setTopFiveArr] = useState([]);
+
+    const [artists, setArtists] = useState([]);
+    const [songs, setSongs] = useState([]);
+    const [albumNames, setAlbumNames] = useState([]);
+    const [previews, setPreviews] = useState([]);
+    const [albumImages, setAlbumImages] = useState([]);
+
+    const getArtists = async (list) => {
+      var total = [];
+      console.log("songbank in getArtists is " + songbank);
+      for (let i = 0; i < list.length; i++) {
+          var arr = [];
+          for (let j = 0; j < list[i].artists.length; j++) {
+              arr.push(list[i].artists[j].name);
+          }
+          total.push(arr);
+      }
+      setArtists(total);
+      return total;
+    };
+
+    const getSongs = async (list) => {
+        var total = [];
+        for (let i = 0; i < list.length; i++) {
+            total.push(list[i].name);
+        }
+        setSongs(total);
+        return total;
+    };
+
+    const getAlbumNames = async (list) => {
+        var names = [];
+        var images = [];
+        for (let i = 0; i < list.length; i++) {
+            names.push(list[i].album.name);
+        }
+        setAlbumNames(names);
+        return names;
+    }
+
+    const getAlbumImages = async (list) => {
+      var images = [];
+      for (let i = 0; i < list.length; i++) {
+          images.push(list[i].album.images[0]);
+      }
+      setAlbumImages(images);
+      return images;
+  }
+
+    const getPreviews = async (list) => {
+        var total = [];
+        for (let i = 0; i < list.length; i++) {
+            total.push(list[i].preview_url);
+        }
+        setPreviews(total);
+        return total;
+    }
 
     const startgame_click = async () => {
         console.log("START GAME CLICKED");
         console.log(topFiveArr);
         //await buildSongBank()
+        const audio = new Audio(StartGameSound);
+        audio.play();
         navigate("/triviachallengegame", {
           state: {
             rounds: numOfRounds,
-            songbank: topFiveArr
+            songbank: songbank,
+            artists: artists,
+            songs: songs,
+            previews: previews,
+            albumNames: albumNames,
+            albumImages: albumImages
           },
         });
     };
@@ -70,10 +137,17 @@ function TriviaChallengeLobby() {
 
     const displayTop = async() => {
       const topTracks = await getTopTracks();
-      setTopFiveArr(topTracks);
-      console.log("The top tracks are: ", topTracks);
-      console.log("The top five arr is " + topFiveArr);
-      
+      await setSongbank(topTracks);
+      const dtArtists = await getArtists(topTracks);
+      await setArtists(dtArtists);
+      const dtSongs = await getSongs(topTracks);
+      await setSongs(dtSongs);
+      const dtPreviews = await getPreviews(topTracks);
+      await setPreviews(dtPreviews);
+      const dtAlbumNames = await getAlbumNames(topTracks);
+      await setAlbumNames(dtAlbumNames);
+      const dtAlbumImages = await getAlbumImages(topTracks);
+      await setAlbumImages(dtAlbumImages);
       
       
     }
@@ -88,7 +162,6 @@ function TriviaChallengeLobby() {
           // get specific playlist code (user entered or from firebase?) (future sprint) (hard-coded)
           /* make song_bank data structure */
           displayTop();
-          console.log("Top 5 arr in useEffect is ", topFiveArr);
         
         }
         
