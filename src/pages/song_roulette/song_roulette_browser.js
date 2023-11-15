@@ -8,7 +8,7 @@ import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography"
 import CardContent from "@mui/material/CardContent"
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import ButtonBase from '@mui/material/ButtonBase';
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -44,6 +44,8 @@ function SongRouletteLobbyBrowser() {
 
   const theme = useTheme();
 
+  const location = useLocation();
+
   const { user, setUser } = useContext(UserContext);
   const [creatingLobby, setCreatingLobby] = useState(false);
   const [message, setMessage] = useState('');
@@ -56,9 +58,25 @@ function SongRouletteLobbyBrowser() {
   const [userNameTemp2, setUserNameTemp2] = useState("");
 
 
+  const [joiningLobby, setJoiningLobby] = useState(null);
+  const [lobbyCode, setLobbyCode] = useState("");
+
+
+  const [userNameTemp, setUserNameTemp] = useState("");
+
+
+
+  
+
+
+
 
   /* Navigation for buttons */
   const navigate = useNavigate();
+
+  const top5arr = location.state.top5;
+  //console.log(top5arr);
+  //console.log("ugh")
 
   const startLobby_click = () => {
     if (!creatingLobby) {
@@ -74,9 +92,11 @@ function SongRouletteLobbyBrowser() {
       setSpotifyToken(doc.data().spotifyToken);
       setUserNameTemp2(doc.data().username);
       //userNameTemp = doc.data().username;
-      console.log('username is:' + userNameTemp2);
+      //console.log('username is:' + userNameTemp2);
     });
   };
+
+  
 
   
 
@@ -95,10 +115,50 @@ function SongRouletteLobbyBrowser() {
   };
 
 
-    const handleRoomCodeChange = (event) => {
+  const handleRoomCodeChange = (event) => {
     setRoomCode(event.target.value);
     setJoinError("");
   };
+
+  useEffect(() => {
+    socket.emit('fetch-lobbies');
+
+    socket.on('update-lobbies', (updatedLobbies) => {
+        setLobbies(updatedLobbies);
+    });
+    return () => {
+      socket.off('update-lobbies');
+    };
+  }, []);;
+
+  const handleJoinLobby = (lobbyCode, ownerID) => {
+    // Check if the user is the owner before allowing them to join
+    if (joiningLobby === null && ownerID !== user ) {
+
+      //const [lobbyUsers, setLobbyUsers] = useState([]);
+
+
+
+
+      setJoiningLobby(lobbyCode);
+      socket.emit('set-user-id', user);
+      socket.emit('join-lobby', lobbyCode, userNameTemp2,top5arr );
+      //console.log("lobbies")
+      //console.log(lobbies);
+      //console.log(top5arr);
+      //console.log("^ top 5 arr")
+      navigate("/songroulettelobby" , {
+          state: {
+          top5: top5arr
+        },
+      } );
+      
+    }
+    else {
+      console.log("something went wrong!")
+    }
+  };
+
 
   
 
@@ -112,17 +172,20 @@ const changeID = (id) => {
 
     const [numOfRounds, setNumOfRounds] = useState("");
 
-    const handleCreateLobby = () => {
+    const handleCreateLobby = async () => {
       if (!creatingLobby) {
         setCreatingLobby(true); // Disable the button temporarily
         setUserID(user);
 
         changeID(user);
 
-        socket.emit('create-lobby', userID, userNameTemp2 );
+        socket.emit('create-lobby', userID, userNameTemp2,top5arr );
         setMessage('Creating a new lobby...');
         //navigate("/songroulettelobby");
-        navigate('/songroulettelobby', { state: { 1: lobbies.players } });
+        
+        console.log("the lobbies are")
+        console.log(lobbies)
+        navigate('/songroulettelobby', { state: {  top5: top5arr} });
       }
     };
 
@@ -140,20 +203,20 @@ const changeID = (id) => {
       const generatedUserID = generateUserID();
       
       setUserID(user);
-      console.log( 'testing id',user)
+      //console.log( 'testing id',user)
 
       socket.emit('fetch-lobbies', { userID });
 
       socket.on('update-lobbies', (updatedLobbies) => {
         setLobbies(updatedLobbies);
-        console.log("" + lobbies);
+        console.log("update-lobbies call heard" + lobbies);
       });
 
       socket.emit('set-user-id', user);
 
       // Clean up the listener when the component unmounts
       return () => {
-        socket.off('update-lobbies');
+        //socket.off('update-lobbies');
       };
   }, []);
 
@@ -173,7 +236,11 @@ const changeID = (id) => {
       console.log("tryin to join a lobby");
       setMessage('Joined lobby with code: ${lobbyCode}');
       //socket.emit('message', 1);
-      navigate('/songroulettelobby/'); // Navigate to the lobby page
+            navigate("/songroulettelobby" , {
+          state: {
+          top5: top5arr
+        },
+      } ); // Navigate to the lobby page
   });
 
   socket.on('lobby-error', (error) => {
@@ -186,7 +253,7 @@ const changeID = (id) => {
 
       getSpotifyToken()
       if (spotifyToken) {
-        console.log("spotify token got in song roulette game lobby ->", spotifyToken)
+        //console.log("spotify token got in song roulette game lobby ->", spotifyToken)
         // get specific playlist code (user entered or from firebase?) (future sprint) (hard-coded)
         /* make song_bank data structure */
       
@@ -315,7 +382,21 @@ const changeID = (id) => {
 
       
       <p>{message}</p>
-      <LobbyViewer lobbies={lobbies} userID={userID} owner={owner}  />
+      <h2>Lobby Viewer</h2>
+      
+      <ul>
+        {lobbies.map((lobby) => (
+          <li key={lobby.code}>
+           Lobby Code: {lobby.code} (Players: {lobby.playerNames.join(', ')})
+            <button
+              onClick={() => handleJoinLobby(lobby.code, lobby.ownerID)}
+              disabled={joiningLobby === lobby.code || lobby.ownerID === user || lobby.players.includes(user) }
+            >
+              Join
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
     
 

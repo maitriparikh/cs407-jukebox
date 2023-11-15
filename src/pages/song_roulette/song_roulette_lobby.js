@@ -9,7 +9,7 @@ import Select from "@mui/material/Select";
 import Typography from "@mui/material/Typography";
 import { doc, onSnapshot } from "firebase/firestore";
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "../../App";
 import { db } from "../../utils/firebase";
 
@@ -29,6 +29,9 @@ function SongRouletteLobby() {
 
     /* Navigation for buttons */
     const navigate = useNavigate();
+    const location = useLocation();
+
+
 
 
     const { user, setUser } = useContext(UserContext);
@@ -38,7 +41,13 @@ function SongRouletteLobby() {
     const [song_bank, setSong_bank] = useState([]);
     const [lobbies, setLobbies] = useState([]);
     const [currentLobby, setCurrentLobby] = useState([]);
+    const top5arr = location.state.top5;
     const [myPlaylist, setMyPlaylist] = useState([]); // intermediate playlist array
+    const [isButtonDisabledOwner, setButton] = useState(true);
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+    
+
     const [myPlaylistFinal2, setMyPlaylistFinal2] = useState([ // Maitri hard coded playlist
       "https://open.spotify.com/embed/track/4JQpghvT0ZH2WLRqzlPUC7?utm_source=generator",
       "https://open.spotify.com/embed/track/4PMdq7Q7xOFrY424ZelZEb?utm_source=generator",
@@ -92,26 +101,51 @@ function SongRouletteLobby() {
 
     const startgame_click = async () => {
       console.log("START GAME CLICKED");
-      await buildSongBank()
-      navigate("/songroulettegame", {
-        state: {
-          rounds: numOfRounds,
-          people: people,
-          song_bank: song_bank
-        },
-      });
+
+      if ( currentLobby.length!= 0) {
+        await buildSongBank()
+        socket.emit('game-started',currentLobby.ownerID, song_bank,numOfRounds,   );
+        
+
+        navigate("/songroulettegame", {
+          state: {
+            rounds: numOfRounds,
+            people: people,
+            song_bank: song_bank,
+            lobby: currentLobby
+          },
+        });
+      }
     };
 
 
     
-    const deleteLobby = (ownerID) => {
-      socket.emit('delete-lobby', ownerID);
-      navigate("/songroulettelobbybrowser");
+    const deleteLobby = () => {
+      console.log("testing delete")
+      console.log(currentLobby.ownerID)
+      console.log(lobbies)
+      getCurrentLobby();
+
+      if (currentLobby.length!= 0) {
+
+        socket.emit('delete-lobby', currentLobby.ownerID);
+        
+
+              navigate("/songroulettelobbybrowser" , {
+          state: {
+          top5: top5arr
+        },
+      } );
+    }
+       
     };
 
     const leaveLobby = (user, owner) => {
       socket.emit('leave-lobby', { user, owner });
     }
+
+
+    
 
 
 
@@ -123,6 +157,7 @@ function SongRouletteLobby() {
         setSpotifyToken(doc.data().spotifyToken);
         //userNameTemp = doc.data().username;
         //console.log('username is:' + userNameTemp);
+        socket.emit('fetch-lobbies');
         
       });
     };
@@ -138,28 +173,58 @@ function SongRouletteLobby() {
       return await res.json();
     };
 
+    
+    useEffect(() => {
+      
+      //socket.emit('fetch-lobbies');
+      /*
+      socket.on('update-lobbies', (updatedLobbies) => {
+          setLobbies(updatedLobbies);
+          
+         
+      });
+      return () => {
+        //socket.off('update-lobbies');
+         
+      };
+      */
+    }, []);
 
-    function findLobbyByPlayerId(updatedLobbies, targetId) {
-      return updatedLobbies.find(lobby => lobby.players.includes(targetId));
+    function findLobbyByPlayerId(lobbies, targetId) {
+      //console.log("current lobbies")
+      //console.log(lobbies);
+      return lobbies.find(lobby => lobby.players.includes(targetId));
     }
 
+    
+
           
-    const getCurrentLobby = async () => {
 
-      const tempThing = findLobbyByPlayerId(lobbies,user);
+  const getCurrentLobby =  () => {
+    const tempThing =  findLobbyByPlayerId(lobbies, user);
+    console.log("start")
+    console.log(lobbies)
+    console.log(user)
+    console.log("finish")
 
+    if (tempThing) {
+      setCurrentLobby(tempThing); // If a lobby is found, set the currentLobby state
+      console.log("Current Lobby:", tempThing);
+      console.log("Current user ID:", user);
+      console.log("Current Lobby owner ID:", tempThing.ownerID);
+    } else {
+      //setCurrentLobby(null); // If no lobby is found, set currentLobby as null
+      console.log("No lobby found for the current user:", user);
+      console.log(lobbies)
+      console.log(lobbies)
+    }
+     console.log("start2")
+    console.log(lobbies)
+    console.log(user)
+    console.log("finish2")
 
-      if (tempThing) {
-          setCurrentLobby(tempThing); // If a lobby is found, set the currentLobby state
-          console.log("Current Lobby:", tempThing);
-          console.log("Current user ID:", user);
-          console.log("Current Lobby owner ID:", tempThing.ownerID);
-      } else {
-          setCurrentLobby(null); // If no lobby is found, set currentLobby as null
-          console.log("No lobby found for the current user:", user);
-      }
-    };
-
+  };
+  
 
 
 
@@ -193,37 +258,54 @@ function SongRouletteLobby() {
       const trackURIs = allTracks.map((track) => track.track.uri);
       setMyPlaylist(trackURIs);
 
-      const myPlaylistFinal = trackURIs.map((uri) => {
-        return "https://open.spotify.com/embed/track/" + uri.substring(14) + "?utm_source=generator";
+      
+      const myPlaylistFinal = currentLobby.gameData[0].map((track) => {
+        return "https://open.spotify.com/embed/track/" + track.uri.substring(14) + "?utm_source=generator";
       });
 
+      const myPlaylistDynamic2 = currentLobby.gameData[1].map((track) => {
+        return "https://open.spotify.com/embed/track/" + track.uri.substring(14) + "?utm_source=generator";
+      });
+      
+      const myPlaylistDynamic3 = currentLobby.gameData[2].map((track) => {
+        return "https://open.spotify.com/embed/track/" + track.uri.substring(14) + "?utm_source=generator";
+      });
+
+      const myPlaylistDynamic4 = currentLobby.gameData[3].map((track) => {
+        return "https://open.spotify.com/embed/track/" + track.uri.substring(14) + "?utm_source=generator";
+      });
+      
+      
+
+      //const myPlaylistFinal = generateEmbeddedTrackURLs(currentLobby.gameData[0]);
+     
+
       // Now you have myPlaylistFinal properly populated
-      console.log("myPlaylistFinal", myPlaylistFinal);
+      //console.log("myPlaylistFinal", myPlaylistFinal);
 
 
-      if (!currentLobby) {
+      if (true) {
         const person = {
           name: currentLobby.playerNames[0],
           flag: false,
           points: 0,
-          myPlaylistFinal
+          playlist: myPlaylistFinal
         }
         people.push(person);
         const person2 = {
           name: currentLobby.playerNames[1],
           flag: false,
           points: 0,
-          myPlaylistFinal2
+          playlist: myPlaylistDynamic2
         }
 
         people.push(person2);
-
-        /*
+        
         const person3 = {
           name: currentLobby.playerNames[2],
           flag: false,
           points: 0,
-          myPlaylistFinal
+          playlist: myPlaylistDynamic3
         }
 
                 people.push(person3);
@@ -232,11 +314,13 @@ function SongRouletteLobby() {
           name: currentLobby.playerNames[3],
           flag: false,
           points: 0,
-          myPlaylistFinal
+          playlist: myPlaylistDynamic4
         }
                 people.push(person4);
 
-                */
+                setPeople(people);
+
+
 
       }
       else {
@@ -281,6 +365,7 @@ function SongRouletteLobby() {
 
     };
 
+
     const buildSongBank = async () => {
       /* create a combined playlist from both users (will be from more than 2 later) */
     
@@ -291,15 +376,16 @@ function SongRouletteLobby() {
       let megaPlaylist = [];
       
       for (let i = 0; i < people.length; i++) {
-        console.log("i", people[i].playlist);
+        //console.log("i", people[i].playlist);
         megaPlaylist = megaPlaylist.concat(people[i].playlist);
       }
-      console.log("MEGA PLAYLIST: ", megaPlaylist);
+      //console.log("MEGA PLAYLIST: ", megaPlaylist);
     
       for (let i = 0; i < numOfRounds; i++) {
         let song;
         let correctAnswer;
-    
+        //console.log(people);
+       // console.log(curp)
         do {
           const index = Math.floor(Math.random() * megaPlaylist.length);
           song = megaPlaylist[index];
@@ -308,8 +394,9 @@ function SongRouletteLobby() {
           /* find the people who have that song */
           for (let j = 0; j < people.length; j++) {
             const curName = people[j].name;
-            const curPlaylist = people[j].playlist;
-    
+            var curPlaylist = people[j].playlist;
+            //console.log("cur playlist:"+ curPlaylist);
+            //console.log("cur name:"+ curName);
             if (curPlaylist.includes(song)) {
               correctAnswer.push(curName);
             }
@@ -320,13 +407,14 @@ function SongRouletteLobby() {
           song: song, 
           correctAnswer: correctAnswer
         };
-        console.log("SONG ADDED TO BANK: ", songInBank);
+        //console.log("SONG ADDED TO BANK: ", songInBank);
     
         song_bank.push(songInBank);
       }
     
 
-      console.log("song_bank", song_bank);
+      //console.log("song_bank", song_bank);
+      setSong_bank(song_bank);
     };
     
 
@@ -339,48 +427,125 @@ function SongRouletteLobby() {
         /* make song_bank data structure */
       
       }
+
+      setButton( currentLobby && currentLobby.ownerID === user)
       
       
     }, [spotifyToken]);
 
 
     useEffect(() => {
-      socket.emit('fetch-lobbies');
+      //socket.emit('fetch-lobbies');
 
-      socket.on('lobby-deleted', (ownerID) => {
-        if(currentLobby.ownerID !== ownerID){
-          navigate("/songroulettelobbybrowser");
-        }
-      });
+      /*
       socket.on('update-lobbies', (updatedLobbies) => {
           setLobbies(updatedLobbies);
-          //setLobbyUsers(lobbies.);
-          //console.log("lobbies should print");
-
-          
-          //console.log("lobbies should print");
-          //console.log(updatedLobbies);
-          getCurrentLobby();
+          //getCurrentLobby();
+           setButton( currentLobby && currentLobby.ownerID === user)
           //setLobbyUsers(currentLobby.players);
       });
+      */
+
+      socket.on('owner-started-game',() => {
+        console.log("owner started game!");
+         //socket.emit('fetch-lobbies');
+         getCurrentLobby();
+        if ( user  &&  currentLobby && user !== currentLobby.ownerID) {
+          console.log("lobbies");
+          //console.log(currentLobby.playerNames)
+          //console.log(currentLobby.gameSongs)
+          console.log(currentLobby)
+          navigate("/songroulettegame", {
+            state: {
+              rounds: numOfRounds,
+              people: people,
+              song_bank: currentLobby.gameSongs,
+              lobby: currentLobby
+            },
+          });
+        }
+      });
+
+      socket.on('lobby-deleted', (ownerID) => {
+        if(currentLobby && currentLobby.ownerID !== ownerID){
+          navigate("/songroulettelobbybrowser" , {
+          state: {
+          top5: top5arr
+        },
+      } );
+        }
+      });
+
+      
+
 
 
 
       return () => {
-        socket.off('update-lobbies');
+        //socket.off('update-lobbies');
+        //socket.off('owner-started-game');
       };
     }, []);;
 
+
     useEffect(() => {
+      const handleUpdateLobbies = (updatedLobbies) => {
+        console.log('Received Updated Lobbies:', updatedLobbies);
+        //setLobbies((prevLobbies) => [...prevLobbies, ...updatedLobbies]);
+        setLobbies(updatedLobbies);
+        //isButtonDisabled = currentLobby && currentLobby.players && currentLobby.players.length ===4 && currentLobby.ownerID === user;
+        
+        
+        };
+
+      socket.emit('fetch-lobbies');
+
+      socket.on('update-lobbies', handleUpdateLobbies);
+
+        return () => {
+          // Clean up the socket event listener when the component unmounts
+          if(currentLobby)
+          socket.off('update-lobbies', handleUpdateLobbies);
+        };
+    }, []);
+
+
+
+    useEffect(()=>{
+
       getCurrentLobby();
-      //console.log(currentLobby);
-      //setLobbyUsers(currentLobby.players);
+      setButton( currentLobby && currentLobby.ownerID === user)
+      
 
-    },[lobbies]);
+    }, [user]);
 
 
-    const isButtonDisabled = currentLobby && currentLobby.players && currentLobby.players.length === 2 && currentLobby.ownerID === user;
-    const isButtonDisabledOwner = currentLobby && currentLobby.ownerID === user;
+    useEffect(() => {
+      setIsButtonDisabled(
+        !(currentLobby &&
+        currentLobby.players &&
+        currentLobby.players.length === 4 &&
+        currentLobby.ownerID === user)
+      );
+    }, [currentLobby, user]);
+
+
+
+    
+
+    
+
+
+
+
+
+    
+
+    //setButton( currentLobby && currentLobby.ownerID === user);
+    //var isButtonDisabled = currentLobby && currentLobby.players && currentLobby.players.length ===4 && currentLobby.ownerID === user;
+
+
+
 
     return (
 
@@ -506,17 +671,19 @@ function SongRouletteLobby() {
             margin: "3%"
           }}
           onClick={startgame_click}
-         disabled={!isButtonDisabled}
+         disabled={isButtonDisabled}
         >
           Start Game!
         </Button>
         <div> {/* Button to delete lobby */}
         {/* Button to delete lobby */}
-        <button onClick={() => deleteLobby(currentLobby.ownerID)}
-         disabled={!isButtonDisabledOwner}
+        <button onClick={() => deleteLobby()}
+         disabled={isButtonDisabledOwner}
          >Delete Lobby</button>
         {/* Button to leave lobby */}
-        <button onClick={() => leaveLobby(user, currentLobby.ownerID)}>Leave Lobby</button>
+        <button onClick={() => deleteLobby()}
+        disabled={true}
+        >Leave Lobby</button>
         </div>
         <ul>
           { /*lobbyUsers.map((player, index) => (

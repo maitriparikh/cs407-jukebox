@@ -1,5 +1,5 @@
 import Button from "@mui/material/Button";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CircularProgress, Grid } from "@mui/material";
 import { Box, Stack } from "@mui/system";
@@ -15,14 +15,20 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { UserContext } from "../../App";
 
+import { db } from "../../utils/firebase";
+import { collection, onSnapshot, getDoc, doc, updateDoc, setDoc } from "firebase/firestore";
 import { useTheme } from '@mui/material/styles';
+import io from 'socket.io-client';
 
+const socket = io('http://localhost:3001');
 
 
 function SongRouletteGame() {
 
     const theme = useTheme();
+    const { user, setUser } = useContext(UserContext);
 
     /* Navigation for buttons */
     const navigate = useNavigate();
@@ -34,20 +40,39 @@ function SongRouletteGame() {
     
     const location = useLocation();
 
+
     const rounds = location.state.rounds; // Get number of rounds from lobby page
 
-    const peopleGet = location.state.people; // Get people array from lobby page
-    const [people, setPeople] = useState(peopleGet);
+
+    const lobbyGet = location.state.lobby;
+    const [lobbyTemp, setLobbyTemp] = useState(lobbyGet);
+    const peopleGet = location.state.lobby.playerNames; // Get people array from lobby page
+    
+
+    var [people, setPeople] = useState(peopleGet);
 
     const song_bankGet = location.state.song_bank; // Get song_bank array from lobby page
-    const song_bank = song_bankGet
+    const[song_bank,setSongBank] = useState(song_bankGet);
+    // song_bank = song_bankGet
+
+    
+
 
     console.log("NUMBER OF ROUNDS = " + rounds);
     console.log(people);
+    console.log(location.state.people)
+    if (!people) {
+        people = location.state.people
+    }
     console.log(song_bank);
+    console.log(lobbyTemp);
 
-    const me = "Shreya" // should be name of current player
-    const meIndex = people.findIndex((person) => person.name === me); // change flag state when selected
+    const me = "" // should be name of current player
+    //const meIndex2 = lobbyTemp.players.findIndex(lobbyTemp => lobbyTemp.players.includes(user) ); // change flag state when selected
+   // console.log("meIndex2" + meIndex2);
+    const [meIndex,setMeIndex] = useState(0);
+    
+
     
     const [currentQuestion, setCurrentQuestion] = useState(0); // keeps track of question number
     const [showGame, setShowGame] = useState(true); // Determines when quiz ends
@@ -57,46 +82,73 @@ function SongRouletteGame() {
     let pointText = ""; // Text in dialog at the end
     const [pointTextState, setPointTextState] = useState("");    
     const [winner, setWinner] = useState(""); // To display winner in summary
+
+    const [spotifyToken, setSpotifyToken] = useState(""); // Spotify Token
+    const [userNameTemp2, setUserNameTemp2] = useState("");
+
+    const [lobbies, setLobbies] = useState([]);
+    const [currentLobby, setCurrentLobby] = useState([]);
     
 
+  const getCurrentLobby =  () => {
+    const tempThing =  findLobbyByPlayerId(lobbies, user);
+
+    if (tempThing) {
+      setCurrentLobby(tempThing); // If a lobby is found, set the currentLobby state
+      //console.log("Current Lobby:", tempThing);
+      //console.log("Current user ID:", user);
+      //console.log("Current Lobby owner ID:", tempThing.ownerID);
+    } else {
+      setCurrentLobby(null); // If no lobby is found, set currentLobby as null
+      // console.log("No lobby found for the current user:", user);
+    }
+  };
 
     const handleOptionClick = (answerOption) => {
-        console.log(answerOption);
+      console.log(answerOption);
       
-        const indexToRemove = selected.indexOf(answerOption); // Index to remove in selected when deselected
-        const indexClicked = people.findIndex((person) => person.name === answerOption); // change flag state when selected
-      
-        if (selected.includes(answerOption)) {
-          console.log(answerOption + ' already selected, removing now');
-      
-          // Update the flag in the copied people array to change color
-          const updatedPeople = [...people];
-          updatedPeople[indexClicked].flag = false;
-          setPeople(updatedPeople);
-      
-          if (indexToRemove !== -1) { // Remove answer option from selected
-            selected.splice(indexToRemove, 1);
+      const indexToRemove = selected.indexOf(answerOption);
+      const indexClicked = people.findIndex((person) => person.name === answerOption);
+
+      if (indexClicked !== -1) { // Check if the person was found
+          if (selected.includes(answerOption)) {
+            console.log(answerOption + ' already selected, removing now');
+
+            // Update the flag in the copied people array to change color
+            const updatedPeople = [...people];
+            updatedPeople[indexClicked].flag = false;
+            setPeople(updatedPeople);
+
+            if (indexToRemove !== -1) { // Remove answer option from selected
+              selected.splice(indexToRemove, 1);
+            }
+          } else {
+            selected.push(answerOption);
+            var updatedPeople = [...people];
+            updatedPeople[indexClicked].flag = true;
+            setPeople(updatedPeople);
           }
-        } else {
-
-          selected.push(answerOption);
-          const updatedPeople = [...people];
-          updatedPeople[indexClicked].flag = true;
-          setPeople(updatedPeople);
-
-        }
+      } else {
+        console.log("Person not found in people array.");
+      }
       
-        console.log(selected);
-        console.log(people);
+      console.log(selected);
+      console.log(people);
       
-        return;
-      };
+      return;
+    };
     
     const handleSubmitButtonClick = (answerOption) => { // Shows dialog with everyone's points
         // check user's selection
         checkAnswers(selected);
         setAlertOpen(true)
     };
+
+    
+    function findLobbyByPlayerId(updatedLobbies, targetId) {
+      return updatedLobbies.find(lobby => lobby.players.includes(targetId));
+    }
+
 
     const handleNextQuestion = () => { // Change question to next question
         // Increment question when Next Button is pressed
@@ -140,6 +192,63 @@ function SongRouletteGame() {
             setCurrentQuestion(nextQuestion);
         }
     }
+
+
+  const getSpotifyToken = async () => {
+    const unsubUserDoc = await onSnapshot(doc(db, "users", user), async (doc) => {
+      setSpotifyToken(doc.data().spotifyToken);
+      setUserNameTemp2(doc.data().username);
+      //userNameTemp = doc.data().username;
+      console.log('username is:' + userNameTemp2);
+
+    });
+  };
+
+  useEffect(() => {
+    // Only calculate `meIndex2` when `user` is available
+    if (user && lobbyTemp && lobbyTemp.players) {
+      const meIndex2 = lobbyTemp.players.findIndex(player => player === user);
+       if (meIndex2 !== -1) {
+                setMeIndex(meIndex2); // Set the index if it's found
+    }
+        console.log("meIndex" +meIndex2);
+    }
+
+    
+  }, [user, lobbyTemp]);
+    useEffect(() => {
+      socket.emit('fetch-lobbies');
+       socket.on('update-lobbies', (updatedLobbies) => {
+          setLobbies(updatedLobbies);
+          //setLobbyUsers(lobbies.);
+          //console.log("lobbies should print");
+
+          
+          //console.log("lobbies should print");
+          //console.log(updatedLobbies);
+
+          //setCurrentLobby(updatedLobbies[0]);
+          getCurrentLobby();
+          //setLobbyUsers(currentLobby.players);
+      });
+
+    }, []);;
+
+    
+
+    const updateUserPoints = (lobbyCode, updatedPeople) => {
+      console.log("update points called");
+      console.log("update points called");
+      console.log("update points called");
+      console.log("update points called");
+      socket.emit('update-user-points', { lobbyCode, updatedPeople });
+    };
+
+
+
+
+  
+
 
     const checkAnswers = (selected) => {
         /*  
@@ -202,6 +311,7 @@ function SongRouletteGame() {
 
         // Add curPoints to total points
         const updatedPeople = [...people];
+        //setMeIndex(userNameTemp2);
         updatedPeople[meIndex].points = people[meIndex].points + curPoints;
         setPeople(updatedPeople);
 
@@ -210,8 +320,34 @@ function SongRouletteGame() {
         // update state of current points for pop up message
         setCurrentPoints(curPoints);
         setPointTextState(pointText)
-        
+
+        currentLobby.peopleGame[0][meIndex].points += curPoints;
+
+        // Emit the updated lobby data through the socket
+        //socket.emit('update-lobby', lobbyTemp);
+
+
+        // Example usage: Call this function when the user's points are updated
+        // For instance, after the 'checkAnswers' function
+        const updatedPeopleArray = [...people]; // Assuming people is the updated array of users
+        console.log(updatedPeopleArray);
+        updateUserPoints(currentLobby.code, updatedPeopleArray);
+            
     }
+    useEffect(()=>{
+
+      //getSpotifyToken()
+      if (spotifyToken) {
+        console.log("spotify token got in song roulette game lobby ->", spotifyToken)
+        // get specific playlist code (user entered or from firebase?) (future sprint) (hard-coded)
+        /* make song_bank data structure */
+        //console.log(people);
+        console.log("meIndex" +meIndex);
+      
+      }
+      
+      
+    }, [spotifyToken]);
     
     return (
     <div>
