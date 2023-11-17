@@ -108,7 +108,11 @@ function SongRouletteLobby() {
 
       if ( currentLobby.length!= 0) {
         await buildSongBank()
+        
+        currentLobby.gameSongs = song_bank;
+        currentLobby.peopleGame = people;
         socket.emit('game-started',currentLobby.ownerID, song_bank,numOfRounds, people  );
+
         
 
         const audio = new Audio(StartGameSound);

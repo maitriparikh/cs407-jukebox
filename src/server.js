@@ -226,35 +226,28 @@ socket.on('leave-lobby', ({ user, ownerID }) => {
 });
 
     
-socket.on('update-user-points', ({ lobbyCode, updatedPeople }) => {
+socket.on('update-user-points', ({ lobbyCode, updatedPeople, index }) => {
+    //const lobby = lobbies.get(lobbyCode);
 
-      console.log("huh?")
-      const lobby = lobbies.get(0);
 
-      // Update scores for existing users
-      lobby.peopleGame.forEach((user, index) => {
-        const updatedUser = updatedPeople.find(updated => updated.name === user.name);
+    for (const [lobbyCode, lobbyDetails] of lobbies.entries()) {
+      
+        lobbyFound = true;
+        // Check if the lobby is in a valid state to start the game
 
-        if (updatedUser) {
-          lobby.peopleGame[0][index].points += updatedUser.points;
-                  console.log("test1: " + updatedUser);
-        }
-        else("hmmm2")
-      });
+        console.log(updatedPeople);
+      lobbyDetails.peopleGame[index].points += updatedPeople.points;
 
-      lobbies.set(lobbyCode, lobby);
+         io.emit('update-the-points', lobbyDetails.peopleGame[index] , index);
+          break; // Exit loop after updating the lobby details
+        
+    }
 
-      // Emit the updated lobby data to all clients in that lobby
 
-      io.emit('update-lobbies', Array.from(lobbies.values()));
-      // Broadcast the updated lobbies to all clients
-      updateLobbies();
-      //updateLobbies();
-      //updateLobbies();
-      //updateLobbies();
-      //updateLobbies();
-      //updateLobbies();
+    //lobbies.set(lobbyCode, lobby);
 
+    // Emit the updated lobby data to all clients in that lobby
+    
 });
 
 

@@ -63,14 +63,14 @@ function SongRouletteGame() {
     
 
 
-    console.log("NUMBER OF ROUNDS = " + rounds);
-    console.log(people);
-    console.log(location.state.people)
+    //console.log("NUMBER OF ROUNDS = " + rounds);
+    //console.log(people);
+    //console.log(location.state.people)
     if (!people) {
         people = location.state.people
     }
-    console.log(song_bank);
-    console.log(lobbyTemp);
+    //console.log(song_bank);
+   console.log(lobbyTemp);
 
     const me = "" // should be name of current player
     //const meIndex2 = lobbyTemp.players.findIndex(lobbyTemp => lobbyTemp.players.includes(user) ); // change flag state when selected
@@ -91,8 +91,15 @@ function SongRouletteGame() {
     const [spotifyToken, setSpotifyToken] = useState(""); // Spotify Token
     const [userNameTemp2, setUserNameTemp2] = useState("");
 
+
     const [lobbies, setLobbies] = useState([]);
-    const [currentLobby, setCurrentLobby] = useState([location.state.currentLobby]);
+
+    var tempppy = location.state.currentLobby
+    const [currentLobby, setCurrentLobby] = useState(lobbyGet);
+
+
+    
+    
 
 
     
@@ -102,12 +109,12 @@ function SongRouletteGame() {
     const tempThing =  findLobbyByPlayerId(lobbies, user);
 
     if (tempThing) {
-      setCurrentLobby(tempThing); // If a lobby is found, set the currentLobby state
-      //console.log("Current Lobby:", tempThing);
+      //setCurrentLobby(tempThing); // If a lobby is found, set the currentLobby state
+      console.log("Current Lobby:", tempThing);
       //console.log("Current user ID:", user);
       //console.log("Current Lobby owner ID:", tempThing.ownerID);
     } else {
-      setCurrentLobby(null); // If no lobby is found, set currentLobby as null
+      //setCurrentLobby(null); // If no lobby is found, set currentLobby as null
       // console.log("No lobby found for the current user:", user);
     }
   };
@@ -212,6 +219,57 @@ function SongRouletteGame() {
     });
   };
 
+
+  const updateUserPoints = () => {
+        // Logic to calculate updated points for the user
+
+        console.log(people);
+
+        const updatedPeopleArray = people[meIndex]; // Prepare updated user points data
+        // Populate updatedPeopleArray with updated points for each user
+
+        // Emit event to server with updated user points data
+        socket.emit('update-user-points', { lobbyCode: currentLobby.code, updatedPeople: updatedPeopleArray, index: meIndex });
+  };
+
+socket.on('update-the-points', (updatedPerson , index) => {
+    // Find the person to update based on their name
+    console.log("update the pointz");
+    console.log(updatedPerson);
+    console.log(lobbyTemp);
+
+    lobbyTemp.peopleGame[index].points = updatedPerson.points;
+    /*
+    
+    const updatedPeople2 = people.map(person => {
+        if (person.name === updatedPerson.name) {
+            return {
+                ...person,
+                points: person.points + updatedPerson.points // Update points
+            };
+        }
+        return person;
+    });
+    */
+
+    // Set the updated people array in your state or wherever it's stored
+    //setPeople(updatedPeople2);
+});
+    
+
+  const handlePointsUpdate = () => {
+        // Logic to update the user's points locally
+
+        // Call function to update user points and emit event to server
+        updateUserPoints();
+    };
+
+    useEffect(() => {
+          // Example usage of the handlePointsUpdate function
+          // Replace this with your actual logic where user points are updated
+          //handlePointsUpdate();
+    }, [/* Add dependencies as needed */]);
+
   /*
 
   useEffect(() => {
@@ -269,18 +327,8 @@ function SongRouletteGame() {
 
     
 
-    const updateUserPoints = (lobbyCode, updatedPeople) => {
-      console.log("update points called");
-      console.log("update points called");
-      console.log("update points called");
-      console.log("update points called");
-      //socket.emit('update-user-points', { lobbyCode, updatedPeople });
-    };
-
-
-    /* 
     
-         useEffect(() => {
+    useEffect(() => {
         socket.emit('fetch-lobbies');
 
         socket.on('update-lobbies', (updatedLobbies) => {
@@ -288,7 +336,7 @@ function SongRouletteGame() {
         });
     }, []); 
 
-    */
+ 
 
 
     useEffect(() => {
@@ -378,13 +426,15 @@ function SongRouletteGame() {
         // update state of current points for pop up message
         setCurrentPoints(curPoints);
         setPointTextState(pointText)
+        console.log(lobbyTemp);
+        lobbyTemp.points[meIndex]+= curPoints;
 
-        currentLobby.peopleGame[0][meIndex].points += curPoints;
+        handlePointsUpdate();
 
         // Emit the updated lobby data through the socket
         //socket.emit('update-lobby', lobbyTemp);
 
-
+ 
         // Example usage: Call this function when the user's points are updated
         // For instance, after the 'checkAnswers' function
         const updatedPeopleArray = [...people]; // Assuming people is the updated array of users

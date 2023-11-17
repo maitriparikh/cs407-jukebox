@@ -20,6 +20,7 @@ import { auth, db } from "../utils/firebase";
 import { collection, onSnapshot, getDoc, doc, updateDoc, setDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { useTheme } from '@mui/material/styles';
+export var TopFiveArrExport = true;
 
 
 function Homepage() {
@@ -78,6 +79,7 @@ function Homepage() {
     const displayTop = async() => {
       const topTracks = await getTopTracks();
       console.log("The top tracks are: ", topTracks);
+      TopFiveArrExport = topTracks;
       setTopFiveArr(topTracks);
       console.log(topFiveArr);
       if (topTracks != undefined) {
