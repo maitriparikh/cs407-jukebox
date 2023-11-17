@@ -20,6 +20,7 @@ import StartGameSound from "../../sounds/start_game.mp3";
 import io from 'socket.io-client';
 
 import { useTheme } from '@mui/material/styles';
+import {TopFiveArrExport} from  "../homepage";
 
     
 
@@ -43,11 +44,12 @@ function SongRouletteLobby() {
     const [song_bank, setSong_bank] = useState([]);
     const [lobbies, setLobbies] = useState([]);
     const [currentLobby, setCurrentLobby] = useState([]);
-    const top5arr = location.state.top5;
+    const top5arr = TopFiveArrExport;
     const [myPlaylist, setMyPlaylist] = useState([]); // intermediate playlist array
     const [isButtonDisabledOwner, setButton] = useState(true);
     const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
+    const [readyToStart, setIsReadyToStart] = useState(false);
     
 
     const [myPlaylistFinal2, setMyPlaylistFinal2] = useState([ // Maitri hard coded playlist
@@ -106,18 +108,18 @@ function SongRouletteLobby() {
 
       if ( currentLobby.length!= 0) {
         await buildSongBank()
-        socket.emit('game-started',currentLobby.ownerID, song_bank,numOfRounds,   );
+        socket.emit('game-started',currentLobby.ownerID, song_bank,numOfRounds, people  );
         
 
         const audio = new Audio(StartGameSound);
-      audio.play();
-      navigate("/songroulettegame", {
-          state: {
-            rounds: numOfRounds,
-            people: people,
-            song_bank: song_bank,
-            lobby: currentLobby
-          },
+        audio.play();
+        navigate("/songroulettegame", {
+            state: {
+              rounds: numOfRounds,
+              people: people,
+              song_bank: song_bank,
+              lobby: currentLobby
+            },
         });
       }
     };
@@ -125,23 +127,19 @@ function SongRouletteLobby() {
 
     
     const deleteLobby = () => {
-      console.log("testing delete")
-      console.log(currentLobby.ownerID)
-      console.log(lobbies)
+     // console.log("testing delete")
+      //console.log(currentLobby.ownerID)
+      //console.log(lobbies)
       getCurrentLobby();
 
       if (currentLobby.length!= 0) {
-
         socket.emit('delete-lobby', currentLobby.ownerID);
-        
-
-              navigate("/songroulettelobbybrowser" , {
+        navigate("/songroulettelobbybrowser" , {
           state: {
           top5: top5arr
-        },
-      } );
-    }
-       
+          },
+        } );
+      }
     };
 
     const leaveLobby = (user, owner) => {
@@ -204,30 +202,30 @@ function SongRouletteLobby() {
 
           
 
-  const getCurrentLobby =  () => {
-    const tempThing =  findLobbyByPlayerId(lobbies, user);
-    console.log("start")
-    console.log(lobbies)
-    console.log(user)
-    console.log("finish")
+    const getCurrentLobby =  () => {
+      const tempThing =  findLobbyByPlayerId(lobbies, user);
+      //console.log("start")
+      //console.log(lobbies)
+      //console.log(user)
+      //console.log("finish")
 
-    if (tempThing) {
-      setCurrentLobby(tempThing); // If a lobby is found, set the currentLobby state
-      console.log("Current Lobby:", tempThing);
-      console.log("Current user ID:", user);
-      console.log("Current Lobby owner ID:", tempThing.ownerID);
-    } else {
-      //setCurrentLobby(null); // If no lobby is found, set currentLobby as null
-      console.log("No lobby found for the current user:", user);
-      console.log(lobbies)
-      console.log(lobbies)
-    }
-     console.log("start2")
-    console.log(lobbies)
-    console.log(user)
-    console.log("finish2")
+      if (tempThing) {
+        setCurrentLobby(tempThing); // If a lobby is found, set the currentLobby state
+        console.log("Current Lobby:", tempThing);
+        //console.log("Current user ID:", user);
+        //console.log("Current Lobby owner ID:", tempThing.ownerID);
+      } else {
+        //setCurrentLobby(null); // If no lobby is found, set currentLobby as null
+        console.log("No lobby found for the current user:", user);
+        console.log(lobbies)
+        //console.log(lobbies)
+      }
+      //console.log("start2")
+      //console.log(lobbies)
+      //console.log(user)
+      //console.log("finish2")
 
-  };
+    };
   
 
 
@@ -261,8 +259,9 @@ function SongRouletteLobby() {
     
       const trackURIs = allTracks.map((track) => track.track.uri);
       setMyPlaylist(trackURIs);
-
       
+      
+
       const myPlaylistFinal = currentLobby.gameData[0].map((track) => {
         return "https://open.spotify.com/embed/track/" + track.uri.substring(14) + "?utm_source=generator";
       });
@@ -279,7 +278,18 @@ function SongRouletteLobby() {
         return "https://open.spotify.com/embed/track/" + track.uri.substring(14) + "?utm_source=generator";
       });
       
-      
+      if (currentLobby.gameData[0] == null) {
+        console.log("ERROR reading player 1 game data");
+      }
+      if (currentLobby.gameData[1] == null) {
+         console.log("ERROR reading player 2 game data");
+      }
+      if (currentLobby.gameData[2] == null) {
+         console.log("ERROR reading player 3 game data");
+      }
+      if (currentLobby.gameData[3] == null) {
+         console.log("ERROR reading player 4 game data");
+      }
 
       //const myPlaylistFinal = generateEmbeddedTrackURLs(currentLobby.gameData[0]);
      
@@ -312,7 +322,7 @@ function SongRouletteLobby() {
           playlist: myPlaylistDynamic3
         }
 
-                people.push(person3);
+        people.push(person3);
 
         const person4 = {
           name: currentLobby.playerNames[3],
@@ -320,9 +330,10 @@ function SongRouletteLobby() {
           points: 0,
           playlist: myPlaylistDynamic4
         }
-                people.push(person4);
 
-                setPeople(people);
+        people.push(person4);
+
+        setPeople(people);
 
 
 
@@ -438,6 +449,10 @@ function SongRouletteLobby() {
     }, [spotifyToken]);
 
 
+
+
+
+
     useEffect(() => {
       //socket.emit('fetch-lobbies');
 
@@ -454,11 +469,14 @@ function SongRouletteLobby() {
         console.log("owner started game!");
          //socket.emit('fetch-lobbies');
          getCurrentLobby();
-        if ( user  &&  currentLobby && user !== currentLobby.ownerID) {
-          console.log("lobbies");
+         console.log(lobbies);
+        if ( user  &&  currentLobby && currentLobby.length !=0 && user !== currentLobby.ownerID ) {
+          /*
+          
           //console.log(currentLobby.playerNames)
           //console.log(currentLobby.gameSongs)
           console.log(currentLobby)
+          console.log(people)
           navigate("/songroulettegame", {
             state: {
               rounds: numOfRounds,
@@ -467,6 +485,16 @@ function SongRouletteLobby() {
               lobby: currentLobby
             },
           });
+
+          */
+         setIsReadyToStart(true);
+         
+
+          console.log("ready to start!")
+        }
+        else {
+          console.log("not ready to start!");
+          setIsReadyToStart(true);
         }
       });
 
@@ -498,11 +526,24 @@ function SongRouletteLobby() {
         //setLobbies((prevLobbies) => [...prevLobbies, ...updatedLobbies]);
         setLobbies(updatedLobbies);
         //isButtonDisabled = currentLobby && currentLobby.players && currentLobby.players.length ===4 && currentLobby.ownerID === user;
+        if ( updatedLobbies && updatedLobbies[0]  && updatedLobbies[0].peopleGame && updatedLobbies[0].peopleGame.length == 4 && updatedLobbies[0].gameType) {
+          navigate("/songroulettegame", {
+            state: {
+              rounds: updatedLobbies[0].rounds,
+              people: updatedLobbies[0].peopleGame,
+              song_bank: updatedLobbies[0].gameSongs,
+              lobby: updatedLobbies[0]
+            
+            },
+          });
+          
+        }
         
         
-        };
+      };
 
       socket.emit('fetch-lobbies');
+      
 
       socket.on('update-lobbies', handleUpdateLobbies);
 
@@ -535,7 +576,10 @@ function SongRouletteLobby() {
 
 
 
-    
+  const divStyleLobbuy = {
+    color: 'black',
+    fontSize: 25,
+  };
 
     
 
@@ -603,7 +647,7 @@ function SongRouletteLobby() {
 
                 <ul>
                 {lobbies.map((lobby) => (
-                <li key={lobby.code}>
+                <li style={divStyleLobbuy} key={lobby.code}>
                 (Players: {lobby.playerNames.join(', ')})
                 </li>
                 ))}

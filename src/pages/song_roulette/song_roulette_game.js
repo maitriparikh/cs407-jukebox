@@ -51,7 +51,7 @@ function SongRouletteGame() {
 
     const lobbyGet = location.state.lobby;
     const [lobbyTemp, setLobbyTemp] = useState(lobbyGet);
-    const peopleGet = location.state.lobby.playerNames; // Get people array from lobby page
+    const peopleGet = location.state.people; // Get people array from lobby page
     
 
     var [people, setPeople] = useState(peopleGet);
@@ -92,9 +92,12 @@ function SongRouletteGame() {
     const [userNameTemp2, setUserNameTemp2] = useState("");
 
     const [lobbies, setLobbies] = useState([]);
-    const [currentLobby, setCurrentLobby] = useState([]);
+    const [currentLobby, setCurrentLobby] = useState([location.state.currentLobby]);
+
+
     
 
+  
   const getCurrentLobby =  () => {
     const tempThing =  findLobbyByPlayerId(lobbies, user);
 
@@ -209,6 +212,8 @@ function SongRouletteGame() {
     });
   };
 
+  /*
+
   useEffect(() => {
     // Only calculate `meIndex2` when `user` is available
     if (user && lobbyTemp && lobbyTemp.players) {
@@ -233,11 +238,34 @@ function SongRouletteGame() {
           //console.log(updatedLobbies);
 
           //setCurrentLobby(updatedLobbies[0]);
-          getCurrentLobby();
+          //getCurrentLobby();
           //setLobbyUsers(currentLobby.players);
       });
 
     }, []);;
+
+    */
+
+    function onRenderCallback(
+  id, // the "id" prop of the Profiler tree that has just committed
+  phase, // either "mount" (if the tree just mounted) or "update" (if it re-rendered)
+  actualDuration, // time spent rendering the committed update
+  baseDuration, // estimated time to render the entire subtree without memoization
+  startTime, // when React began rendering this update
+  commitTime, // when React committed this update
+  interactions // the Set of interactions belonging to this update
+) {
+  // Aggregate or log render timings...
+  console.log({
+    id,
+    phase,
+    actualDuration,
+    baseDuration,
+    startTime,
+    commitTime,
+    interactions
+  });
+}
 
     
 
@@ -246,13 +274,38 @@ function SongRouletteGame() {
       console.log("update points called");
       console.log("update points called");
       console.log("update points called");
-      socket.emit('update-user-points', { lobbyCode, updatedPeople });
+      //socket.emit('update-user-points', { lobbyCode, updatedPeople });
     };
 
 
+    /* 
+    
+         useEffect(() => {
+        socket.emit('fetch-lobbies');
+
+        socket.on('update-lobbies', (updatedLobbies) => {
+            setLobbies(updatedLobbies);
+        });
+    }, []); 
+
+    */
 
 
-  
+    useEffect(() => {
+        // Only calculate `meIndex2` when `user` is available
+        if (user && lobbyTemp && lobbyTemp.players) {
+            const meIndex2 = lobbyTemp.players.findIndex(player => player === user);
+            if (meIndex2 !== -1) {
+                setMeIndex(meIndex2); // Set the index if it's found ???? test
+            }
+        }
+    }, [user, lobbyTemp]);
+
+     useEffect(() => {
+        getSpotifyToken();
+    }, [spotifyToken]);
+   
+    
 
 
     const checkAnswers = (selected) => {
@@ -336,16 +389,17 @@ function SongRouletteGame() {
         // For instance, after the 'checkAnswers' function
         const updatedPeopleArray = [...people]; // Assuming people is the updated array of users
         console.log(updatedPeopleArray);
-        updateUserPoints(currentLobby.code, updatedPeopleArray);
+        //updateUserPoints(currentLobby.code, updatedPeopleArray);
             
     }
-    useEffect(()=>{
+    /*  
+          useEffect(()=>{
 
       //getSpotifyToken()
       if (spotifyToken) {
         console.log("spotify token got in song roulette game lobby ->", spotifyToken)
         // get specific playlist code (user entered or from firebase?) (future sprint) (hard-coded)
-        /* make song_bank data structure */
+
         //console.log(people);
         console.log("meIndex" +meIndex);
       
@@ -353,6 +407,7 @@ function SongRouletteGame() {
       
       
     }, [spotifyToken]);
+    */
 
     
     
@@ -365,7 +420,7 @@ function SongRouletteGame() {
            Round {currentQuestion + 1} of {rounds}
         </Typography>
         <br></br>
-            
+             <React.Profiler id="MyComponent" onRender={onRenderCallback}></React.Profiler>
           <Card elevation={3} style={{ position: 'relative', border: `2px solid ${theme.palette.primary.main}`, borderRadius: "8px", backgroundColor: theme.palette.background.default }}>
             {/* Cancel Icon */}
             <CancelIcon

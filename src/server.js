@@ -122,36 +122,45 @@ io.on('connection', (socket) => {
       }
     });
 
-  socket.on('game-started', (ownerId, song_bank, numOfRounds,people) => {
+socket.on('game-started', (ownerId, song_bank, numOfRounds, people) => {
   // Finding the lobby associated with the provided ownerId
+  let lobbyFound = false;
+  let validLobby = false;
+  
   for (const [lobbyCode, lobbyDetails] of lobbies.entries()) {
     if (lobbyDetails.ownerID === ownerId) {
-      // Update details in the found lobby associated with the ownerID
-      lobbyDetails.rounds = numOfRounds;
-      
-      // Ensure song_bank is an array, or push its contents individually
-      if (Array.isArray(song_bank)) {
-        lobbyDetails.gameSongs = lobbyDetails.gameSongs.concat(song_bank);
-      } else {
-        lobbyDetails.gameSongs.push(song_bank);
+      lobbyFound = true;
+      // Check if the lobby is in a valid state to start the game
+      if (lobbyDetails.players.length == 4) {
+        validLobby = true;
+        // Update details in the found lobby associated with the ownerID
+        lobbyDetails.rounds = numOfRounds;
         
+        // Ensure song_bank is an array, or push its contents individually
+        if (Array.isArray(song_bank)) {
+          lobbyDetails.gameSongs = lobbyDetails.gameSongs.concat(song_bank);
+        } else {
+          lobbyDetails.gameSongs.push(song_bank);
+        }
+        
+        lobbyDetails.peopleGame.push(...people); // Add people to the game
+        
+        // Emit events or perform actions to signal game start
+        console.log(lobbies)
+        lobbyDetails.gameType = true
+        io.emit('owner-started-game');
+        io.emit('update-lobbies', Array.from(lobbies.values()));
+        break; // Exit loop after updating the lobby details
       }
-      lobbyDetails.peopleGame.push(people);
-
-     
-      
-      updateLobbies();
-       //updateLobbies();
-        //updateLobbies();
-         //updateLobbies();
-          //updateLobbies();
-           //updateLobbies();
-            //updateLobbies();
-             //updateLobbies();
-      //console.log(lobbies);
-      io.emit('owner-started-game');
-      break; // Exit loop after updating the lobby details
     }
+  }
+
+  if (!lobbyFound) {
+    // Handle case when the owner's lobby is not found
+    socket.emit('lobby-error', 'Lobby not found');
+  } else if (!validLobby) {
+    // Handle case when the lobby is not in a valid state to start the game
+    socket.emit('lobby-error', 'Lobby is not ready to start the game');
   }
 });
 
@@ -240,11 +249,11 @@ socket.on('update-user-points', ({ lobbyCode, updatedPeople }) => {
       io.emit('update-lobbies', Array.from(lobbies.values()));
       // Broadcast the updated lobbies to all clients
       updateLobbies();
-      updateLobbies();
-      updateLobbies();
-      updateLobbies();
-      updateLobbies();
-      updateLobbies();
+      //updateLobbies();
+      //updateLobbies();
+      //updateLobbies();
+      //updateLobbies();
+      //updateLobbies();
 
 });
 

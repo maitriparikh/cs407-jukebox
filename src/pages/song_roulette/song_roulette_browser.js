@@ -24,7 +24,7 @@ import { db } from "../../utils/firebase";
 import { collection, onSnapshot, getDoc, doc, updateDoc, setDoc } from "firebase/firestore";
 
 import { useTheme } from '@mui/material/styles';
-
+import {TopFiveArrExport} from  "../homepage";
 
 
 //import handleCreateLobby from "../../server"
@@ -74,8 +74,8 @@ function SongRouletteLobbyBrowser() {
   /* Navigation for buttons */
   const navigate = useNavigate();
 
-  const top5arr = location.state.top5;
-  //console.log(top5arr);
+  const top5arr = TopFiveArrExport;
+  console.log(top5arr);
   //console.log("ugh")
 
   const startLobby_click = () => {
