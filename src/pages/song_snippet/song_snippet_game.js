@@ -42,7 +42,8 @@ function SongSnippetGame() {
     const gameMode = location.state.gameMode;
     const songInfo = location.state.songInfo
     const allSongs = location.state.allSongs
-    const songInfoArray = location.state.songInfoArray
+    const songInfoArrayGet = location.state.songInfoArray
+    const [songInfoArray, setSongInfoArray] = useState(songInfoArrayGet);
     //console.log("GAME MODE = " + gameMode)
     //console.log("SONG INFO = ", songInfo)
     //console.log("ALL SONGS = ", allSongs)
@@ -71,6 +72,10 @@ function SongSnippetGame() {
 
     const [hint1Countdown, setHint1Countdown] = useState(hint1Delay / 1000);
     const [hint2Countdown, setHint2Countdown] = useState(hint2Delay / 1000);
+    
+    const [noMoreTries, setNoMoreTries] = useState(false);
+
+    const [overallPoints, setOverallPoints] = useState(0);
 
     useEffect(() => {
       let hint1Timer;
@@ -109,10 +114,22 @@ function SongSnippetGame() {
     const revealHint1 = () => {
       setShowHint1(true);
       setHint1Revealed(true); // to start timer for hint 2
+
+      const currentPoints = songInfoArray[currentRound].points - 10;
+      console.log("currentPoints", currentPoints)
+      const updatedSongInfoArray = [...songInfoArray];
+      updatedSongInfoArray[currentRound].points = currentPoints;
+      setSongInfoArray(updatedSongInfoArray);
     };
     
     const revealHint2 = () => {
       setShowHint2(true);
+      
+      const currentPoints = songInfoArray[currentRound].points - 10;
+      console.log("currentPoints", currentPoints)
+      const updatedSongInfoArray = [...songInfoArray];
+      updatedSongInfoArray[currentRound].points = currentPoints;
+      setSongInfoArray(updatedSongInfoArray);
     };
 
     /* Navigation for buttons */
@@ -158,12 +175,19 @@ function SongSnippetGame() {
 
             setHint1Countdown(hint1Delay / 1000)
             setHint2Countdown(hint2Delay / 1000)
+            setNoMoreTries(false);
 
             setIsCorrect(false);
+
+            const pointsAdd = overallPoints + songInfoArray[currentRound].points;
+            setOverallPoints(pointsAdd)
 
             const nextRound = currentRound + 1;
             setCurrentRound(nextRound);
         } else {
+            const pointsAdd = overallPoints + songInfoArray[currentRound].points;
+            setOverallPoints(pointsAdd)
+            
             setShowEnd(true);
             const audio = new Audio(FanfareSound);
             audio.play();
@@ -181,14 +205,60 @@ function SongSnippetGame() {
           const audio = new Audio(CorrectAnswerSound);
           audio.play();
         } else {
-          setAlertOpen(true);
+          // decrement num of tries by 1, and decrement current points by 25
           console.log("INCORRECT ANSWER!")
+          console.log("songInfoArray[currentRound].points", songInfoArray[currentRound].points)
+          console.log("songInfoArray[currentRound].tries", songInfoArray[currentRound].tries)
+          
+          // if you get the answer wrong (1 try left), move to next round with 0 points
+          if (songInfoArray[currentRound].tries == 1) {
+            const currentPoints = songInfoArray[currentRound].points - 25;
+            console.log("currentPoints", currentPoints)
+            const updatedSongInfoArray = [...songInfoArray];
+            updatedSongInfoArray[currentRound].points = currentPoints;
+            setSongInfoArray(updatedSongInfoArray);
+
+            setIsCorrect(true);
+            setNoMoreTries(true);
+          }
+
+          const currentPoints = songInfoArray[currentRound].points - 25;
+          const currentTries = songInfoArray[currentRound].tries - 1;
+          
+          console.log("currentPoints", currentPoints)
+          console.log("currentTries", currentTries)
+          
+          const updatedSongInfoArray = [...songInfoArray];
+          updatedSongInfoArray[currentRound].points = currentPoints;
+          updatedSongInfoArray[currentRound].tries = currentTries;
+          setSongInfoArray(updatedSongInfoArray);
+
+          console.log("UPDATED???", songInfoArray)
+          
+          setAlertOpen(true);
+          
           const audio = new Audio(WrongAnswerSound);
           audio.play();
         }
     };
 
-    
+
+    /*  
+      *   SYSTEM FOR AWARDING POINTS
+      *     HARD MODE (for each round)
+      *     start off with +100 in beginning of round
+      *     -25 if wrong on 1st try (overall 75)
+      *     -25 pts if wrong on 2rd try (overall 50)
+      *     -50 if wrong on 3rd try (overall 0, moves to next round)
+
+      *     EASY MODE (for each round)
+      *     start off with +100 in beginning of round
+      *     -10 if ANY hint is revealed at any point in the round
+      *     -25 if wrong on 1st try (overall 75)
+      *     -25 pts if wrong on 2rd try (overall 50)
+      *     -50 if wrong on 3rd try (overall 0, moves to next round)
+    */
+
     return (
 
         <div>
@@ -196,8 +266,26 @@ function SongSnippetGame() {
         <div style={{ marginTop: "10%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
             
             <Typography variant="h2" style={{ textAlign: "center"}}>
-                Congratulations! You completed the Song Snippet Challenge
+                Congratulations! You completed the Song Snippet Challenge.
             </Typography>
+
+            <br></br>
+            
+            <Grid xs={8} sm={6}>
+            {songInfoArray.map(round => (
+                <div>
+                <Typography variant="h4" style={{ textAlign: "center" }}>
+                    Song: {round.songName}, Points: {round.points}
+                </Typography> 
+                <br></br>
+                </div>
+            ))}
+            </Grid>
+            
+            <Typography variant="h3" style={{ textAlign: "center"}}>
+                You earned {overallPoints} points in this game!
+            </Typography>
+
 
             <br></br>
 
@@ -604,6 +692,7 @@ function SongSnippetGame() {
 
         <br></br>
 
+        {/* CORRECT ANSWER DIALOG */}
         {isCorrect && (
           <Dialog open={alertOpen} onClose={handleNextRound} PaperProps={{ style: { backgroundColor: theme.palette.background.default } }}>
           <DialogTitle>
@@ -614,7 +703,7 @@ function SongSnippetGame() {
           <DialogContent>
             <DialogContentText>
             <Typography variant="h4" style={{ textAlign: "left" }}>
-              You have correctly identified the mystery song!
+              You have correctly identified the mystery song! Your current point total for this round is {songInfoArray[currentRound].points}.
               </Typography>
             </DialogContentText>
           </DialogContent>
@@ -633,7 +722,9 @@ function SongSnippetGame() {
           </DialogActions>
           </Dialog>
         )}
-        {!isCorrect && (
+
+        {/* INCORRECT ANSWER DIALOG */}
+        {!isCorrect && !noMoreTries && (
           <Dialog open={alertOpen} onClose={handleDialogStayOnGamePage} PaperProps={{ style: { backgroundColor: theme.palette.background.default } }}>
           <DialogTitle>
           <Typography variant="h3" style={{ textAlign: "left" }}>
@@ -642,8 +733,11 @@ function SongSnippetGame() {
             </DialogTitle>
           <DialogContent>
             <DialogContentText>
+            <Typography variant="h4" style={{ textAlign: "center" }}>
+            <pre>-25</pre>
+          </Typography>
             <Typography variant="h4" style={{ textAlign: "left" }}>
-              You have not yet identified the mystery song - take another guess.
+              You have not yet identified the mystery song - take another guess. You have {songInfoArray[currentRound].tries} tries left to guess the song and your current point total for this round is {songInfoArray[currentRound].points}.
               </Typography>
             </DialogContentText>
           </DialogContent>
@@ -657,6 +751,37 @@ function SongSnippetGame() {
                 fontWeight: "bold"
                 }} 
               onClick={handleDialogStayOnGamePage}>
+              OK
+            </Button>
+          </DialogActions>
+          </Dialog>
+        )}
+
+        {/* NO TRIES LEFT, MOVE TO NEXT Q DIALOG */}
+        {noMoreTries && (
+          <Dialog open={alertOpen} onClose={handleNextRound} PaperProps={{ style: { backgroundColor: theme.palette.background.default } }}>
+          <DialogTitle>
+          <Typography variant="h3" style={{ textAlign: "left" }}>
+            Uh oh!
+          </Typography>
+            </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+            <Typography variant="h4" style={{ textAlign: "left" }}>
+              You weren't able to identify the mystery song in 3 tries. Your point total for this round is 0.
+              </Typography>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button variant="contained"
+              style={{
+                color: theme.palette.primary.main,
+                backgroundColor: theme.palette.secondary.main,
+                textTransform: "none",
+                fontSize: 15,
+                fontWeight: "bold"
+                }} 
+              onClick={handleNextRound}>
               OK
             </Button>
           </DialogActions>

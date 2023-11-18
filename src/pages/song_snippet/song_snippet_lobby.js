@@ -121,7 +121,9 @@ function SongSnippetLobby() {
                 songName: songName1,
                 songArtist: artist,
                 songAlbumPic: albumPic,
-                songAudio: previewURL
+                songAudio: previewURL,
+                points: 100,
+                tries: 3
             };
 
             // add song i to songInfoArrayTemp
