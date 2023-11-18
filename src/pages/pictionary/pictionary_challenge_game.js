@@ -127,7 +127,7 @@ function PictionaryGame() {
             {/* Drawing Canvas */}
             <canvas
                 ref={canvasRef}
-                style={{ backgroundColor: theme.palette.background.default, border: `4px solid ${theme.palette.primary.main}`, borderRadius: "8px" }}
+                style={{ backgroundColor: "white", border: `4px solid ${theme.palette.primary.main}`, borderRadius: "8px" }}
                 width={1080}
                 height={520}
                 onMouseDown={() => { setIsDrawing(true); startNewPath(); }}
