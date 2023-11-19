@@ -98,6 +98,9 @@ function Leaderboard() {
             <div>
                 <h1>Music Game Leaderboards</h1>
                 <div>
+                    <h2>Song Roulette Leaderboard</h2>
+                    <h2>Pictionary Leaderboard</h2>
+                    <h2>Song Snippet Leaderboard</h2>
                     <h2>Trivia Challenge Leaderboard</h2>
                     {
                         triviaGamesArray.map(highScore => (
@@ -107,6 +110,7 @@ function Leaderboard() {
 
                         ))
                     }
+                    <h2>Lyric Challenge Leaderboard</h2>
                 </div>
             </div>
             <br></br>

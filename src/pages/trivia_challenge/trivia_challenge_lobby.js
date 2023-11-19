@@ -90,8 +90,8 @@ function TriviaChallengeLobby() {
     }
 
     const startgame_click = async () => {
-        console.log("START GAME CLICKED");
-        console.log(topFiveArr);
+        //console.log("START GAME CLICKED");
+        //console.log(topFiveArr);
         //await buildSongBank()
         navigate("/triviachallengegame", {
           state: {
