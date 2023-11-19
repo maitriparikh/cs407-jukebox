@@ -36,6 +36,7 @@ function Leaderboard() {
     const [spotifyToken, setSpotifyToken] = useState("");
     const [image, setImage] = useState("");
     const [triviaGamesArray, setTriviaGamesArray] = useState([]);
+    const [snippetGamesArray, setSnippetGamesArray] = useState([]);
     const [totalRounds, setTotalRounds] = useState(0);
     const [totalPoints, setTotalPoints] = useState(0);
     const [avgPtsPerRound, setAvgPtsPerRound] = useState(0);
@@ -62,6 +63,7 @@ function Leaderboard() {
 
     const getHighScores = async () => {
         var triviaHSArray = [];
+        var snippetHSArray = [];
         console.log("inside High Scores");
         const q = query(collection(db, "users"));
         const querySnapshot = await getDocs(q);
@@ -72,10 +74,17 @@ function Leaderboard() {
                 console.log("user high score" + doc.data().triviaHighScore);
                 triviaHSArray.push({username: doc.data().username, score: doc.data().triviaHighScore});
             }
+            if (doc.data().snippetHighScore) {
+                snippetHSArray.push({username: doc.data().username, score: doc.data().snippetHighScore});
+                console.log("there was smth here");
+            }
         });
         triviaHSArray = triviaHSArray.sort((a,b) => b.score - a.score);
-        const slicedArray = triviaHSArray.slice(0, 10);
-        setTriviaGamesArray(slicedArray);
+        snippetHSArray = snippetHSArray.sort((a,b) => b.score - a.score);
+        const slicedArrayTrivia = triviaHSArray.slice(0, 10);
+        const slicedArraySnippet = snippetHSArray.slice(0, 10);
+        setTriviaGamesArray(slicedArrayTrivia);
+        setSnippetGamesArray(slicedArraySnippet);
     }
 
     useEffect (() => {
@@ -111,6 +120,14 @@ function Leaderboard() {
                         ))
                     }
                     <h2>Lyric Challenge Leaderboard</h2>
+                    {
+                        snippetGamesArray.map(highScore => (
+                            <p>
+                                <h3>{highScore.username}: {highScore.score}</h3>
+                            </p>
+
+                        ))
+                    }
                 </div>
             </div>
             <br></br>
