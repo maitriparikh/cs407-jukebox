@@ -21,6 +21,7 @@ import { useTheme } from '@mui/material/styles';
 import { UserContext } from "../../App";
 import ButtonGroup from '@mui/material/ButtonGroup';
 
+import StartGameSound from "../../sounds/start_game.mp3";
 
 
 function SongSnippetLobby() {
@@ -120,7 +121,9 @@ function SongSnippetLobby() {
                 songName: songName1,
                 songArtist: artist,
                 songAlbumPic: albumPic,
-                songAudio: previewURL
+                songAudio: previewURL,
+                points: 100,
+                tries: 3
             };
 
             // add song i to songInfoArrayTemp
@@ -170,6 +173,8 @@ function SongSnippetLobby() {
     const startgame_click = async () => {
         console.log("START GAME CLICKED");
         await getAllPlaylistTracks("0PSXEKFjY913mP2IKNEXnf")
+        const audio = new Audio(StartGameSound);
+        audio.play();
         navigate("/songsnippetgame", {
           state: {
             gameMode: gameMode,

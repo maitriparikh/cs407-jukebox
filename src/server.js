@@ -50,10 +50,17 @@ io.on('connection', (socket) => {
     socket.on('fetch-lobbies', () => {
         const lobbyData = Array.from(lobbies.values());
         //console.log(lobbyData);
+        //console.log("^^^ lobby data ^^^");
+        socket.emit('update-lobbies', lobbyData);
+        socket.emit('update-lobbies', lobbyData);
+        socket.emit('update-lobbies', lobbyData);
+        socket.emit('update-lobbies', lobbyData);
+        socket.emit('update-lobbies', lobbyData);
+        socket.emit('update-lobbies', lobbyData);
         socket.emit('update-lobbies', lobbyData);
     });
 
-    socket.on('create-lobby', (userID, userNameTemp) => {
+    socket.on('create-lobby', (userID, userNameTemp, top5arr) => {
       if (lobbyExists) {
           socket.emit('lobby-error', 'A lobby already exists.');
           return;
@@ -62,14 +69,19 @@ io.on('connection', (socket) => {
       console.log("lobby creation started");
       console.log("username of user creating lobby:" + userNameTemp);
       const lobbyCode = generateUniqueLobbyCode();
+      console.log('created lobby code:' + lobbyCode);
       socket.join(lobbyCode);
       const lobbyDetails = {
         code: lobbyCode,
         ownerID: id, // The owner is the user who created the lobby
         players: [id], // Include the owner in the players list
         gameType: selectedGameType,
-        gameData:[],
-        playerNames: []
+        gameData:[top5arr],
+        playerNames: [],
+        points: [0,0,0,0],
+        rounds: 0,
+        gameSongs: [],
+        peopleGame:[]
       };
       lobbies.set(lobbyCode, lobbyDetails);
       io.to(lobbyCode).emit('lobby-created', lobbyCode, socket.userID);
@@ -84,7 +96,7 @@ io.on('connection', (socket) => {
 
       lobbyExists = true;
     });
-    socket.on('join-lobby', (lobbyCode, userNameTemp) => {
+    socket.on('join-lobby', (lobbyCode, userNameTemp,top5arr2) => {
       // Handle joining a lobby
       if (isLobbyValid(lobbyCode)) {
         socket.join(lobbyCode);
@@ -93,7 +105,10 @@ io.on('connection', (socket) => {
         // Add the user to the lobby's players array
         lobbyDetails.players.push(id);
         console.log('passed username:' + userNameTemp);
+        console.log('passed lobby code:' + lobbyCode);
         lobbyDetails.playerNames.push(userNameTemp);
+        lobbyDetails.gameData.push(top5arr2);
+
 
         console.log(lobbies);
 
@@ -107,6 +122,48 @@ io.on('connection', (socket) => {
       }
     });
 
+socket.on('game-started', (ownerId, song_bank, numOfRounds, people) => {
+  // Finding the lobby associated with the provided ownerId
+  let lobbyFound = false;
+  let validLobby = false;
+  
+  for (const [lobbyCode, lobbyDetails] of lobbies.entries()) {
+    if (lobbyDetails.ownerID === ownerId) {
+      lobbyFound = true;
+      // Check if the lobby is in a valid state to start the game
+      if (lobbyDetails.players.length == 4) {
+        validLobby = true;
+        // Update details in the found lobby associated with the ownerID
+        lobbyDetails.rounds = numOfRounds;
+        
+        // Ensure song_bank is an array, or push its contents individually
+        if (Array.isArray(song_bank)) {
+          lobbyDetails.gameSongs = lobbyDetails.gameSongs.concat(song_bank);
+        } else {
+          lobbyDetails.gameSongs.push(song_bank);
+        }
+        
+        lobbyDetails.peopleGame.push(...people); // Add people to the game
+        
+        // Emit events or perform actions to signal game start
+        console.log(lobbies)
+        lobbyDetails.gameType = true
+        io.emit('owner-started-game');
+        io.emit('update-lobbies', Array.from(lobbies.values()));
+        break; // Exit loop after updating the lobby details
+      }
+    }
+  }
+
+  if (!lobbyFound) {
+    // Handle case when the owner's lobby is not found
+    socket.emit('lobby-error', 'Lobby not found');
+  } else if (!validLobby) {
+    // Handle case when the lobby is not in a valid state to start the game
+    socket.emit('lobby-error', 'Lobby is not ready to start the game');
+  }
+});
+
 
     const removeLobbyByOwnerID = (ownerID) => {
       const updatedLobbiesTemp = new Map(lobbies); // Create a copy of the lobbies map
@@ -118,8 +175,10 @@ io.on('connection', (socket) => {
           break; // Assuming there is only one lobby per ownerID, break after finding it
         }
       }
+      //console.log(lobbies);
+      //console.log("test1");
       lobbies = updatedLobbiesTemp;
-
+      console.log(lobbies);
    }
 
 
@@ -135,30 +194,64 @@ io.on('connection', (socket) => {
         }
       }
       */
+
+      console.log("owner ID:" + ownerID);
       removeLobbyByOwnerID(ownerID);
       console.log(lobbies);
+
       lobbyExists = false;
       io.emit('lobby-deleted', ownerID);
       io.emit('update-lobbies', Array.from(lobbies.values()));
     });
 
-    socket.on('leave-lobby', ({ user, owner }) => {
-      const lobby = lobbies.get(owner);
+socket.on('leave-lobby', ({ user, ownerID }) => {
+  const lobby = lobbies.get(0);
 
-      if (lobby) {
-        const index = lobby.players.indexOf(user);
-          if (index !== -1) {
-            lobby.players.splice(index, 1);
-            lobbies.set(owner, lobby);
-            io.emit('update-lobbies', Array.from(lobbies.values()));
-        }
-      }
+  if (lobby) {
+    const index = lobby.players.indexOf(user);
+    if (index !== -1) {
+      lobby.players.splice(index, 1);
+      lobbies.set(ownerID, lobby);
 
-      console.log(lobbies);
-    });
+      // Emit the updated lobby data to all users in the lobby except the user who left
+
+      //io.emit('lobby-deleted', ownerID);
+      io.emit('update-lobby', lobby);
+      
+    }
+  }
+  else{
+    console.log("test");
+  }
+});
 
     
+socket.on('update-user-points', ({ lobbyCode, updatedPeople, index }) => {
+    //const lobby = lobbies.get(lobbyCode);
 
+
+    for (const [lobbyCode, lobbyDetails] of lobbies.entries()) {
+      
+        lobbyFound = true;
+        // Check if the lobby is in a valid state to start the game
+
+        console.log(updatedPeople);
+      lobbyDetails.peopleGame[index].points += updatedPeople.points;
+
+         io.emit('update-the-points', lobbyDetails.peopleGame[index] , index);
+          break; // Exit loop after updating the lobby details
+        
+    }
+
+
+    //lobbies.set(lobbyCode, lobby);
+
+    // Emit the updated lobby data to all clients in that lobby
+    
+});
+
+
+    
 
     socket.on('disconnect', () => {
       //console.log('A user disconnected');
@@ -185,16 +278,7 @@ io.on('connection', (socket) => {
 
   function updateLobbies() {
  // Get the list of lobbies with their details (e.g., number of players)
-  /*
-    const updatedLobbies = Array.from(io.sockets.adapter.rooms.keys()).map((lobbyCode) => ({
-      code: lobbyCode,
-      players: io.sockets.adapter.rooms.get(lobbyCode).size || 0,
-    }));
 
-    // Emit the updated list to all connected clients
-    io.emit('update-lobbies', updatedLobbies);
-    }
-  */
     const updatedLobbies = Array.from(lobbies.values());
     //console.log("updated lobbies following");
     //console.log(updatedLobbies);

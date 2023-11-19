@@ -18,6 +18,7 @@ import InputLabel from "@mui/material/InputLabel";
 
 import { useTheme } from '@mui/material/styles';
 
+import StartGameSound from "../../sounds/start_game.mp3";
 
 function PictionaryLobby() {
 
@@ -30,6 +31,8 @@ function PictionaryLobby() {
 
     const startgame_click = async () => {
       console.log("START GAME CLICKED");
+      const audio = new Audio(StartGameSound);
+      audio.play();
       navigate("/pictionarygame", {
       });
     };
