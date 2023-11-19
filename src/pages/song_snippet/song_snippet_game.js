@@ -17,7 +17,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import TextField from "@mui/material/TextField";
 import { useTheme } from '@mui/material/styles';
-import { doc, onSnapshot } from "firebase/firestore";
+import { doc, onSnapshot, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import { db } from "../../utils/firebase";
 import { UserContext } from "../../App";
 import Autocomplete from '@mui/material/Autocomplete';
@@ -25,6 +25,8 @@ import Autocomplete from '@mui/material/Autocomplete';
 import CorrectAnswerSound from "../../sounds/correct_answer.mp3";
 import WrongAnswerSound from "../../sounds/wrong_answer.mp3";
 import FanfareSound from "../../sounds/fanfare.mp3";
+import { v4 as uuid } from "uuid";
+
 
 function SongSnippetGame() {
 
@@ -161,7 +163,7 @@ function SongSnippetGame() {
       navigate("/songsnippetlobby")
     }
 
-    const handleNextRound = () => {
+    const handleNextRound = async () => {
         if (currentRound < songInfoArray.length - 1) {
             setAlertOpen(false);
 
@@ -184,6 +186,7 @@ function SongSnippetGame() {
 
             const nextRound = currentRound + 1;
             setCurrentRound(nextRound);
+            console.log("finish round");
         } else {
             const pointsAdd = overallPoints + songInfoArray[currentRound].points;
             setOverallPoints(pointsAdd)
@@ -191,7 +194,39 @@ function SongSnippetGame() {
             setShowEnd(true);
             const audio = new Audio(FanfareSound);
             audio.play();
+
+            await sendGameScore();
         }
+    }
+
+    const sendGameScore = async () => {
+      var hs = 0;
+      const docRef = doc(db, "users", user);
+      const docSnap = await getDoc(docRef);
+      hs = docSnap.data().snippetHighScore;
+      const gameId = uuid();
+      console.log("hs is " + hs + " and overall pts is " + overallPoints);
+      if (overallPoints > hs) {  
+        await updateDoc(docRef, {
+          snippetHighScore: overallPoints,
+          snippetGameScore: arrayUnion({
+              gameId: gameId,
+              rounds: songInfoArray.length,
+              score: overallPoints,
+              gameMode: gameMode
+          })
+        }).then(() => console.log("Document updated with new high score"));
+      } else {
+          await updateDoc(docRef, {
+            snippetGameScore: arrayUnion({
+                  gameId: gameId,
+                  rounds: songInfoArray.length,
+                  score: overallPoints,
+                  gameMode: gameMode
+              })
+          }).then(() => console.log("Document updated with no new high score"));
+      }
+
     }
 
     const handleSubmitButtonClick = () => { 

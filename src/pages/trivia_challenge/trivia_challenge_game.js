@@ -17,9 +17,10 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { useTheme } from '@mui/material/styles';
 import FullLogoLight from "../../jukebox_logo_light.png";
-import { collection, query, where, getDocs, updateDoc, doc, getDoc, onSnapshot, setDoc, arrayUnion } from "firebase/firestore";
+import { collection, query, where, getDocs, updateDoc, doc, getDoc, onSnapshot, setDoc, arrayUnion, serverTimestamp } from "firebase/firestore";
 import { auth, db, storage } from "../../utils/firebase";
 import { UserContext } from "../../App";
+import { v4 as uuid } from "uuid";
 
 import CorrectAnswerSound from "../../sounds/correct_answer.mp3";
 import WrongAnswerSound from "../../sounds/wrong_answer.mp3";
@@ -83,6 +84,7 @@ function TriviaChallengeGame() {
     const albumImages = location.state.albumImages;
 
     const [highScore, setHighScore] = useState(0);
+    const [triviaGamesArray, setTriviaGamesArray] = useState([]);
 
 
 
@@ -103,7 +105,7 @@ function TriviaChallengeGame() {
         setAlertOpen(true);
     };
 
-    const handleNextQuestion = () => { // Change question to next question
+    const handleNextQuestion = async () => { // Change question to next question
         // Increment question when Next Button is pressed
         setAlertOpen(false)
         console.log("nq rounds is " + rounds);
@@ -122,6 +124,8 @@ function TriviaChallengeGame() {
         setAnswers(newAns);
 
         if (currentQuestion == rounds - 1) { // Max rounds reached
+            await sendGameScore();
+            await getHighScores();
             setShowGame(!showGame);
             const audio = new Audio(FanfareSound);
             audio.play(); 
@@ -218,14 +222,16 @@ function TriviaChallengeGame() {
     const sendGameScore = async () => {
         var hs = 0;
         const docRef = doc(db, "users", user);
-        await onSnapshot(docRef, async (doc) => {
-            hs = doc.data().triviaHighScore;
-        });
+        const docSnap = await getDoc(docRef);
+        hs = docSnap.data().triviaHighScore;
+        const gameId = uuid();
 
         if (totalPoints > hs) {
+                
             await updateDoc(docRef, {
                 triviaHighScore: totalPoints,
                 triviaGameScore: arrayUnion({
+                    gameId: gameId,
                     rounds: rounds,
                     score: totalPoints
                 })
@@ -233,28 +239,36 @@ function TriviaChallengeGame() {
         } else {
             await updateDoc(docRef, {
                 triviaGameScore: arrayUnion({
+                    gameId: gameId,
                     rounds: rounds,
                     score: totalPoints
                 })
             }).then(() => console.log("Document updated with no new high score"));
         }
 
-        
-
-        await updateDoc(docRef, {
-            triviaHighScore: hs,
-            triviaGameScore: arrayUnion({
-                rounds: rounds,
-                score: totalPoints
-            })
-        }).then(() => console.log("Document updated"));
     }
 
     const replayGame = async () => {
         console.log("REPLAY GAME CLICKED");
-        //need to handle sending game data to firebase
-        await sendGameScore();
         navigate("/triviachallengelobby");
+    }
+
+    const getHighScores = async () => {
+        var triviaHSArray = [];
+        console.log("inside High Scores");
+        const q = query(collection(db, "users"));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+            if (doc.data().triviaHighScore) {
+                console.log("user high score" + doc.data().triviaHighScore);
+                triviaHSArray.push({username: doc.data().username, score: doc.data().triviaHighScore});
+            }
+        });
+        triviaHSArray = triviaHSArray.sort((a,b) => b.score - a.score);
+        const slicedArray = triviaHSArray.slice(0, 10);
+        setTriviaGamesArray(slicedArray);
+        console.log("getHighScores is working");
+        console.log(triviaHSArray);
     }
 
     useEffect (() => {
@@ -286,7 +300,7 @@ function TriviaChallengeGame() {
             setAnswers(temp);
             console.log(answers);
         }
-    })
+    }, []);
     
 
     return (
@@ -471,6 +485,15 @@ function TriviaChallengeGame() {
                 >
                 Replay
                 </Button>
+                <h2>Trivia Challenge Leaderboard</h2>
+                    {
+                        triviaGamesArray.map(highScore => (
+                            <p>
+                                <h3>{highScore.username}: {highScore.score}</h3>
+                            </p>
+
+                        ))
+                    }
                 
             </div>
         )}
