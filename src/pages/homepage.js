@@ -31,6 +31,8 @@ function Homepage() {
     const [alertOpen, setAlertOpen] = useState(false); // show dialog for if spotify is not connected
     const [spotifyConnected, setSpotifyConnected] = useState(false); // is spotify connected?
     const [spotifyToken, setSpotifyToken] = useState(""); // Spotify Token
+    const [preferencesQuiz, setPreferencesQuiz] = useState(false); // is music preferences quiz done? (done will mean custom playlist(s) is generated)
+    const [musicPreferences, setMusicPreferences] = useState(""); // Music Preferences
     const { user, setUser } = useContext(UserContext);
     const [topFiveArr, setTopFiveArr] = useState("");
 
@@ -115,6 +117,8 @@ function Homepage() {
           console.log("the profile passed thru uid is: ", user.uid);
 
           await onSnapshot(doc(db, "users", user.uid), async (doc) => {
+
+            // SPOTIFY TOKEN FROM FIREBASE
             setSpotifyToken(doc.data().spotifyToken);
             if (spotifyToken != "") {
               console.log("spotify token got in choose game ->", spotifyToken);
@@ -127,6 +131,18 @@ function Homepage() {
             } else {
               setSpotifyConnected(false);
             }
+
+            // MUSIC PREFERENCES FROM FIREBASE
+            setMusicPreferences(doc.data().musicPreferences);
+            if (musicPreferences) {
+              console.log("music preferences got in choose game ->", musicPreferences);
+              setPreferencesQuiz(true);
+              console.log("preferences quiz set to true", preferencesQuiz);
+            } else {
+              setPreferencesQuiz(false);
+            }
+
+
             console.log("spotify token got ->", spotifyToken);
           });
 
@@ -142,7 +158,9 @@ function Homepage() {
 
     const chooseGame = (game) => {
       //if connected to spotify
-      if (spotifyConnected) {
+      console.log("SPOTIFY CONNECTED VALUE: ", spotifyConnected);
+      console.log("MUSIC PREFERENCES VALUE: ", musicPreferences);
+      if (spotifyConnected || musicPreferences) {
         // random button clicked
         if (game == "Random") {
           // generate a random number from 0-5 (array indices corresponding to games in gameNames array)
@@ -168,11 +186,10 @@ function Homepage() {
         } 
       }
       else {
-        // if not connected to spotify, show dialog
+        // if not connected to spotify or music preferences quiz not done, show dialog
+        console.log("NO SPOTIFY CONNECTED AND MUSIC PREFERENCES QUIZ NOT DONE")
         setAlertOpen(true)
       }
-
-      
 
     }
     

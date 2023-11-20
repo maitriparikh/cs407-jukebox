@@ -93,6 +93,8 @@ function MusicPreferencesQuiz() {
     const [isFirstQuestion, setIsFirstQuestion] = useState(true)
     const [submitted, setSubmitted] = useState(false)
 
+    const [showCustomPlaylist, setShowCustomPlaylist] = useState(false);
+
     const handleNextButtonClick = (answerOption) => {
         if (questions[currentQuestion].selected.length === 0) {
             setNoneSelected(true);
@@ -200,7 +202,7 @@ function MusicPreferencesQuiz() {
         //setFinalPlaylist(tracksWeWant);
         console.log("finalPlaylist", finalPlaylist);
 
-        while (finalPlaylist.length > 5) {
+        while (finalPlaylist.length > 10) {
             // get a random track
             const randomIndex = getRandomIndex(finalPlaylist);
             // remove the random track
@@ -210,6 +212,7 @@ function MusicPreferencesQuiz() {
         console.log("NEW finalPlaylist AFTER SPLICING", finalPlaylist);
         
         setSubmitted(true);
+        setShowCustomPlaylist(true);
 
         const docRef2 = doc(db, "users", user);
         await updateDoc(docRef2, {
@@ -283,6 +286,81 @@ function MusicPreferencesQuiz() {
 
     }
 
+    function CustomPlaylistDisplay({ tracks }) {
+        return (
+            <Container
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                borderRadius: '12px',
+                background: '#1e1e1e',
+                padding: '20px',
+                marginTop: '20px',
+                margin: '20px auto', // centering container, equal margins on each size
+                maxWidth: '80%', 
+                overflowY: 'auto', // vertical container height before scrollable
+                maxHeight: '450px', // max height
+            }}
+          >
+            {tracks.map((track, index) => (
+                <div
+                style={{
+                    position: 'relative',
+                    border: `2px solid ${theme.palette.background.default}`,
+                    borderRadius: '12px',
+                    backgroundColor: '#282828',
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    padding: '15px',
+                    maxWidth: '100%',
+                    marginBottom: '1%'
+                }}
+                >
+                {/* Album Cover */}
+                <img
+                    src={track.album.images[0].url}
+                    alt="Album Cover"
+                    style={{
+                    width: '50px',
+                    height: '50px',
+                    borderRadius: '12px',
+                    marginRight: '16px',
+                    }}
+                />
+    
+                <div
+                    style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'flex-start',
+                    marginLeft: '1%',
+                    }}
+                >
+                    {/* Song Name */}
+                    <Typography
+                    variant="h4"
+                    style={{ color: 'white', marginBottom: '2%', fontWeight: "bold" }}
+                    >
+                    {track.name}
+                    </Typography>
+    
+                    {/* Artist */}
+                    <Typography
+                    variant="p"
+                    style={{ color: 'white', marginBottom: '2%' }}
+                    >
+                    {track.artists[0].name}
+                    </Typography>
+    
+                </div>
+                </div>
+            ))}
+          </Container>
+        );
+      }
+      
+
     return (
         <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
 
@@ -297,14 +375,21 @@ function MusicPreferencesQuiz() {
         {showEnd ? (
             <div>
 
-            <Dialog open={submitted} onClose={handleSubmitDialog}>
-            <DialogContent>
-            <DialogContentText>
+            <Dialog open={submitted} onClose={handleSubmitDialog} maxWidth="md" fullWidth PaperProps={{ style: { backgroundColor: theme.palette.background.default } }}>
+            <DialogTitle>
                 <Typography variant="h3" style={{ textAlign: "left" }}>
-                    Your Music Preferences have been saved!
+                    Preferences Saved!
                 </Typography>
-            </DialogContentText>
+            </DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                    <Typography variant="h4" style={{ textAlign: "left" }}>
+                        All your selections have been saved and a custom playlist has been generated for you below based on the genres, moods, and artists you like listening to.
+                    </Typography>
+                </DialogContentText>
             </DialogContent>
+
+            {showCustomPlaylist && <CustomPlaylistDisplay tracks={finalPlaylist} />}
         
             <DialogActions style={{ justifyContent: "center" }}>
             <Button variant="contained"
@@ -478,8 +563,7 @@ function MusicPreferencesQuiz() {
             </ArrowCircleRightIcon>
         </Stack>
 
-        )}
-        
+        )}        
               
         </div>
       );
