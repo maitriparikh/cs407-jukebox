@@ -35,7 +35,7 @@ function DailyChallengeLobby() {
     /* Navigation for buttons */
     const navigate = useNavigate();
     const [numOfRounds, setNumOfRounds] = useState("");
-    const [songIndex, setSongIndex] = useState(13);
+    const [songIndex, setSongIndex] = useState(15);
     const [songInfo, setSongInfo] = useState([])
     const [gameMode, setGameMode] = useState("Easy");
     // verifying that default daily challenge game mode is "Easy" if nothing is selected
@@ -71,14 +71,35 @@ function DailyChallengeLobby() {
       
 
     const fetchWebApi = async (endpoint, method, body) => {
-    const res = await fetch(`https://api.spotify.com/v1/${endpoint}`, {
-        headers: {
-        Authorization: `Bearer ${spotifyToken}`,
-        },
-        method,
-        body: JSON.stringify(body),
-    });
-    return await res.json();
+        const clientId = '58126bf99c20469d8a94ca07a7dada0a';
+        const clientSecret = 'cd744e259b8b4d45a12752deaf395c11';
+
+        // Use the client credentials flow to get an access token
+        const tokenResponse = await fetch('https://accounts.spotify.com/api/token', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Basic ' + btoa(`${clientId}:${clientSecret}`),
+            },
+            body: 'grant_type=client_credentials',
+        });
+
+        const tokenData = await tokenResponse.json();
+
+        if (!tokenData.access_token) {
+            console.error('Failed to obtain access token');
+            return null;
+        }
+
+        const res = await fetch(`https://api.spotify.com/v1/${endpoint}`, {
+            headers: {
+                Authorization: `Bearer ${tokenData.access_token}`,
+            },
+            method,
+            body: JSON.stringify(body),
+        });
+
+        return await res.json();
     };
     
     const getAllPlaylistTracks = async (playlistId) => {
@@ -115,28 +136,74 @@ function DailyChallengeLobby() {
     console.log("myPlaylist", myPlaylist)
 
     /* Get specific song info to send to game  */
-    const song = allTracks[songIndex];
-    console.log(song);
+    let audioPreviewIssue = false; 
+    /*
+    while (songIndex < 49) {
+        const song = allTracks[songIndex];
+        console.log(song);
 
-    // audio clip
-    const previewURL = song.track.preview_url;
-    console.log(previewURL);
-    songInfo.push(previewURL);
+        // audio clip
+        const previewURL = song.track.preview_url;
+        console.log(previewURL);
+        if (previewURL === null) {
+            audioPreviewIssue = true;
+        } else {
+            songInfo.push(previewURL);
 
-    // artist name
-    const artist = song.track.artists[0].name;
-    console.log(artist);
-    songInfo.push(artist);
+            // artist name
+            const artist = song.track.artists[0].name;
+            console.log(artist);
+            songInfo.push(artist);
 
-    // album picture
-    const albumPic = song.track.album.images[0].url;
-    console.log(albumPic);
-    songInfo.push(albumPic);
+            // album picture
+            const albumPic = song.track.album.images[0].url;
+            console.log(albumPic);
+            songInfo.push(albumPic);
 
-    // song name
-    const songName1 = song.track.name;
-    console.log(songName1);
-    songInfo.push(songName1);
+            // song name
+            const songName1 = song.track.name;
+            console.log(songName1);
+            songInfo.push(songName1);
+
+            break;
+        }
+        const tempSongIndex = songIndex + 1;
+        setSongIndex(tempSongIndex);
+    }
+    */
+
+    for (var i = songIndex; i < allTracks.length; i++) {
+        console.log("CURRENT INDEX OF SONG", i);
+        const song = allTracks[i];
+        console.log(song);
+
+        // audio clip
+        const previewURL = song.track.preview_url;
+        console.log("SONG NAME INSIDE FOR LOOP", song.track.artists[0].name);
+        console.log("PREVIEW URL INSIDE FOR LOOP", previewURL);
+
+        if (previewURL !== null) {
+            // NO PROBLEM WITH AUDIO
+            songInfo.push(previewURL);
+
+            // artist name
+            const artist = song.track.artists[0].name;
+            console.log(artist);
+            songInfo.push(artist);
+
+            // album picture
+            const albumPic = song.track.album.images[0].url;
+            console.log(albumPic);
+            songInfo.push(albumPic);
+
+            // song name
+            const songName1 = song.track.name;
+            console.log(songName1);
+            songInfo.push(songName1);
+            
+            break;
+        }
+    }
 
     return allTracks;
 
