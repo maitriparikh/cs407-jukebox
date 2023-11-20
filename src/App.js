@@ -21,6 +21,7 @@ import Leaderboard from "./pages/leaderboard";
 import Settings from "./pages/settings";
 import EditProfile from "./pages/profile_components/edit_profile";
 import MusicPreferencesQuiz from "./pages/profile_components/music_preference_quiz";
+import CustomPlaylist from "./pages/profile_components/custom_playlist";
 import FullLogoLight from "../src/jukebox_logo_light.png";
 import FullLogoDark from "../src/jukebox_logo_dark.png";
 
@@ -157,8 +158,9 @@ function App() {
 
                         
                         <Route path="/editprofile" element={<EditProfile />} /> 
-
                         
+                        <Route path="/customPlaylist" element={<CustomPlaylist />} /> 
+
                         <Route path="/musicpreferencesquiz" element={<MusicPreferencesQuiz />} />
                         
                         <Route path="/dailychallengelobby" element={<DailyChallengeLobby />} />
@@ -173,7 +175,7 @@ function App() {
                         <Route path="/triviachallengelobby" element={<TriviaChallengeLobby />} />
                         <Route path="/triviachallengegame" element={<TriviaChallengeGame />} />
                         <Route path="/lyricchallengelobby" element={<LyricChallengeLobby />} />
-                      <Route path="/forgot_password" element={<ForgotPassword />} />
+                        <Route path="/forgot_password" element={<ForgotPassword />} />
                     </Routes>
                     </Box>
                     </ThemeProvider >

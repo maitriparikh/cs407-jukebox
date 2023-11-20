@@ -85,6 +85,10 @@ function Profile() {
       navigate("/musicpreferencesquiz");
     }
 
+    const customPlaylist_click = () => {
+      navigate("/customPlaylist");
+    }
+
     const fetchWebApi = async (endpoint, method, body) => {
       const res = await fetch(`https://api.spotify.com/${endpoint}`, {
         headers: {
@@ -271,7 +275,7 @@ function Profile() {
           </Grid>
           <Grid item xs={0.5}></Grid>
           <Grid item xs={3}>
-            <Card elevation={0} style={{ height: "200px", width: "100%", backgroundColor: theme.palette.background.default }}>
+            <Card elevation={0} style={{ height: "250px", width: "100%", backgroundColor: theme.palette.background.default }}>
               <CardContent>
               <Stack spacing={2} direction="column" alignItems="center">
                   <Button
@@ -304,7 +308,23 @@ function Profile() {
                     }}
                     onClick={musicPreferencesQuiz_click}
                   >
-                    Update Music Preferences
+                    Music Preferences Quiz
+                  </Button>
+
+                  <Button
+                    variant="contained"
+                    style={{
+                      width: 230,
+                      color: theme.palette.primary.main,
+                      backgroundColor: theme.palette.secondary.main,
+                      textTransform: "none",
+                      fontSize: 15,
+                      fontWeight: "bold",
+                      margin: "3%"
+                    }}
+                    onClick={customPlaylist_click}
+                  >
+                    Add Custom Spotify Playlist
                   </Button>
 
                   <Button
