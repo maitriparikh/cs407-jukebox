@@ -101,7 +101,7 @@ function Profile() {
     }
 
     const getTopTracks = async () => {
-      return (await fetchWebApi('v1/me/top/tracks?time_range=short_term&limit=5', 'GET')).items;
+      return (await fetchWebApi('v1/me/top/tracks?time_range=short_term&limit=20', 'GET')).items;
     }
 
     const displayTop = async() => {

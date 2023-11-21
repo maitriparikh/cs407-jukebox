@@ -15,7 +15,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
-import { doc, onSnapshot } from "firebase/firestore";
+import { doc, onSnapshot, getDoc } from "firebase/firestore";
 import { db } from "../../utils/firebase";
 import { useTheme } from '@mui/material/styles';
 import { UserContext } from "../../App";
@@ -31,91 +31,69 @@ function SongSnippetLobby() {
     const navigate = useNavigate();
     const [numOfRounds, setNumOfRounds] = useState(3);
     const [gameMode, setGameMode] = useState("Easy");
+    const [explicit, setExplicit] = useState(true);
     // verifying that default daily challenge game mode is "Easy" if nothing is selected
 
     /* SPOTIFY STUFF */
     const [myPlaylist, setMyPlaylist] = useState([]); // intermediate playlist array
     const [spotifyToken, setSpotifyToken] = useState(""); // Spotify Token
+     
+    const [personalSongBank, setPersonalSongBank] = useState([]); // REGULAR, EXPLICIT VERSION
+    
     const [songInfoArray, setSongInfoArray] = useState([]); // All songInfo objects
     const [songInfo, setSongInfo] = useState([])
+    const [finalPlaylist, setFinalPlaylist] = useState([]);
 
     const modeSelection = (mode) => {
         setGameMode(mode);
     };
 
 
-    const getSpotifyToken = async () => {
-    const unsubUserDoc = await onSnapshot(doc(db, "users", user), async (doc) => {
-        setSpotifyToken(doc.data().spotifyToken);
-        //userNameTemp = doc.data().username;
-        //console.log('username is:' + userNameTemp);
-        
-    });
+    const getPlaylistsFirebase = async () => {
+        const userDoc = await getDoc(doc(db, "users", user));
+        setSpotifyToken(userDoc.data().spotifyToken);
+
+        let contentFilter = userDoc.data().contentFilter;
+        if (contentFilter === "explicit") {
+            console.log("EXPLICIT MODE")
+            setPersonalSongBank(userDoc.data().personalSongBank);
+        } else {
+            console.log("FILTERED MODE")
+            setPersonalSongBank(userDoc.data().personalSongBankClean);
+        }
+
     };
 
-    const fetchWebApi = async (endpoint, method, body) => {
-    const res = await fetch(`https://api.spotify.com/v1/${endpoint}`, {
-        headers: {
-        Authorization: `Bearer ${spotifyToken}`,
-        },
-        method,
-        body: JSON.stringify(body),
-    });
-    return await res.json();
-    };
     
     const getAllPlaylistTracks = async (playlistId) => {
-        let allTracks = [];
-        let nextUrl = `playlists/${playlistId}/tracks`; // HARDCODED SPECIFIC PLAYLIST ............ 
 
-        while (nextUrl) {
-            const response = await fetchWebApi(nextUrl, 'GET');
-            const { items, next } = response;
-        
-            if (items && Array.isArray(items)) {
-                allTracks = [...allTracks, ...items];
-            } else {
-                // Handle the case where items is not iterable (e.g., it may be undefined or not an array)
-                console.error('Items is not iterable:', items);
-            }
-            if (next) {
-                nextUrl = new URL(next).pathname.substr(1); // Extract the next URL path
-            } else {
-                nextUrl = null;
-            }
-        };
-        
+        console.log("FINAL PLAYLIST in getAllPlaylists ", finalPlaylist);
 
+        let finalPlaylistFinal = finalPlaylist[0];
+        console.log("FINAL PLAYLIST FINAL in getAllPlaylists ", finalPlaylistFinal);
         
         /* Send all song names to game  */
-        const allSongNames = allTracks.map((track) => track.track.name);
-        console.log("allSongNames", allSongNames);
+        const allSongNames = finalPlaylistFinal.map((track) => track.name);
+        //console.log("allSongNames", allSongNames);
 
         allSongNames.map((name) => {
             myPlaylist.push(name);
         });
-        console.log("myPlaylist", myPlaylist)
+        //console.log("myPlaylist", myPlaylist)
 
         /* Get array of song info to send to game  */
 
 
         const songInfoArrayTemp = []
-        for (var i = 0; i < allTracks.length; i++) {
+        for (var i = 0; i < finalPlaylistFinal.length; i++) {
 
             // Song info for song i
-            const song = allTracks[i];
+            const song = finalPlaylistFinal[i];
             
-            const previewURL = song.track.preview_url; // audio clip
-            //songInfo1.push(previewURL);
-            
-            const artist = song.track.artists[0].name; // artist name
-            //songInfo1.push(artist);
-            
-            const albumPic = song.track.album.images[0].url; // album picture
-            //songInfo1.push(albumPic);
-            
-            const songName1 = song.track.name; // song name
-            //songInfo1.push(songName1);
+            const previewURL = song.preview_url; // audio clip            
+            const artist = song.artists[0].name; // artist name
+            const albumPic = song.album.images[0].url; // album picture
+            const songName1 = song.name; // song name
 
             const songInfo1 = {
                 songName: songName1,
@@ -142,7 +120,7 @@ function SongSnippetLobby() {
         console.log("songInfoArrayTemp", songInfoArrayTemp)
         
         const songInfoArrayTemp2 = shuffleArray(songInfoArrayTemp)
-        console.log("songInfoArrayTemp2 Shuffled", songInfoArrayTemp2)
+        //console.log("songInfoArrayTemp2 Shuffled", songInfoArrayTemp2)
 
         songInfoArrayTemp2.map((songInfoTemp) => {
             songInfoArray.push(songInfoTemp)
@@ -151,27 +129,23 @@ function SongSnippetLobby() {
         console.log("songInfoArray FINAL", songInfoArray)
 
 
-        /* Get specific song info to send to game  */
-        const song = allTracks[0];
-        // audio clip
-        const previewURL = song.track.preview_url;
-        songInfo.push(previewURL);
-        // artist name
-        const artist = song.track.artists[0].name;
-        songInfo.push(artist);
-        // album picture
-        const albumPic = song.track.album.images[0].url;
-        songInfo.push(albumPic);
-        // song name
-        const songName1 = song.track.name;
-        songInfo.push(songName1);
-
-        return allTracks;
+        return finalPlaylistFinal;
 
     };
 
     const startgame_click = async () => {
         console.log("START GAME CLICKED");
+        await getPlaylistsFirebase()
+
+        // if custom playlist exists, use that
+        // if no custom playlist, and top songs exists, use top songs from Spotify
+        // if no custom playlist or top songs (from Spotify), use music preferences from quiz
+        console.log("SPOTIFY TOKEN FROM FIREBASE: ", spotifyToken);
+
+        finalPlaylist.push(personalSongBank);
+        
+        console.log("FINAL PLAYLIST AFTER CHECKING AVAILABLE PLAYLISTS", finalPlaylist);
+
         await getAllPlaylistTracks("0PSXEKFjY913mP2IKNEXnf")
         const audio = new Audio(StartGameSound);
         audio.play();
@@ -179,7 +153,6 @@ function SongSnippetLobby() {
           state: {
             gameMode: gameMode,
             allSongs: myPlaylist,
-            songInfo: songInfo,
             songInfoArray: songInfoArray
           },
         });
@@ -205,17 +178,19 @@ function SongSnippetLobby() {
         return shuffledArray;
       };
 
-    useEffect(()=>{
+      useEffect(()=>{
 
-        getSpotifyToken()
+        getPlaylistsFirebase()
         if (spotifyToken) {
             console.log("spotify token got in song roulette game lobby ->", spotifyToken)
             // get specific playlist code (user entered or from firebase?) (future sprint) (hard-coded)
             /* make song_bank data structure */
         
         }
+
     
-    }, [spotifyToken]);
+    }, [finalPlaylist]);
+
 
     return (
       <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>

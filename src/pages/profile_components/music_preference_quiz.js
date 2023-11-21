@@ -37,6 +37,8 @@ function MusicPreferencesQuiz() {
     const navigate = useNavigate();
     const { user, setUser } = useContext(UserContext);
     const [finalPlaylist, setFinalPlaylist] = useState([]);
+    const [finalPlaylistClean, setFinalPlaylistClean] = useState([]);
+
     const [questions, setQuestions] = useState([
         {
           questionText: "What genre(s) of music do you like?",
@@ -189,34 +191,56 @@ function MusicPreferencesQuiz() {
         console.log("playlistDataArray", playlistDataArray)
 
         // for each playlist get item at # > tracks > items > # > track and put another data structure
-        let tracksWeWant = [];
+
+        /*playlistDataArray.tracks.items.forEach(trackInPlaylist => {
+            if (trackInPlaylist.track.preview_url !== null) {
+                if (!trackInPlaylist.track.explicit) {
+                    finalPlaylistClean.push(trackInPlaylist.track);
+                }
+                finalPlaylist.push(trackInPlaylist.track);
+            }
+        })*/
+
         playlistDataArray.forEach(playlist => {
             playlist.tracks.items.forEach(trackInPlaylist => {
-                tracksWeWant.push(trackInPlaylist.track);
-                finalPlaylist.push(trackInPlaylist.track);
+                if (trackInPlaylist.track.preview_url !== null) {
+                    if (!trackInPlaylist.track.explicit) {
+                        finalPlaylistClean.push(trackInPlaylist.track);
+                    }
+                    finalPlaylist.push(trackInPlaylist.track);
+                }
             })
         })
-        console.log("tracksWeWant", tracksWeWant)
         
         // make finalPlaylist all the combined playlist tracks
-        //setFinalPlaylist(tracksWeWant);
         console.log("finalPlaylist", finalPlaylist);
+       
 
-        while (finalPlaylist.length > 10) {
+        while (finalPlaylist.length > 20) {
             // get a random track
             const randomIndex = getRandomIndex(finalPlaylist);
             // remove the random track
             finalPlaylist.splice(randomIndex, 1);
         }
-
         console.log("NEW finalPlaylist AFTER SPLICING", finalPlaylist);
+
+        // make finalPlaylist all the combined playlist tracks
+        console.log("finalPlaylistClean", finalPlaylistClean);
+        while (finalPlaylistClean.length > 20) {
+            // get a random track
+            const randomIndex = getRandomIndex(finalPlaylistClean);
+            // remove the random track
+            finalPlaylistClean.splice(randomIndex, 1);
+        }
+        console.log("NEW finalPlaylistClean AFTER SPLICING", finalPlaylistClean);
         
         setSubmitted(true);
         setShowCustomPlaylist(true);
 
         const docRef2 = doc(db, "users", user);
         await updateDoc(docRef2, {
-            musicPreferencesPlaylist: finalPlaylist
+            personalSongBank: finalPlaylist,
+            personalSongBankClean: finalPlaylistClean
         }).then(() => console.log("Document updated"));
         
     }

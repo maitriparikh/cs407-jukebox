@@ -42,7 +42,6 @@ function SongSnippetGame() {
 
     const [showEnd, setShowEnd] = useState(false);
     const gameMode = location.state.gameMode;
-    const songInfo = location.state.songInfo
     const allSongs = location.state.allSongs
     const songInfoArrayGet = location.state.songInfoArray
     const [songInfoArray, setSongInfoArray] = useState(songInfoArrayGet);
@@ -181,6 +180,10 @@ function SongSnippetGame() {
 
             setIsCorrect(false);
 
+            // cap round score so it doesn't go below 0
+            if (songInfoArray[currentRound].points < 0) {
+              songInfoArray[currentRound].points = 0
+            }
             const pointsAdd = overallPoints + songInfoArray[currentRound].points;
             setOverallPoints(pointsAdd)
 
@@ -188,6 +191,10 @@ function SongSnippetGame() {
             setCurrentRound(nextRound);
             console.log("finish round");
         } else {
+            // cap round score so it doesn't go below 0
+            if (songInfoArray[currentRound].points < 0) {
+              songInfoArray[currentRound].points = 0
+            }
             const pointsAdd = overallPoints + songInfoArray[currentRound].points;
             setOverallPoints(pointsAdd)
             

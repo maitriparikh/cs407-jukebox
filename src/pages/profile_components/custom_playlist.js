@@ -46,6 +46,7 @@ function CustomPlaylist() {
     const [showPlaylist, setShowPlaylist] = useState(false);
     const [invalidLink, setInvalidLink] = useState(false);
     const [finalPlaylist, setFinalPlaylist] = useState([]);
+    const [finalPlaylistClean, setFinalPlaylistClean] = useState([]);
 
 
     function getRandomIndex(array) {
@@ -104,24 +105,38 @@ function CustomPlaylist() {
 
             // for each playlist get item at tracks > items > # > track and put another data structure
 
+            /* MAKING SURE THERE ARE NO NULL PREVIEWS + FILTERING EXPLICIT */
             playlistDataArray.tracks.items.forEach(trackInPlaylist => {
-                finalPlaylist.push(trackInPlaylist.track);
+                if (trackInPlaylist.track.preview_url !== null) {
+                    if (!trackInPlaylist.track.explicit) {
+                        finalPlaylistClean.push(trackInPlaylist.track);
+                    }
+                    finalPlaylist.push(trackInPlaylist.track);
+                }
             })
       
             console.log("finalPlaylist", finalPlaylist);
-
-            while (finalPlaylist.length > 10) {
+            while (finalPlaylist.length > 20) {
                 // get a random track
                 const randomIndex = getRandomIndex(finalPlaylist);
                 // remove the random track
                 finalPlaylist.splice(randomIndex, 1);
             }
-
             console.log("NEW finalPlaylist AFTER SPLICING", finalPlaylist);
+
+            console.log("finalPlaylistClean", finalPlaylistClean);
+            while (finalPlaylistClean.length > 20) {
+                // get a random track
+                const randomIndex = getRandomIndex(finalPlaylistClean);
+                // remove the random track
+                finalPlaylistClean.splice(randomIndex, 1);
+            }
+            console.log("NEW finalPlaylistClean AFTER SPLICING", finalPlaylistClean);
             
             const docRef2 = doc(db, "users", user);
             await updateDoc(docRef2, {
-                customPlaylist: finalPlaylist
+                personalSongBank: finalPlaylist,
+                personalSongBankClean: finalPlaylistClean
             }).then(() => console.log("Document updated"));
             
             setShowPlaylist(true);
@@ -254,6 +269,7 @@ function CustomPlaylist() {
                 allowfullscreen="" 
                 allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
                 loading="lazy"
+                style={{ border: "none" }}
             >
             </iframe>
 

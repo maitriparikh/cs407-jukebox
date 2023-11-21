@@ -35,6 +35,8 @@ function Homepage() {
     const [musicPreferences, setMusicPreferences] = useState(""); // Music Preferences
     const { user, setUser } = useContext(UserContext);
     const [topFiveArr, setTopFiveArr] = useState("");
+    const [finalPlaylist, setFinalPlaylist] = useState([]);
+    const [finalPlaylistClean, setFinalPlaylistClean] = useState([]);
 
     const gameCardHover = {
       transition: "transform 0.2s", 
@@ -42,6 +44,10 @@ function Homepage() {
         transform: "scale(1.05)", 
       },
   };
+
+  function getRandomIndex(array) {
+    return Math.floor(Math.random() * array.length);
+}
 
     // to track which game is selected
     const [game, setChosenGame] = useState('');
@@ -75,7 +81,7 @@ function Homepage() {
     }
 
     const getTopTracks = async () => {
-      return (await fetchWebApi('v1/me/top/tracks?time_range=short_term&limit=5', 'GET')).items;
+      return (await fetchWebApi('v1/me/top/tracks?time_range=short_term&limit=100', 'GET')).items; // get 100 but send 20
     }
 
     const displayTop = async() => {
@@ -85,9 +91,41 @@ function Homepage() {
       setTopFiveArr(topTracks);
       console.log(topFiveArr);
       if (topTracks != undefined) {
+
+        // filter out null previews + create clean playlist
+        /*topTracks.forEach(song => {
+          if (song.preview_url !== null) {
+            if (!song.explicit) {
+                finalPlaylistClean.push(song);
+            }
+            finalPlaylist.push(song);
+          }
+        })
+
+        console.log("finalPlaylist", finalPlaylist);
+        while (finalPlaylist.length > 20) {
+            // get a random track
+            const randomIndex = getRandomIndex(finalPlaylist);
+            // remove the random track
+            finalPlaylist.splice(randomIndex, 1);
+        }
+        console.log("NEW finalPlaylist AFTER SPLICING", finalPlaylist);
+
+        console.log("finalPlaylistClean", finalPlaylistClean);
+        while (finalPlaylistClean.length > 20) {
+            // get a random track
+            const randomIndex = getRandomIndex(finalPlaylistClean);
+            // remove the random track
+            finalPlaylistClean.splice(randomIndex, 1);
+        }
+        console.log("NEW finalPlaylistClean AFTER SPLICING", finalPlaylistClean); */
+
+
         const docRef = doc(db, "users", user);
         await updateDoc(docRef, {
           topFive: topTracks,
+          personalSongBank: finalPlaylist,
+          //personalSongBankClean: finalPlaylistClean
           //songList: topFive
         }, {
           merge: true
