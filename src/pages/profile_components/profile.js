@@ -60,9 +60,22 @@ function Profile() {
       }).catch(error => console.log(error))
     };
 
-    const spotifySubmit_click = () => {
+    const spotifySubmit_click = async () => {
       //console.log(getTokenFromUrl());
       //displayTop();
+
+      console.log("NEED TO UPDATE ALTERNATIVE SOURCE TO FALSE HERE");
+      
+      const docRef = doc(db, "users", user);
+        await updateDoc(docRef, {
+          alternativeSource: false
+        }, {
+          merge: true
+        }).then(() => {
+          console.log("Document updated")
+        }).catch((error) => {
+          console.log("There was an error updating the doc with spotify token");
+        });
     };
 
     const settings_click = () => {

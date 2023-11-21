@@ -37,6 +37,8 @@ function Homepage() {
     const [topFiveArr, setTopFiveArr] = useState("");
     const [finalPlaylist, setFinalPlaylist] = useState([]);
     const [finalPlaylistClean, setFinalPlaylistClean] = useState([]);
+    const [altSource, setAltSource] = useState(false); // is alternate source being used?
+
 
     const gameCardHover = {
       transition: "transform 0.2s", 
@@ -65,6 +67,7 @@ function Homepage() {
     const getSpotifyToken = async () => {
       const unsubUserDoc = await onSnapshot(doc(db, "users", user), async (doc) => {
         setSpotifyToken(doc.data().spotifyToken);
+        setAltSource(doc.data().alternativeSource)
         console.log("spotify token got ->", spotifyToken)
       });
     }
@@ -81,7 +84,7 @@ function Homepage() {
     }
 
     const getTopTracks = async () => {
-      return (await fetchWebApi('v1/me/top/tracks?time_range=short_term&limit=100', 'GET')).items; // get 100 but send 20
+      return (await fetchWebApi('v1/me/top/tracks?time_range=short_term&limit=50', 'GET')).items; // get 100 but send 20
     }
 
     const displayTop = async() => {
@@ -93,7 +96,7 @@ function Homepage() {
       if (topTracks != undefined) {
 
         // filter out null previews + create clean playlist
-        /*topTracks.forEach(song => {
+        topTracks.forEach(song => {
           if (song.preview_url !== null) {
             if (!song.explicit) {
                 finalPlaylistClean.push(song);
@@ -118,15 +121,14 @@ function Homepage() {
             // remove the random track
             finalPlaylistClean.splice(randomIndex, 1);
         }
-        console.log("NEW finalPlaylistClean AFTER SPLICING", finalPlaylistClean); */
+        console.log("NEW finalPlaylistClean AFTER SPLICING", finalPlaylistClean); 
 
 
         const docRef = doc(db, "users", user);
         await updateDoc(docRef, {
           topFive: topTracks,
           personalSongBank: finalPlaylist,
-          //personalSongBankClean: finalPlaylistClean
-          //songList: topFive
+          personalSongBankClean: finalPlaylistClean,
         }, {
           merge: true
         }).then(() => {
@@ -158,6 +160,7 @@ function Homepage() {
 
             // SPOTIFY TOKEN FROM FIREBASE
             setSpotifyToken(doc.data().spotifyToken);
+            setAltSource(doc.data().alternativeSource)
             if (spotifyToken != "") {
               console.log("spotify token got in choose game ->", spotifyToken);
               setSpotifyConnected(true);
@@ -165,7 +168,7 @@ function Homepage() {
   
               //try to get top 5 songs
               
-              const addTopFive = await displayTop();
+              //const addTopFive = await displayTop();
             } else {
               setSpotifyConnected(false);
             }
@@ -194,8 +197,13 @@ function Homepage() {
     }, [spotifyToken]);
 
 
-    const chooseGame = (game) => {
+    const chooseGame = async (game) => {
       //if connected to spotify
+      console.log("ALTERNATIVESOURCE LKDJFLSJDFkSDJF", altSource)
+      if (!altSource) { // if there is no custom playlist or music preference quiz recently
+        //console.log("ALTERNATIVESOURCE LKDJFLSJDFkSDJF", altSource)
+        await displayTop();
+      }
       console.log("SPOTIFY CONNECTED VALUE: ", spotifyConnected);
       console.log("MUSIC PREFERENCES VALUE: ", musicPreferences);
       if (spotifyConnected || musicPreferences) {

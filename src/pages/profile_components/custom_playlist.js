@@ -135,6 +135,7 @@ function CustomPlaylist() {
             
             const docRef2 = doc(db, "users", user);
             await updateDoc(docRef2, {
+                alternativeSource: true,
                 personalSongBank: finalPlaylist,
                 personalSongBankClean: finalPlaylistClean
             }).then(() => console.log("Document updated"));
