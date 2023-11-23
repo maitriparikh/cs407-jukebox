@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -15,25 +15,27 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
+import { UserContext } from "../../App";
 
 import { useTheme } from '@mui/material/styles';
 
 import StartGameSound from "../../sounds/start_game.mp3";
 
-function PictionaryLobby() {
+function DoodleChallengeLobby() {
 
    const theme = useTheme();
 
-   /* Navigation for buttons */
-   const navigate = useNavigate();
+   const { user, setUser } = useContext(UserContext);
 
-    const [numOfRounds, setNumOfRounds] = useState("");
+   const navigate = useNavigate();
+   const [numOfRounds, setNumOfRounds] = useState("");
+
 
     const startgame_click = async () => {
       console.log("START GAME CLICKED");
       const audio = new Audio(StartGameSound);
       audio.play();
-      navigate("/pictionarygame", {
+      navigate("/doodlechallengegame", {
       });
     };
 
@@ -41,7 +43,7 @@ function PictionaryLobby() {
       <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
 
         <Typography variant="h2" style={{ textAlign: "center" }}>
-            Pictionary
+            Doodle Challenge
         </Typography>
 
         <br></br>
@@ -119,7 +121,6 @@ function PictionaryLobby() {
     
         </Grid>
 
-
         <Button
           variant="contained"
           style={{
@@ -141,4 +142,4 @@ function PictionaryLobby() {
     }
     
 
-export default PictionaryLobby;
+export default DoodleChallengeLobby;

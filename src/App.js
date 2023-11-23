@@ -37,14 +37,17 @@ import SongRouletteLobbyBrowser from "./pages/song_roulette/song_roulette_browse
 
 import LobbyViewer from "./pages/song_roulette/song_roulette_lobby_viewer";
 
-// Pictionary Game Pages
-import PictionaryLobby from "./pages/pictionary/pictionary_challenge_lobby";
-import PictionaryGame from "./pages/pictionary/pictionary_challenge_game";
+// Doodle Challenge Game Pages
+import DoodleChallengeLobby from "./pages/doodle_challenge/doodle_challenge_lobby";
+import DoodleChallengeGame from "./pages/doodle_challenge/doodle_challenge_game";
+
+// Timeline Challenge Game Pages
+import TimelineChallengeLobby from "./pages/timeline_challenge/timeline_challenge_lobby";
+import TimelineChallengeGame from "./pages/timeline_challenge/timeline_challenge_game";
 
 // Song Snippet Game Pages
 import SongSnippetLobby from "./pages/song_snippet/song_snippet_lobby";
 import SongSnippetGame from "./pages/song_snippet/song_snippet_game";
-
 
 // Trivia Challenge Game Pages
 import TriviaChallengeLobby from "./pages/trivia_challenge/trivia_challenge_lobby";
@@ -52,6 +55,10 @@ import TriviaChallengeGame from './pages/trivia_challenge/trivia_challenge_game'
 
 // Lyric Challenge Game Pages
 import LyricChallengeLobby from "./pages/lyric_challenge/lyric_challenge_lobby";
+
+// Memory Challenge Game Pages
+import MemoryChallengeLobby from "./pages/memory_challenge/memory_challenge_lobby";
+import MemoryChallengeGame from "./pages/memory_challenge/memory_challenge_game";
 
 import { useState, createContext, useContext, useEffect } from "react";
 import { onAuthStateChanged } from 'firebase/auth';
@@ -150,9 +157,8 @@ function App() {
                       <Route path="/signup" element={<SignUp />} />
                       <Route path="/homepage" element={<Homepage />} /> 
                       <Route path="/profile" element={<Profile />} />
-                      
+                    
                       <Route path="/leaderboard" element={<Leaderboard />} />
-
                       
                         <Route path="/settings" element={<Settings appearanceSelection={appearance} contentFilterSelection={contentFilter} />} />
 
@@ -168,13 +174,24 @@ function App() {
                         <Route path="/SongRoulettelobbybrowser" element={<SongRouletteLobbyBrowser />} />
                         <Route path="/songroulettelobby" element={<SongRouletteLobby />} />
                         <Route path="/songroulettegame" element={<SongRouletteGame />} />
-                        <Route path="/pictionarylobby" element={<PictionaryLobby />} />
-                        <Route path="/pictionarygame" element={<PictionaryGame />} />
+
+                        <Route path="/doodlechallengelobby" element={<DoodleChallengeLobby />} />
+                        <Route path="/doodlechallengegame" element={<DoodleChallengeGame />} />
+
+                        <Route path="/timelinechallengelobby" element={<TimelineChallengeLobby />} />
+                        <Route path="/timelinechallengegame" element={<TimelineChallengeGame />} />
+
                         <Route path="/songsnippetlobby" element={<SongSnippetLobby />} />
                         <Route path="/songsnippetgame" element={<SongSnippetGame />} />
+
                         <Route path="/triviachallengelobby" element={<TriviaChallengeLobby />} />
                         <Route path="/triviachallengegame" element={<TriviaChallengeGame />} />
+
                         <Route path="/lyricchallengelobby" element={<LyricChallengeLobby />} />
+
+                        <Route path="/memorychallengelobby" element={<MemoryChallengeLobby />} />
+                        <Route path="/memorychallengegame" element={<MemoryChallengeGame />} />
+
                         <Route path="/forgot_password" element={<ForgotPassword />} />
                     </Routes>
                     </Box>

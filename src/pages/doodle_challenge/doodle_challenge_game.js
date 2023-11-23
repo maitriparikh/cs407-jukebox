@@ -25,7 +25,7 @@ import BrushIcon from '@mui/icons-material/Brush';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EraserIcon from "../../eraser_icon.png";
 
-function PictionaryGame() {
+function DoodleChallengeGame() {
 
     const theme = useTheme();
 
@@ -37,7 +37,7 @@ function PictionaryGame() {
 
     const exitgame_click = () => {
         console.log("EXIT GAME CLICKED");
-        navigate("/pictionarylobby");
+        navigate("/doodlechallengelobby");
       };
     
     const colorOptions = ["#ffcd38", "#e9a123", "#b4296c", "#ba3339", "#accea8", "#0d6f4b", "#7fcbd8", "#65a2ac", "#898fd0", "#363b74"]; 
@@ -247,4 +247,4 @@ function PictionaryGame() {
     );
 }
 
-export default PictionaryGame;
+export default DoodleChallengeGame;

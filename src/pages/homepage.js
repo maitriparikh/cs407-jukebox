@@ -58,10 +58,12 @@ function Homepage() {
     const gameNames = [
       "Daily Challenge",
       "Song Roulette",
-      "Pictionary",
+      "Doodle Challenge",
+      "Timeline Challenge",
       "Song Snippet",
       "Trivia Challenge",
       "Lyric Challenge",
+      "Memory Challenge"
     ];
 
     const getSpotifyToken = async () => {
@@ -221,14 +223,18 @@ function Homepage() {
         } 
         else if (game == "Daily Challenge") {
           navigate("/dailychallengelobby");
-        } else if (game == "Pictionary") {
-          navigate("/pictionarylobby");
+        } else if (game == "Doodle Challenge") {
+          navigate("/doodlechallengelobby");
+        } else if (game == "Timeline Challenge") {
+          navigate("/timelinechallengelobby");
         } else if (game == "Song Snippet") {
           navigate("/songsnippetlobby");
         } else if (game == "Trivia Challenge") {
           navigate("/triviachallengelobby");
         } else if (game == "Lyric Challenge") {
           navigate("/lyricchallengelobby");
+        } else if (game == "Memory Challenge") {
+          navigate("/memorychallengelobby");
         } 
       }
       else {
@@ -333,14 +339,14 @@ function Homepage() {
         <Grid container spacing={5}>
 
           {/* First Row */}
-          <Grid item xs={4}>
+          <Grid item xs={6} md={3}>
             <Card elevation={3} sx={{
               ...gameCardHover,
               backgroundColor: theme.palette.secondary.main,
               color: theme.palette.primary.main,
               border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
-              height: "250px",
+              height: "230px",
               width: "100%",
             }}
             onClick={() => chooseGame("Daily Challenge")}
@@ -354,14 +360,14 @@ function Homepage() {
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={6} md={3}>
             <Card elevation={3} sx={{
               ...gameCardHover,
               backgroundColor: theme.palette.secondary.main,
               color: theme.palette.primary.main,
               border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
-              height: "250px",
+              height: "230px",
               width: "100%",
             }}
             onClick={() => chooseGame("Song Roulette")}>
@@ -374,21 +380,41 @@ function Homepage() {
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={6} md={3}>
             <Card elevation={3} sx={{
               ...gameCardHover,
               backgroundColor: theme.palette.secondary.main,
               color: theme.palette.primary.main,
               border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
-              height: "250px",
+              height: "230px",
               width: "100%",
             }}
-            onClick={() => chooseGame("Pictionary")}>
+            onClick={() => chooseGame("Doodle Challenge")}>
               <CardContent>
               <ButtonBase>
                 <Typography variant="h3" component="div">
-                  Pictionary 👥
+                  Doodle Challenge
+                </Typography>
+              </ButtonBase>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={6} md={3}>
+            <Card elevation={3} sx={{
+              ...gameCardHover,
+              backgroundColor: theme.palette.secondary.main,
+              color: theme.palette.primary.main,
+              border: `2px solid ${theme.palette.primary.main}`,
+              borderRadius: "8px",
+              height: "230px",
+              width: "100%",
+            }}
+            onClick={() => chooseGame("Timeline Challenge")}>
+              <CardContent>
+              <ButtonBase>
+                <Typography variant="h3" component="div">
+                  Timeline Challenge
                 </Typography>
               </ButtonBase>
               </CardContent>
@@ -396,14 +422,14 @@ function Homepage() {
           </Grid>
     
           {/* Second Row */}
-          <Grid item xs={4}>
+          <Grid item xs={6} md={3}>
             <Card elevation={3} sx={{
               ...gameCardHover,
               backgroundColor: theme.palette.secondary.main,
               color: theme.palette.primary.main,
               border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
-              height: "250px",
+              height: "230px",
               width: "100%",
             }}
             onClick={() => chooseGame("Song Snippet")}>
@@ -416,14 +442,14 @@ function Homepage() {
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={6} md={3}>
             <Card elevation={3} sx={{
               ...gameCardHover,
               backgroundColor: theme.palette.secondary.main,
               color: theme.palette.primary.main,
               border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
-              height: "250px",
+              height: "230px",
               width: "100%",
             }}
             onClick={() => chooseGame("Trivia Challenge")}>
@@ -436,14 +462,14 @@ function Homepage() {
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={6} md={3}>
             <Card elevation={3} sx={{
               ...gameCardHover,
               backgroundColor: theme.palette.secondary.main,
               color: theme.palette.primary.main,
               border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
-              height: "250px",
+              height: "230px",
               width: "100%",
             }}
             onClick={() => chooseGame("Lyric Challenge")}>
@@ -451,6 +477,26 @@ function Homepage() {
               <ButtonBase>
                 <Typography variant="h3" component="div">
                   Lyric Challenge
+                </Typography>
+              </ButtonBase>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={6} md={3}>
+            <Card elevation={3} sx={{
+              ...gameCardHover,
+              backgroundColor: theme.palette.secondary.main,
+              color: theme.palette.primary.main,
+              border: `2px solid ${theme.palette.primary.main}`,
+              borderRadius: "8px",
+              height: "230px",
+              width: "100%",
+            }}
+            onClick={() => chooseGame("Memory Challenge")}>
+              <CardContent>
+              <ButtonBase>
+                <Typography variant="h3" component="div">
+                  Memory Challenge
                 </Typography>
               </ButtonBase>
               </CardContent>
