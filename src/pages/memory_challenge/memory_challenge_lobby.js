@@ -208,11 +208,10 @@ function MemoryChallengeLobby() {
         >
 
         <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", paddingBottom: "50px", paddingLeft: "100px", paddingRight: "100px" }}>
-            <br></br>
-            <Grid item xs={12} style={{ marginBottom: "25px" }}>
+            <Grid item xs={12} style={{ marginTop: "35px", marginBottom: "25px" }}>
                 {/* Memory challenge - update as needed */}
-                <Typography variant="h4" style={{ textAlign: "center", marginBottom: "16px" }}>
-                    Welcome to the Memory Challenge! Your task will be to match all the songs in the form of cards. At a given time, you can turn over a specific card which will reveal a song snippet, album cover, and artist for that corresponding song.  
+                <Typography variant="h4" style={{ textAlign: "center" }}>
+                    Welcome to the Memory Challenge! Your task will be to match all the songs in the form of cards. At a given time, you can turn over a specific card which will reveal a song snippet and then you must find the matching one. Try to finish the challenge as fast as you can with a fewer number of incorrect guesses to earn a higher score. Good luck!
                 </Typography>
             </Grid>
 
