@@ -507,7 +507,7 @@ function MusicPreferencesQuiz() {
             style={{
                 width: 50,
                 height: 50,
-                color: isFirstQuestion ? 'grey' : 'var(--text-color)',
+                color: isFirstQuestion ? 'grey' : theme.palette.primary.main,
                 textTransform: "none",
                 fontSize: 15,
                 fontWeight: "bold",
