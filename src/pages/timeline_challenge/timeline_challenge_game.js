@@ -428,19 +428,6 @@ function TimelineChallengeGame() {
 
           <br></br>
 
-          <Button variant="contained"
-              style={{
-              color: theme.palette.primary.main,
-              backgroundColor: theme.palette.secondary.main,
-              textTransform: "none",
-              fontSize: 15,
-              fontWeight: "bold",
-              marginBottom: "2%"
-              }}  
-              onClick={() => handleSubmit(songInfoArray)} >
-              Submit
-            </Button>
-
 
             {/* 
             <div>
@@ -477,8 +464,19 @@ function TimelineChallengeGame() {
         </Card>
 
         <br></br>
-        <br></br>
-        <br></br>
+
+        <Button variant="contained"
+              style={{
+              color: theme.palette.primary.main,
+              backgroundColor: theme.palette.secondary.main,
+              textTransform: "none",
+              fontSize: 15,
+              fontWeight: "bold",
+              marginBottom: "2%"
+              }}  
+              onClick={() => handleSubmit(songInfoArray)} >
+              Submit
+            </Button>
       
       </div>   
 
