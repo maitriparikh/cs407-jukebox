@@ -29,11 +29,16 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 import Timer from '../timeline_challenge/timer';
 
-function DoodleChallengeGame() {
+import EraserIconLight from "../doodle_challenge/eraser_icon_light.png";
+import EraserIconDark from "../doodle_challenge/eraser_icon_dark.png";
+ 
+
+function DoodleChallengeGame( {appearanceSelection} ) {
 
     const theme = useTheme();
     const audioRef = useRef();
 
+    //console.log("appearanceSelection inside game", appearanceSelection);
 
     /* Navigation for buttons */
     const navigate = useNavigate();
@@ -533,7 +538,7 @@ function DoodleChallengeGame() {
                             }}
                             >
                                 <img
-                                    src={EraserIcon}
+                                    src={appearanceSelection == "dark" ? EraserIconDark : EraserIconLight}
                                     alt="Eraser"
                                     style={{ width: "24px", height: "24px", cursor: "pointer" }}
                                 />
@@ -701,7 +706,7 @@ function DoodleChallengeGame() {
                     <Typography variant="p" style={{ color: theme.palette.primary.main, textAlign: "center"}}>
                         Submitted by {artistUsername}
                     </Typography>
-                    <Card style={{ margin: '0 auto', maxHeight: '450px', maxWidth: '880px', border: `2px solid ${theme.palette.primary.main}`, borderRadius: "8px", backgroundColor: "white", marginTop: "1%", marginBottom: "5%" }}>
+                    <Card style={{ margin: '0 auto', maxHeight: '450px', maxWidth: '880px', border: `4px solid ${theme.palette.primary.main}`, borderRadius: "8px", backgroundColor: "white", marginTop: "1%", marginBottom: "5%" }}>
                         <img
                         src={randomDoodle.doodleUrl}
                         alt="Doodle Preview"
