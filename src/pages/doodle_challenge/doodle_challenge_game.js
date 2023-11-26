@@ -60,20 +60,30 @@ function DoodleChallengeGame() {
     const randomDoodleGet = location.state.randomDoodle
     const [randomDoodle, setRandomDoodle] = useState(randomDoodleGet);
     //console.log("randomDoodle", randomDoodle)
+    
+    const artistUsernameGet = location.state.artistUsername
+    const [artistUsername, setArtistUsername] = useState(artistUsernameGet);
+    //console.log("artistUsername", artistUsername)
 
 
     const [selectedSong, setSelectedSong] = useState("");
+    const [answer, setAnswer] = useState("");
+
+    const [tries, setTries] = useState(0);
+    const [finalScore, setFinalScore] = useState(300);
 
     const exitgame_click = () => {
         console.log("EXIT GAME CLICKED");
         navigate("/doodlechallengelobby");
     };
 
-    const [submitted, setSubmitted] = useState(false)
-
     const handleOkDialog = () => {
         navigate("/doodlechallengelobby")
     }
+
+    const handleDialogStayOnGamePage = () => {
+        setAlertOpen(false)
+      }
 
     const [username, setUsername] = useState("");
 
@@ -83,33 +93,54 @@ function DoodleChallengeGame() {
         console.log("username after getting from firebase: ", username);
     };
 
+    const [isCanvasBlank, setIsCanvasBlank] = useState(false);
+
     const handleSubmit = async () => {
-        setSubmitted(true);
-        
+        setAlertOpen(true);
+
         // Get the canvas data
         const canvas = canvasRef.current;
-        const doodleDataUrl = canvas.toDataURL(); // generate PNG image
-
-        setDoodleImageUrl(doodleDataUrl);
+        const ctx = canvas.getContext("2d");
         
-        await getUsername();
-        
-        console.log("username after submitting doodle: ", username);
+        // Get the pixel data
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
 
-        const doodleData = {
-            username: user,
-            doodleUrl: doodleDataUrl,
-            selectedSong: selectedSong,
-            allSongs: allSongs
-          };
-      
-          // send doodle to Firebase
-          try {
-            const docRef = await addDoc(collection(db, "doodle"), doodleData);
-            console.log("Doodle submitted with ID: ", docRef.id);
-          } catch (error) {
-            console.error("Error adding doodle: ", error);
-          }
+        // Check if all pixels are transparent
+        const isCanvasBlank = imageData.every((value) => value === 0);
+
+        if (isCanvasBlank) {
+            // PERSON DIDN'T DRAW ANYTHING
+            console.log("CANVAS IS BLANK");
+            setIsCanvasBlank(true);
+            setAlertOpen(true);
+            return;
+        } else {
+            // PERSON ACTUALLY DREW SOMETHING
+            // Get the canvas data
+            //const canvas = canvasRef.current;
+            const doodleDataUrl = canvas.toDataURL(); // generate PNG image
+
+            setDoodleImageUrl(doodleDataUrl);
+            
+            await getUsername();
+            
+            console.log("username after submitting doodle: ", username);
+
+            const doodleData = {
+                username: user,
+                doodleUrl: doodleDataUrl,
+                selectedSong: selectedSong,
+                allSongs: allSongs
+            };
+        
+            // send doodle to Firebase
+            try {
+                const docRef = await addDoc(collection(db, "doodle"), doodleData);
+                console.log("Doodle submitted with ID: ", docRef.id);
+            } catch (error) {
+                console.error("Error adding doodle: ", error);
+            }
+        }
     };
         
 
@@ -204,6 +235,43 @@ function DoodleChallengeGame() {
         console.log("Time is up!");
         handleSubmit();
       };
+
+    const [ranOutOfTime, setRanOutOfTime] = useState(false);
+
+    const handleTimeUp2 = () => {
+        // Logic to execute when the timer is up
+        console.log("Time is up!");
+        setRanOutOfTime(true);
+        setAlertOpen2(true)
+        setFinalScore(0)
+    };
+
+    const [correct, setCorrect] = useState(false);
+    const [alertOpen, setAlertOpen] = useState(false);
+    const [alertOpen2, setAlertOpen2] = useState(false);
+
+    const [noMoreTries, setNoMoreTries] = useState(false);
+
+    const handleGuess = () => {
+
+        let tempTries = tries + 1;
+        setTries(tempTries);
+
+        console.log(answer);
+        if (answer === randomDoodle.selectedSong.songName) {
+            console.log("CORRECT");
+            setCorrect(true)
+            setAlertOpen(true)
+        }
+        else {
+            let tempFinalScore = finalScore - 100;
+            setFinalScore(tempFinalScore);
+            if (tries >= 2) {
+                setNoMoreTries(true)
+            }
+            setAlertOpen(true)
+        }
+    }
     
     return (
         <>
@@ -241,8 +309,8 @@ function DoodleChallengeGame() {
                     src={card.songAlbumPic}
                     alt="Album Cover"
                     style={{
-                        width: '200px',
-                        height: '200px',
+                        width: '160px',
+                        height: '160px',
                         borderRadius: '12px',
                         margin: '0 auto',
                     }}
@@ -310,7 +378,7 @@ function DoodleChallengeGame() {
                             onClick={() => exitgame_click()} 
                         />
 
-                    <Timer maxTime={120} onTimeUp={handleTimeUp}/>
+                    <Timer maxTime={60} onTimeUp={handleTimeUp}/>
 
 
                     <div
@@ -461,7 +529,7 @@ function DoodleChallengeGame() {
                             style={{ backgroundColor: theme.palette.background.default, border: `2px solid ${theme.palette.primary.main}`, marginRight: "10px",}}
                             onClick={() => {
                                 setEraserMode(true);
-                                setDrawingColor(theme.palette.background.default);
+                                setDrawingColor("white");
                             }}
                             >
                                 <img
@@ -488,7 +556,7 @@ function DoodleChallengeGame() {
         
                     {doodleImageUrl && (
                     <div>
-                        <Dialog open={submitted} onClose={handleOkDialog} maxWidth="md" fullWidth PaperProps={{ style: { backgroundColor: theme.palette.background.default } }}>
+                        <Dialog open={alertOpen} onClose={handleOkDialog} maxWidth="md" fullWidth PaperProps={{ style: { backgroundColor: theme.palette.background.default } }}>
                         <DialogTitle>
                             <Typography variant="h3" style={{ textAlign: "left" }}>
                                 Saving your doodle!
@@ -504,7 +572,7 @@ function DoodleChallengeGame() {
 
                         <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                             <Card elevation={3} sx={{
-                                backgroundColor: theme.palette.background.default,
+                                backgroundColor: "white",
                                 border: `2px solid ${theme.palette.primary.main}`,
                                 borderRadius: "8px",
                                 height: "100%",
@@ -532,28 +600,45 @@ function DoodleChallengeGame() {
                             marginTop: "1%"
                             }}  
                             onClick={handleOkDialog}>
-                            Go to Lobby
+                            OK
                         </Button>
                         </DialogActions>
                         </Dialog>
+                    </div>
+                    )}
 
-                        <Button
-                        variant="contained"
-                        style={{
-                            width: 230,
+                    {isCanvasBlank && (
+                    <div>
+                        <Dialog open={alertOpen} onClose={handleOkDialog} maxWidth="md" fullWidth PaperProps={{ style: { backgroundColor: theme.palette.background.default } }}>
+                        <DialogTitle>
+                            <Typography variant="h3" style={{ textAlign: "left" }}>
+                                Uh oh!
+                            </Typography>
+                        </DialogTitle>
+                        <DialogContent>
+                            <DialogContentText>
+                                <Typography variant="h4" style={{ textAlign: "left" }}>
+                                    You can't submit a blank drawing. Head back to the lobby to select a new song and submit a new drawing!
+                                </Typography>
+                            </DialogContentText>
+                        </DialogContent>
+                    
+                        <DialogActions style={{ justifyContent: "center" }}>
+                        <Button variant="contained"
+                            style={{
                             color: theme.palette.primary.main,
                             backgroundColor: theme.palette.secondary.main,
                             textTransform: "none",
                             fontSize: 15,
                             fontWeight: "bold",
-                            margin: "3%"
-                        }}
-                        onClick={handleSubmit}
-                        >
-                        Submit My Selections
+                            marginTop: "1%"
+                            }}  
+                            onClick={handleOkDialog}>
+                            OK
                         </Button>
+                        </DialogActions>
+                        </Dialog>
                     </div>
-                
                     )}
                 
                     </CardContent>
@@ -583,18 +668,222 @@ function DoodleChallengeGame() {
             )
         ) : (
             <>
-            <Typography variant="h3" style={{ textAlign: "center"}}>
-                GUESS
-            </Typography>
+            <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
 
+
+                <Card elevation={0} style={{ position: 'relative', border: `2px solid ${theme.palette.background.default}`, borderRadius: "8px", backgroundColor: theme.palette.background.default }}>
+                    <Typography variant="h3" style={{ textAlign: "center"}}>
+                        Guess the song!
+                    </Typography>
+                    <br></br>
+
+                    <Card elevation={3} style={{ position: 'relative', height: "100%", border: `2px solid ${theme.palette.primary.main}`, borderRadius: "8px", backgroundColor: theme.palette.background.default }}>
+                    <br></br>
+                    {/* Cancel Icon */}
+                    <CancelIcon
+                            style={{
+                            color: theme.palette.primary.main,
+                            position: 'absolute',
+                            top: '15px',
+                            right: '15px',
+                            height: '40px',
+                            width: '40px',
+                            cursor: 'pointer',
+                            zIndex: 1, 
+                            }}
+                            onClick={() => exitgame_click()} 
+                        />
+
+                    <Timer maxTime={60} onTimeUp={handleTimeUp2}/>
+                    <br></br>
+                    
+
+                    <Typography variant="p" style={{ color: theme.palette.primary.main, textAlign: "center"}}>
+                        Submitted by {artistUsername}
+                    </Typography>
+                    <Card style={{ margin: '0 auto', maxHeight: '450px', maxWidth: '880px', border: `2px solid ${theme.palette.primary.main}`, borderRadius: "8px", backgroundColor: "white", marginTop: "1%", marginBottom: "5%" }}>
+                        <img
+                        src={randomDoodle.doodleUrl}
+                        alt="Doodle Preview"
+                        style={{ width: '100%', height: '100%', marginTop: "1%", marginBottom: "1%", marginLeft: "1%", marginRight: "1%" }}
+                        />
+                    </Card>
+                    
+                    </Card>
+                </Card>                
+
+                <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="center"
+                spacing={2}
+                style={{ minHeight: '25vh' }} // Adjust the height as needed
+                >
+                {/* Text field for answer */}  
+                <Autocomplete
+                    freeSolo
+                    label="Your Answer"
+                    style={{ width: "50%", color: 'white'}}
+                    InputProps={{
+                    style: { color: theme.palette.primary.main  },
+                    }}
+                    InputLabelProps={{
+                    style: { color: theme.palette.primary.main  },
+                    }}
+                    onChange={(event, newValue) => setAnswer(newValue)}
+                    options={randomDoodle.allSongs}
+                    renderInput={(params) => <TextField {...params} label="Your Answer" />}
+                />
+
+                <Button
+                variant="contained"
+                style={{
+                    width: 230,
+                    color: theme.palette.primary.main,
+                    backgroundColor: theme.palette.secondary.main,
+                    textTransform: "none",
+                    fontSize: 15,
+                    fontWeight: "bold",
+                    margin: "3%"
+                }}
+                onClick = {handleGuess}
+                >
+                Submit
+                </Button>
+
+        <br></br>
+        </Stack>
+
+        {/* CORRECT ANSWER DIALOG */}
+        {correct && (
+          <Dialog open={alertOpen} onClose={exitgame_click} PaperProps={{ style: { backgroundColor: theme.palette.background.default } }}>
+          <DialogTitle>
+          <Typography variant="h3" style={{ textAlign: "left" }}>
+            Congratulations!
+          </Typography>
+            </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+            <Typography variant="h4" style={{ textAlign: "left" }}>
+              You have correctly identified the song from the drawing! Your total score is {finalScore} points.
+              </Typography>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button variant="contained"
+              style={{
+                color: theme.palette.primary.main,
+                backgroundColor: theme.palette.secondary.main,
+                textTransform: "none",
+                fontSize: 15,
+                fontWeight: "bold"
+                }} 
+              onClick={exitgame_click}>
+              Replay
+            </Button>
+          </DialogActions>
+          </Dialog>  
+        )}
+
+        {/* INCORRECT ANSWER (TRY AGAIN) DIALOG */}
+        {!correct && !noMoreTries && (
+          <Dialog open={alertOpen} onClose={handleDialogStayOnGamePage} PaperProps={{ style: { backgroundColor: theme.palette.background.default } }}>
+          <DialogTitle>
+          <Typography variant="h3" style={{ textAlign: "left" }}>
+            Try Again!
+          </Typography>
+            </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+            <Typography variant="h4" style={{ textAlign: "center" }}>
+            <pre>-100</pre>
+          </Typography>
+            <Typography variant="h4" style={{ textAlign: "left" }}>
+            You have not yet identified the song - take another guess. You have {3 - tries} tries left to guess the song.
+              </Typography>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button variant="contained"
+              style={{
+                color: theme.palette.primary.main,
+                backgroundColor: theme.palette.secondary.main,
+                textTransform: "none",
+                fontSize: 15,
+                fontWeight: "bold"
+                }} 
+              onClick={handleDialogStayOnGamePage}>
+              OK
+            </Button>
+          </DialogActions>
+          </Dialog>  
+        )}
+
+        {/* NO TRIES LEFT DIALOG */}
+        {!correct && noMoreTries && (
+          <Dialog open={alertOpen} onClose={exitgame_click} PaperProps={{ style: { backgroundColor: theme.palette.background.default } }}>
+          <DialogTitle>
+          <Typography variant="h3" style={{ textAlign: "left" }}>
+            Uh oh!
+          </Typography>
+            </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+            <Typography variant="h4" style={{ textAlign: "left" }}>
+            You weren't able to identify the song in 3 tries. The song name is "{randomDoodle.selectedSong.songName}". Your total score is {finalScore} points.
+              </Typography>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button variant="contained"
+              style={{
+                color: theme.palette.primary.main,
+                backgroundColor: theme.palette.secondary.main,
+                textTransform: "none",
+                fontSize: 15,
+                fontWeight: "bold"
+                }} 
+              onClick={exitgame_click}>
+              Replay
+            </Button>
+          </DialogActions>
+          </Dialog>  
+        )}
+
+        {/* TIME IS UP */}
+        {ranOutOfTime && (
+          <Dialog open={alertOpen2} onClose={exitgame_click} PaperProps={{ style: { backgroundColor: theme.palette.background.default } }}>
+          <DialogTitle>
+          <Typography variant="h3" style={{ textAlign: "left" }}>
+            Uh oh!
+          </Typography>
+            </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+            <Typography variant="h4" style={{ textAlign: "left" }}>
+            You weren't able to identify the song in time. The song name is "{randomDoodle.selectedSong.songName}". Your total score is {finalScore} points.
+              </Typography>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button variant="contained"
+              style={{
+                color: theme.palette.primary.main,
+                backgroundColor: theme.palette.secondary.main,
+                textTransform: "none",
+                fontSize: 15,
+                fontWeight: "bold"
+                }} 
+              onClick={exitgame_click}>
+              Replay
+            </Button>
+          </DialogActions>
+          </Dialog>  
+        )}
+          
+        </div>
+        </>
             
-
-            <img
-            src={randomDoodle.doodleUrl}
-            alt="Doodle Preview"
-            style={{ maxWidth: "100%", marginTop: "1%", marginBottom: "1%", marginLeft: "1%", marginRight: "1%" }}
-            />
-            </>
         )}
         </>
     );

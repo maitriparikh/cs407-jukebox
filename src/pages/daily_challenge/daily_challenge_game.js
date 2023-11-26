@@ -39,6 +39,9 @@ function DailyChallengeGame() {
     const [answer, setAnswer] = useState("");
     const [isCorrect, setIsCorrect] = useState(false);
 
+    const [tries, setTries] = useState(0);
+    const [noMoreTries, setNoMoreTries] = useState(false);
+
     const gameMode = location.state.gameMode;
     const songInfo = location.state.songInfo
     const allSongs = location.state.allSongs
@@ -124,6 +127,16 @@ function DailyChallengeGame() {
       // check user's answer
       console.log(answer)
       console.log(songName)
+
+      let tempTries = tries + 1;
+      setTries(tempTries);
+
+      if (tries >= 2) {
+        setNoMoreTries(true);
+        setAlertOpen(true);
+        updatePlayedDailyChallenge();
+      }
+
       if (answer === songName) {
         setIsCorrect(true);
         setAlertOpen(true);
@@ -560,7 +573,7 @@ function DailyChallengeGame() {
           </DialogActions>
           </Dialog>
         )}
-        {!isCorrect && (
+        {!isCorrect && !noMoreTries && (
           <Dialog open={alertOpen} onClose={handleDialogStayOnGamePage} PaperProps={{ style: { backgroundColor: theme.palette.background.default } }}>
           <DialogTitle>
           <Typography variant="h3" style={{ textAlign: "left" }}>
@@ -570,7 +583,7 @@ function DailyChallengeGame() {
           <DialogContent>
             <DialogContentText>
             <Typography variant="h4" style={{ textAlign: "left" }}>
-              You have not yet identified the mystery song - take another guess.
+            You have not yet identified the mystery song - take another guess. You have {3 - tries} tries left to guess the song.
               </Typography>
             </DialogContentText>
           </DialogContent>
@@ -584,6 +597,35 @@ function DailyChallengeGame() {
                 fontWeight: "bold"
                 }} 
               onClick={handleDialogStayOnGamePage}>
+              OK
+            </Button>
+          </DialogActions>
+          </Dialog>
+        )}
+        {!isCorrect && noMoreTries && (
+          <Dialog open={alertOpen} onClose={handleDialogGoHomepage} PaperProps={{ style: { backgroundColor: theme.palette.background.default } }}>
+          <DialogTitle>
+          <Typography variant="h3" style={{ textAlign: "left" }}>
+            Uh oh!
+          </Typography>
+            </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+            <Typography variant="h4" style={{ textAlign: "left" }}>
+              You weren't able to identify the mystery song in 3 tries. The song name is "{songName}". 
+              </Typography>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button variant="contained"
+              style={{
+                color: theme.palette.primary.main,
+                backgroundColor: theme.palette.secondary.main,
+                textTransform: "none",
+                fontSize: 15,
+                fontWeight: "bold"
+                }} 
+              onClick={handleDialogGoHomepage}>
               OK
             </Button>
           </DialogActions>
