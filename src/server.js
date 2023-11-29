@@ -101,7 +101,7 @@ io.on('connection', (socket) => {
       if (isLobbyValid(lobbyCode)) {
         socket.join(lobbyCode);
         const lobbyDetails = lobbies.get(lobbyCode);
-
+        console.log(lobbyDetails)
         // Add the user to the lobby's players array
         lobbyDetails.players.push(id);
         console.log('passed username:' + userNameTemp);
