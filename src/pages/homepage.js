@@ -502,6 +502,10 @@ function Homepage() {
               </CardContent>
             </Card>
           </Grid>
+          {/* BLANK SPACE AT THE END */}
+          <Grid item xs={6} md={3} sx = {{ height: "100px" }}>
+            
+          </Grid>
         </Grid>
         </div>
       );
