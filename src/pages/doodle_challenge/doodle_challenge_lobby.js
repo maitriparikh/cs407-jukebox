@@ -49,6 +49,7 @@ function DoodleChallengeLobby() {
     const [songInfo, setSongInfo] = useState([])
     const [finalPlaylist, setFinalPlaylist] = useState([]);
     const [randomDoodle, setRandomDoodle] = useState([]);
+    const [artistUsername, setArtistUsername] = useState("");
 
     const getPlaylistsFirebase = async () => {
         const userDoc = await getDoc(doc(db, "users", user));
@@ -65,20 +66,36 @@ function DoodleChallengeLobby() {
 
         const doodlesRef = collection(db, "doodle");
         const doodlesSnapshot = await getDocs(query(doodlesRef));
-        const doodleDocs = doodlesSnapshot.docs;
+        const doodleDocs = doodlesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-        if (doodleDocs.length === 0) {
-          // Handle the case where the collection is empty
-          return null;
+        // Filter out doodles created by the current user
+        const filteredDoodles = doodleDocs.filter(doodle => doodle.username !== user);
+
+        if (filteredDoodles.length === 0) {
+            // Handle the case where there are no doodles or all are created by the current user
+            console.log("No suitable doodles found");
+            return null;
         }
 
-        // Select a random document
-        const randomDoc = doodleDocs[Math.floor(Math.random() * doodleDocs.length)];
-        const randomDoodleData = randomDoc.data();
+        // Select a random document from the filtered list
+        const randomDoodle = filteredDoodles[Math.floor(Math.random() * filteredDoodles.length)];
 
         // Do something with the random doodle data
-        console.log("RANDOM DOODLE", randomDoodleData);
-        setRandomDoodle(randomDoodleData);
+        console.log("RANDOM DOODLE", randomDoodle);
+        setRandomDoodle(randomDoodle);
+
+        const userId = randomDoodle.username; // This is the doc ID in the users table
+        const userRef = doc(db, "users", userId);
+        const userSnapshot = await getDoc(userRef);
+
+        if (userSnapshot.exists()) {
+            setArtistUsername(userSnapshot.data().username);
+        } else {
+            console.log("User not found for doodle");
+        }
+
+        console.log("artist", artistUsername)
+        
 
     };
 
@@ -193,7 +210,8 @@ function DoodleChallengeLobby() {
             allSongs: myPlaylist,
             songInfoArray: songInfoArray,
             gameMode: gameMode,
-            randomDoodle: randomDoodle
+            randomDoodle: randomDoodle,
+            artistUsername: artistUsername
           },
         });
       };
@@ -225,7 +243,7 @@ function DoodleChallengeLobby() {
             <Grid item xs={12} style={{ marginBottom: "25px" }}>
                 {/* Daily challenge game instructions - update as needed */}
                 <Typography variant="h4" style={{ textAlign: "center", marginBottom: "16px" }}>
-                    Welcome to the Doodle Challenge! Your task will be to either draw or guess a specific song within the time limit. First, choose a game mode below.
+                    Welcome to the Doodle Challenge! Your task will be to either draw or guess a specific song within 1 minute. First, choose a game mode below.
                 </Typography>
                 <Typography variant="h4" style={{ textAlign: "center" }}>
                     In draw mode, we will give you 5 songs to choose between and then draw using the canvas below. In guess mode, we will give you a doodle created by another user and you must guess the corresponding song. In both modes, click "Submit" when you want to submit your doodle or answer. Good luck!

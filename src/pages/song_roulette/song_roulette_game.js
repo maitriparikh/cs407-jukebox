@@ -239,6 +239,14 @@ socket.on('update-the-points', (updatedPerson , index) => {
     console.log(lobbyTemp);
 
     lobbyTemp.peopleGame[index].points = updatedPerson.points;
+    setLobbyTemp(lobbyTemp);
+
+    setLobbyTemp(prevState => {
+    const updatedPeopleGame = [...prevState.peopleGame];
+    //updatedPeopleGame[index].points = newPoints;
+    return { ...prevState, peopleGame: updatedPeopleGame };
+  });
+    //person[index] =updatedPerson.points
     /*
     
     const updatedPeople2 = people.map(person => {
@@ -459,6 +467,16 @@ socket.on('update-the-points', (updatedPerson , index) => {
     }, [spotifyToken]);
     */
 
+    /*
+    {people.map(person => (
+                <div>
+                <Typography variant="h3" style={{ textAlign: "center" }}>
+                    {person.name} earned {person.points} points!
+                </Typography>
+                </div>
+            ))}
+    */
+
     
     
     return (
@@ -584,6 +602,8 @@ socket.on('update-the-points', (updatedPerson , index) => {
                 </Typography>
                 </div>
             ))}
+
+          
             <br></br>
              <Typography variant="h3" style={{ textAlign: "center" }}>
                 {winner} 

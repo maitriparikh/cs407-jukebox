@@ -219,7 +219,7 @@ function CustomPlaylist() {
 
         <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", paddingBottom: "50px", paddingLeft: "100px", paddingRight: "100px" }}>
             <br></br>
-            <Grid item xs={12} style={{ marginBottom: "10px" }}>
+            <Grid item xs={12} style={{ marginTop: "5%", marginBottom: "1%" }}>
                 {/* Description */}
                 <Typography variant="h4" style={{ textAlign: "center", marginBottom: "16px" }}>
                     If you are connected to Spotify, Jukebox pulls songs from your top songs. Otherwise, Jukebox 

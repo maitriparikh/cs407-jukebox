@@ -107,11 +107,15 @@ function SongRouletteLobbyBrowser() {
       return;
     }
 
+    if (roomCode == lobbies[0].code){
+      handleJoinLobby(lobbies[0].code, lobbies[0].ownerID);
+    }
+
     // Emit a socket event to join the lobby with the roomCode
-    socket.emit('join-lobby', roomCode);
+    //socket.emit('join-lobby', roomCode);
 
     // Reset the room code input
-    setRoomCode("");
+    //setRoomCode("");
   };
 
 
@@ -248,6 +252,10 @@ const changeID = (id) => {
     setCreatingLobby(false);
   });
 
+  const divStyleLobbuy = {
+    color: 'black',
+    fontSize: 25,
+  };
   
   useEffect(()=>{
 
@@ -261,6 +269,27 @@ const changeID = (id) => {
       
       
     }, [spotifyToken]);
+
+
+    /*
+            <Button
+          variant="contained"
+          style={{
+            width: 230,
+            color: theme.palette.primary.main,
+            backgroundColor: theme.palette.secondary.main,
+            textTransform: "none",
+            fontSize: 15,
+            fontWeight: "bold",
+            margin: "3%"
+          }}
+          //onClick={startgame_click}
+        >
+          Join Lobby
+        </Button>
+    
+    
+    */
 
     const canCreateLobby = lobbies.length === 0;
 
@@ -291,6 +320,23 @@ const changeID = (id) => {
                   Game Lobbies
 
                 </Typography>
+
+                <ul>
+        {lobbies.map((lobby) => (
+          <li key={lobby.code}
+          style={divStyleLobbuy}>
+            
+           Lobby Code: {lobby.code} (Players: {lobby.playerNames.join(', ')})
+           
+            <button
+              onClick={() => handleJoinLobby(lobby.code, lobby.ownerID)}
+              disabled={joiningLobby === lobby.code || lobby.ownerID === user || lobby.players.includes(user) }
+            >
+              Join
+            </button>
+          </li>
+        ))}
+      </ul> 
               </CardContent>
 
             </Card>
@@ -314,6 +360,8 @@ const changeID = (id) => {
     
         </Grid>
 
+           
+
 
         <Button
           variant="contained"
@@ -326,22 +374,7 @@ const changeID = (id) => {
             fontWeight: "bold",
             margin: "3%"
           }}
-          //onClick={startgame_click}
-        >
-          Join Lobby
-        </Button>
-
-        <Button
-          variant="contained"
-          style={{
-            width: 230,
-            color: theme.palette.primary.main,
-            backgroundColor: theme.palette.secondary.main,
-            textTransform: "none",
-            fontSize: 15,
-            fontWeight: "bold",
-            margin: "3%"
-          }}
+          onClick={handleCreateLobby}disabled={creatingLobby || owner === userID || !canCreateLobby}
           //onClick={handleCreateLobby} disabled={creatingLobby}
         >
           Create Lobby
@@ -376,27 +409,12 @@ const changeID = (id) => {
       </Button></div>
 
     <div>
-      <button onClick={handleCreateLobby}disabled={creatingLobby || owner === userID || !canCreateLobby}>
-        Create Lobby
-      </button>
 
       
       <p>{message}</p>
-      <h2>Lobby Viewer</h2>
+
       
-      <ul>
-        {lobbies.map((lobby) => (
-          <li key={lobby.code}>
-           Lobby Code: {lobby.code} (Players: {lobby.playerNames.join(', ')})
-            <button
-              onClick={() => handleJoinLobby(lobby.code, lobby.ownerID)}
-              disabled={joiningLobby === lobby.code || lobby.ownerID === user || lobby.players.includes(user) }
-            >
-              Join
-            </button>
-          </li>
-        ))}
-      </ul>
+      
     </div>
     
 

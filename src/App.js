@@ -177,7 +177,7 @@ function App() {
                         <Route path="/songroulettegame" element={<SongRouletteGame />} />
 
                         <Route path="/doodlechallengelobby" element={<DoodleChallengeLobby />} />
-                        <Route path="/doodlechallengegame" element={<DoodleChallengeGame />} />
+                        <Route path="/doodlechallengegame" element={<DoodleChallengeGame appearanceSelection={appearance} />} />
 
                         <Route path="/timelinechallengelobby" element={<TimelineChallengeLobby />} />
                         <Route path="/timelinechallengegame" element={<TimelineChallengeGame />} />
