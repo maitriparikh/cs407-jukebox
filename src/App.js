@@ -55,6 +55,7 @@ import TriviaChallengeGame from './pages/trivia_challenge/trivia_challenge_game'
 
 // Lyric Challenge Game Pages
 import LyricChallengeLobby from "./pages/lyric_challenge/lyric_challenge_lobby";
+import LyricChallengeGame from "./pages/lyric_challenge/lyric_challenge_game";
 
 // Memory Challenge Game Pages
 import MemoryChallengeLobby from "./pages/memory_challenge/memory_challenge_lobby";
@@ -188,6 +189,7 @@ function App() {
                         <Route path="/triviachallengegame" element={<TriviaChallengeGame />} />
 
                         <Route path="/lyricchallengelobby" element={<LyricChallengeLobby />} />
+                        <Route path="/lyricchallengegame" element={<LyricChallengeGame />} />
 
                         <Route path="/memorychallengelobby" element={<MemoryChallengeLobby />} />
                         <Route path="/memorychallengegame" element={<MemoryChallengeGame />} />
