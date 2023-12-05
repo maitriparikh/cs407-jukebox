@@ -731,7 +731,7 @@ function SongRouletteLobby() {
         {/* Button to delete lobby */}
         <button onClick={() => deleteLobby()}
          disabled={isButtonDisabledOwner}
-         >Delete Lobby</button>
+         >Ready / Delete</button>
         {/* Button to leave lobby */}
         <button onClick={() => deleteLobby()}
         disabled={true}
