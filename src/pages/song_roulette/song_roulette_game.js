@@ -189,7 +189,7 @@ function SongRouletteGame() {
             
             */
 
-             setDisableSubmitButton(true)
+            setDisableSubmitButton(true)
             socket.emit('user-ready-next-question', { lobbyCode: currentLobby.code, meIndex: meIndex });
             const sortedPeople = [...people];
             sortedPeople.sort((a, b) => b.points - a.points);
@@ -381,15 +381,16 @@ socket.on('update-the-points', (updatedPerson , index) => {
 
 
       const nextQuestion = currentQuestion + 1;
+      //setCurrentQuestion(nextQuestion);
+      console.log("current question:" + currentQuestion);
+      console.log("next question   :" + nextQuestion);
+
+      
       if (currentQuestion !== rounds - 1)  {
         setCurrentQuestion(nextQuestion);
       }
+      
               
-        
-        //console.log("curr")
-        //console.log(currentQuestion)
-        //console.log("next")
-        //console.log(nextQuestion)
 
         setDisableSubmitButton(false);
         
@@ -397,7 +398,6 @@ socket.on('update-the-points', (updatedPerson , index) => {
            socket.emit('reset-question-ready', { lobbyCode: currentLobby.code, meIndex: meIndex});
         }
 
-     
 
       }
     });
@@ -407,7 +407,7 @@ socket.on('update-the-points', (updatedPerson , index) => {
 
     socket.on('set-ready-to-false', () => {
 
-      console.log(lobbyTemp)
+      //console.log(lobbyTemp)
       console.log("reset");
 
       lobbyTemp.readyNextQuestion[0] = false;
@@ -415,18 +415,17 @@ socket.on('update-the-points', (updatedPerson , index) => {
       lobbyTemp.readyNextQuestion[2] = false;
       lobbyTemp.readyNextQuestion[3] = false;
 
+        
       if (currentQuestion == rounds-1)  {
         setShowGame(!showGame);
         
       }
-      else {
-        console.log(rounds)
-      }
+
 
         console.log("curr")
         console.log(currentQuestion)
       
-      
+        return(socket.off('set-ready-to-false'))
 
     });
   }, [currentQuestion]); 
