@@ -130,6 +130,11 @@ function LyricChallengeGame() {
         const docRef = doc(db, "users", user);
         const docSnap = await getDoc(docRef);
         hs = docSnap.data().lyricHighScore;
+
+        if (typeof hs === 'undefined') {
+            console.log("lyric high score is undefined");
+            hs = 0;
+        }
         const gameId = uuid();
 
         if (totalPoints > hs) {
