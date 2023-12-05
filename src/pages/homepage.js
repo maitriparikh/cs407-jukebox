@@ -31,8 +31,6 @@ function Homepage() {
     const [alertOpen, setAlertOpen] = useState(false); // show dialog for if spotify is not connected
     const [spotifyConnected, setSpotifyConnected] = useState(false); // is spotify connected?
     const [spotifyToken, setSpotifyToken] = useState(""); // Spotify Token
-    const [preferencesQuiz, setPreferencesQuiz] = useState(false); // is music preferences quiz done? (done will mean custom playlist(s) is generated)
-    const [musicPreferences, setMusicPreferences] = useState(""); // Music Preferences
     const { user, setUser } = useContext(UserContext);
     const [topFiveArr, setTopFiveArr] = useState("");
     const [finalPlaylist, setFinalPlaylist] = useState([]);
@@ -175,16 +173,6 @@ function Homepage() {
               setSpotifyConnected(false);
             }
 
-            // MUSIC PREFERENCES FROM FIREBASE
-            setMusicPreferences(doc.data().musicPreferences);
-            if (musicPreferences) {
-              console.log("music preferences got in choose game ->", musicPreferences);
-              setPreferencesQuiz(true);
-              console.log("preferences quiz set to true", preferencesQuiz);
-            } else {
-              setPreferencesQuiz(false);
-            }
-
 
             console.log("spotify token got ->", spotifyToken);
           });
@@ -207,8 +195,7 @@ function Homepage() {
         await displayTop();
       }
       console.log("SPOTIFY CONNECTED VALUE: ", spotifyConnected);
-      console.log("MUSIC PREFERENCES VALUE: ", musicPreferences);
-      if (spotifyConnected || musicPreferences) {
+      if (spotifyConnected || altSource) {
         // random button clicked
         if (game == "Random") {
           // generate a random number from 0-5 (array indices corresponding to games in gameNames array)

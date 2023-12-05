@@ -37,6 +37,8 @@ function Leaderboard() {
     const [image, setImage] = useState("");
     const [triviaGamesArray, setTriviaGamesArray] = useState([]);
     const [snippetGamesArray, setSnippetGamesArray] = useState([]);
+    const [lyricGamesArray, setLyricGamesArray] = useState([]);
+
     const [totalRounds, setTotalRounds] = useState(0);
     const [totalPoints, setTotalPoints] = useState(0);
     const [avgPtsPerRound, setAvgPtsPerRound] = useState(0);
@@ -64,6 +66,8 @@ function Leaderboard() {
     const getHighScores = async () => {
         var triviaHSArray = [];
         var snippetHSArray = [];
+        var lyricHSArray = [];
+
         console.log("inside High Scores");
         const q = query(collection(db, "users"));
         const querySnapshot = await getDocs(q);
@@ -78,13 +82,20 @@ function Leaderboard() {
                 snippetHSArray.push({username: doc.data().username, score: doc.data().snippetHighScore});
                 console.log("there was smth here");
             }
+            if (doc.data().lyricHighScore) {
+                lyricHSArray.push({username: doc.data().username, score: doc.data().lyricHighScore});
+                console.log("there was smth here");
+            }
         });
         triviaHSArray = triviaHSArray.sort((a,b) => b.score - a.score);
         snippetHSArray = snippetHSArray.sort((a,b) => b.score - a.score);
+        lyricHSArray = lyricHSArray.sort((a,b) => b.score - a.score);
         const slicedArrayTrivia = triviaHSArray.slice(0, 10);
         const slicedArraySnippet = snippetHSArray.slice(0, 10);
+        const slicedArrayLyric = lyricHSArray.slice(0, 10);
         setTriviaGamesArray(slicedArrayTrivia);
         setSnippetGamesArray(slicedArraySnippet);
+        setLyricGamesArray(slicedArrayLyric);
     }
 
     useEffect (() => {
@@ -93,6 +104,8 @@ function Leaderboard() {
                 setUser(user.uid);
                 await onSnapshot(doc(db, "users", user.uid), async (doc) => {
                     setTriviaGamesArray(doc.data().triviaGameScore);
+                    setSnippetGamesArray(doc.data().triviaGameScore);
+                    setLyricGamesArray(doc.data().triviaGameScore);
                     console.log(doc.data().triviaGameScore);
                     triviaChallengeStats(doc.data().triviaGameScore);
                 });
@@ -110,6 +123,14 @@ function Leaderboard() {
                     <h2>Song Roulette Leaderboard</h2>
                     <h2>Pictionary Leaderboard</h2>
                     <h2>Song Snippet Leaderboard</h2>
+                    {
+                        snippetGamesArray.map(highScore => (
+                            <p>
+                                <h3>{highScore.username}: {highScore.score}</h3>
+                            </p>
+
+                        ))
+                    }
                     <h2>Trivia Challenge Leaderboard</h2>
                     {
                         triviaGamesArray.map(highScore => (
@@ -121,7 +142,7 @@ function Leaderboard() {
                     }
                     <h2>Lyric Challenge Leaderboard</h2>
                     {
-                        snippetGamesArray.map(highScore => (
+                        lyricGamesArray.map(highScore => (
                             <p>
                                 <h3>{highScore.username}: {highScore.score}</h3>
                             </p>
