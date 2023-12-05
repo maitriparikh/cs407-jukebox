@@ -361,19 +361,15 @@ function LyricChallengeGame() {
                 >
                 Replay
                 </Button>
-                {/*
-                 <h2>lyric Challenge Leaderboard</h2>
-                    {
-                        lyricGamesArray.map(highScore => (
-                            <p>
-                                <h3>{highScore.username}: {highScore.score}</h3>
-                            </p>
-
-                        ))
-                    }
-                 */}
                 
-                
+                <h2>Lyric Challenge Leaderboard</h2>
+                {
+                    lyricGamesArray.map(highScore => (
+                        <p>
+                            <h3>{highScore.username}: {highScore.score}</h3>
+                        </p>
+                    ))
+                }
             </div>
         )}
         </div>
