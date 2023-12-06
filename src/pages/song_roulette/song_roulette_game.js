@@ -1,5 +1,5 @@
 import Button from "@mui/material/Button";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef  } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CircularProgress, Grid } from "@mui/material";
 import { Box, Stack } from "@mui/system";
@@ -23,6 +23,7 @@ import { useTheme } from '@mui/material/styles';
 import io from 'socket.io-client';
 
 const socket = io('http://localhost:3001');
+var count = 0;
 
 
 function SongRouletteGame() {
@@ -40,6 +41,8 @@ function SongRouletteGame() {
 
     const replayGame = () => {
       console.log("REPLAY GAME CLICKED");
+      deleteLobby();
+
       navigate("/songroulettelobbybrowser");
     };
     
@@ -63,14 +66,14 @@ function SongRouletteGame() {
     
 
 
-    //console.log("NUMBER OF ROUNDS = " + rounds);
+    console.log("NUMBER OF ROUNDS = " + rounds);
     //console.log(people);
     //console.log(location.state.people)
     if (!people) {
         people = location.state.people
     }
     //console.log(song_bank);
-   console.log(lobbyTemp);
+   //console.log(lobbyTemp);
 
     const me = "" // should be name of current player
     //const meIndex2 = lobbyTemp.players.findIndex(lobbyTemp => lobbyTemp.players.includes(user) ); // change flag state when selected
@@ -93,9 +96,12 @@ function SongRouletteGame() {
 
 
     const [lobbies, setLobbies] = useState([]);
+    const [disableSubmitButton,setDisableSubmitButton] = useState(false)
+    const [tempNextQuestion, setTempNextQUestion] = useState("");
 
     var tempppy = location.state.currentLobby
     const [currentLobby, setCurrentLobby] = useState(lobbyGet);
+    const socketRef = useRef(null);
 
 
     
@@ -110,7 +116,7 @@ function SongRouletteGame() {
 
     if (tempThing) {
       //setCurrentLobby(tempThing); // If a lobby is found, set the currentLobby state
-      console.log("Current Lobby:", tempThing);
+      //console.log("Current Lobby:", tempThing);
       //console.log("Current user ID:", user);
       //console.log("Current Lobby owner ID:", tempThing.ownerID);
     } else {
@@ -120,14 +126,14 @@ function SongRouletteGame() {
   };
 
     const handleOptionClick = (answerOption) => {
-      console.log(answerOption);
+      //console.log(answerOption);
       
       const indexToRemove = selected.indexOf(answerOption);
       const indexClicked = people.findIndex((person) => person.name === answerOption);
 
       if (indexClicked !== -1) { // Check if the person was found
           if (selected.includes(answerOption)) {
-            console.log(answerOption + ' already selected, removing now');
+            //console.log(answerOption + ' already selected, removing now');
 
             // Update the flag in the copied people array to change color
             const updatedPeople = [...people];
@@ -147,8 +153,8 @@ function SongRouletteGame() {
         console.log("Person not found in people array.");
       }
       
-      console.log(selected);
-      console.log(people);
+      //console.log(selected);
+      //console.log(people);
       
       return;
     };
@@ -178,9 +184,17 @@ function SongRouletteGame() {
         setSelected([]);
 
         if (currentQuestion == rounds - 1) { // Max rounds reached
-            setShowGame(!showGame);
+            //setShowGame(!showGame);
 
             /* CALCULATE WINNER */
+
+            /*
+             Add in check to make each player wait 
+            
+            */
+
+            setDisableSubmitButton(true)
+            socket.emit('user-ready-next-question', { lobbyCode: currentLobby.code, meIndex: meIndex });
             const sortedPeople = [...people];
             sortedPeople.sort((a, b) => b.points - a.points);
 
@@ -203,10 +217,36 @@ function SongRouletteGame() {
             
         } 
         else if (currentQuestion < song_bank.length - 1) { // Change question to next question
-            const nextQuestion = currentQuestion + 1;
-            setCurrentQuestion(nextQuestion);
+            console.log(meIndex)
+
+            setDisableSubmitButton(true)
+            socket.emit('user-ready-next-question', { lobbyCode: currentLobby.code, meIndex: meIndex });
+
+            
+            //const nextQuestion = currentQuestion + 1;
+            //setCurrentQuestion(nextQuestion);
+            //setTempNextQUestion(currentQuestion + 1)
+            ///
+            ///
+            ///
+            ///
         }
     }
+
+
+     const deleteLobby = () => {
+     // console.log("testing delete")
+      //console.log(currentLobby.ownerID)
+      //console.log(lobbies)
+      getCurrentLobby();
+
+      if (currentLobby.length!= 0) {
+        socket.emit('delete-lobby', currentLobby.ownerID);
+        navigate("/songroulettelobbybrowser");
+
+
+      }
+    };
 
 
   const getSpotifyToken = async () => {
@@ -234,9 +274,9 @@ function SongRouletteGame() {
 
 socket.on('update-the-points', (updatedPerson , index) => {
     // Find the person to update based on their name
-    console.log("update the pointz");
-    console.log(updatedPerson);
-    console.log(lobbyTemp);
+    //console.log("update the pointz");
+    //console.log(updatedPerson);
+    //console.log(lobbyTemp);
 
     lobbyTemp.peopleGame[index].points = updatedPerson.points;
     setLobbyTemp(lobbyTemp);
@@ -322,6 +362,8 @@ socket.on('update-the-points', (updatedPerson , index) => {
   interactions // the Set of interactions belonging to this update
 ) {
   // Aggregate or log render timings...
+
+  /*
   console.log({
     id,
     phase,
@@ -331,6 +373,7 @@ socket.on('update-the-points', (updatedPerson , index) => {
     commitTime,
     interactions
   });
+  */
 }
 
     
@@ -344,7 +387,96 @@ socket.on('update-the-points', (updatedPerson , index) => {
         });
     }, []); 
 
+
+  useEffect(() => {
+
+    socketRef.current = io('http://localhost:3001');
+
+    socketRef.current.on('update-ready-next-question', (test, theIndex) => {
+      
+      lobbyTemp.readyNextQuestion[theIndex] = test;
+      console.log(lobbyTemp)
+      console.log("update ready state");
+      if ( lobbyTemp.readyNextQuestion[0] == true && lobbyTemp.readyNextQuestion[1] == true && lobbyTemp.readyNextQuestion[2] == true && lobbyGet.readyNextQuestion[3] ==true) {
+        const nextQuestion = currentQuestion + 1;
+        //setCurrentQuestion(nextQuestion);
+        console.log("current question:" + currentQuestion);
+        console.log("next question   :" + nextQuestion);
+        console.log("rounds          :" + rounds);
+
+        
+        if (currentQuestion !== rounds - 1)  {
+          setCurrentQuestion(nextQuestion);
+        }
+        
+        setDisableSubmitButton(false);
+        
+        if (currentLobby.ownerID == user) {
+          socketRef.current.emit('reset-question-ready', { lobbyCode: currentLobby.code, meIndex: meIndex});
+        }
+
+
+      }
+    });
+
+
+     return () => {
+      socketRef.current.off('update-ready-next-question');
+    };
+  }, [currentQuestion]); 
+
+    useEffect(() => {
+
+    socketRef.current.on('set-ready-to-false', () => {
+
+      //console.log(lobbyTemp)
+      console.log("reset");
+
+      lobbyTemp.readyNextQuestion[0] = false;
+      lobbyTemp.readyNextQuestion[1] = false;
+      lobbyTemp.readyNextQuestion[2] = false;
+      lobbyTemp.readyNextQuestion[3] = false;
+
+        
+      if (currentQuestion == rounds-1)  {
+        setShowGame(!showGame);
+
+         const sortedPeople = [...people];
+            sortedPeople.sort((a, b) => b.points - a.points);
+
+            let winners = "";
+            let topScore = sortedPeople[0].points;
+            for (let i = 1; i < sortedPeople.length; i++) {
+                if (sortedPeople[i].points == topScore) { // tie found
+                    winners += sortedPeople[i].name + ", "
+                }    
+            }
+
+            if (winners != "") {
+                winners += "and " + sortedPeople[0].name + " have won this game of Song Roulette! 🎉"
+                setWinner(winners)
+            }
+            else {
+                let gameWinner = sortedPeople[0].name + " has won this game of Song Roulette! 🎉"
+                setWinner(gameWinner)
+            }
+            
+        
+      }
+
+
+        console.log("curr")
+        console.log(currentQuestion)
+      
+        //return(socket.off('set-ready-to-false'))
+
+    });
+
+    
+  }, [currentQuestion]); 
  
+ 
+    
 
 
     useEffect(() => {
@@ -360,6 +492,13 @@ socket.on('update-the-points', (updatedPerson , index) => {
      useEffect(() => {
         getSpotifyToken();
     }, [spotifyToken]);
+
+
+      socket.on('lobby-deleted', (ownerID) => {
+        if(currentLobby && currentLobby.ownerID !== ownerID){
+          navigate("/songroulettelobbybrowser" , );
+        }
+      });
    
     
 
@@ -373,7 +512,7 @@ socket.on('update-the-points', (updatedPerson , index) => {
          *      no answer selected = -25
         */
 
-        console.log("CHECKING ANSWER")
+        //console.log("CHECKING ANSWER")
 
         let curPoints = 0 // total points for current round
         
@@ -382,44 +521,44 @@ socket.on('update-the-points', (updatedPerson , index) => {
             const selectedName = selected[i];
             const correctAnswers = song_bank[currentQuestion].correctAnswer;
 
-            console.log(selectedName + ", " + correctAnswers);
+            //console.log(selectedName + ", " + correctAnswers);
 
             // each correct answer (+100)
             if (correctAnswers.some(answer => answer === selectedName)) {
                 curPoints += 100;
 
                 pointText += "Correct Answer +100\n"
-                console.log(pointText)
-                console.log("Correct answer found! +100, points = " + curPoints);
+                //console.log(pointText)
+                //console.log("Correct answer found! +100, points = " + curPoints);
             }
             // each wrong answer (-50)
             if (correctAnswers.every(answer => answer !== selectedName)) {
                 curPoints -= 50;
 
                 pointText += "Wrong Answer -50\n"
-                console.log(pointText)
-                console.log("Selected answer is not a correct answer! -50, points = " + curPoints);
+                //console.log(pointText)
+                //console.log("Selected answer is not a correct answer! -50, points = " + curPoints);
             }
         }
 
         // Missing answer scoring
         const correctAnswers = song_bank[currentQuestion].correctAnswer;
         for (var i = 0; i < correctAnswers.length; i++) {
-            console.log(correctAnswers[i])
+            //console.log(correctAnswers[i])
             // each missing answer (-25)
             if (!selected.includes(correctAnswers[i])){
                 curPoints -= 25;
 
                 pointText += "Missing Answer -25\n"
-                console.log(pointText)
-                console.log("Missing answer! -25, points = " + curPoints);
+                //console.log(pointText)
+                //console.log("Missing answer! -25, points = " + curPoints);
             }
         }
 
-        console.log("curPoints total before capping: " +  curPoints);
+        //console.log("curPoints total before capping: " +  curPoints);
 
         if (curPoints < 0) { // Cap curPoints at 0 if less than 0
-            console.log("Total points under 0! Current points now 0.")
+            //console.log("Total points under 0! Current points now 0.")
             curPoints = 0;
         }
 
@@ -429,12 +568,12 @@ socket.on('update-the-points', (updatedPerson , index) => {
         updatedPeople[meIndex].points = people[meIndex].points + curPoints;
         setPeople(updatedPeople);
 
-        console.log(people);
+        //console.log(people);
 
         // update state of current points for pop up message
         setCurrentPoints(curPoints);
         setPointTextState(pointText)
-        console.log(lobbyTemp);
+        //console.log(lobbyTemp);
         lobbyTemp.points[meIndex]+= curPoints;
 
         handlePointsUpdate();
@@ -446,7 +585,7 @@ socket.on('update-the-points', (updatedPerson , index) => {
         // Example usage: Call this function when the user's points are updated
         // For instance, after the 'checkAnswers' function
         const updatedPeopleArray = [...people]; // Assuming people is the updated array of users
-        console.log(updatedPeopleArray);
+        //console.log(updatedPeopleArray);
         //updateUserPoints(currentLobby.code, updatedPeopleArray);
             
     }
@@ -552,6 +691,7 @@ socket.on('update-the-points', (updatedPerson , index) => {
             margin: "3%"
           }}
           onClick={handleSubmitButtonClick}
+          disabled={disableSubmitButton}
         >
           Submit
         </Button>

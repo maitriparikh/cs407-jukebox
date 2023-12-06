@@ -81,7 +81,8 @@ io.on('connection', (socket) => {
         points: [0,0,0,0],
         rounds: 0,
         gameSongs: [],
-        peopleGame:[]
+        peopleGame:[],
+        readyNextQuestion:[false,false,false,false]
       };
       lobbies.set(lobbyCode, lobbyDetails);
       io.to(lobbyCode).emit('lobby-created', lobbyCode, socket.userID);
@@ -225,6 +226,61 @@ socket.on('leave-lobby', ({ user, ownerID }) => {
   }
 });
 
+
+  socket.on('user-ready-next-question', ({lobbyCode,meIndex}) => {
+
+
+    
+    for (const [lobbyCode, lobbyDetails] of lobbies.entries()) {
+      
+      lobbyFound = true;
+        // Check if the lobby is in a valid state to start the game
+
+      console.log("found lobby");
+      console.log("index");
+      console.log(meIndex);
+      lobbyDetails.readyNextQuestion[meIndex] = true;
+
+      io.emit('update-ready-next-question', lobbyDetails.readyNextQuestion[meIndex] , meIndex);
+      break; // Exit loop after updating the lobby details
+
+    }
+    //console.log(lobbies)
+
+
+
+  });
+
+  socket.on('reset-question-ready', ({lobbyCode, meIndex}) => {
+
+
+    
+    for (const [lobbyCode, lobbyDetails] of lobbies.entries()) {
+      
+      lobbyFound = true;
+        // Check if the lobby is in a valid state to start the game
+
+      console.log("found lobby");
+      console.log("index");
+      console.log(meIndex);
+      lobbyDetails.readyNextQuestion[0] = false;
+      lobbyDetails.readyNextQuestion[1] = false;
+      lobbyDetails.readyNextQuestion[2] = false;
+      lobbyDetails.readyNextQuestion[3] = false;
+
+      io.emit('set-ready-to-false');
+      break; // Exit loop after updating the lobby details
+
+    }
+    //console.log(lobbies)
+
+
+
+  });
+
+
+
+
     
 socket.on('update-user-points', ({ lobbyCode, updatedPeople, index }) => {
     //const lobby = lobbies.get(lobbyCode);
@@ -235,7 +291,7 @@ socket.on('update-user-points', ({ lobbyCode, updatedPeople, index }) => {
         lobbyFound = true;
         // Check if the lobby is in a valid state to start the game
 
-        console.log(updatedPeople);
+        //console.log(updatedPeople);
       lobbyDetails.peopleGame[index].points += updatedPeople.points;
 
          io.emit('update-the-points', lobbyDetails.peopleGame[index] , index);

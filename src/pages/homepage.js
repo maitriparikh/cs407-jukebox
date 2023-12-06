@@ -162,7 +162,7 @@ function Homepage() {
             setSpotifyToken(doc.data().spotifyToken);
             setAltSource(doc.data().alternativeSource)
             if (spotifyToken != "") {
-              console.log("spotify token got in choose game ->", spotifyToken);
+              //console.log("spotify token got in choose game ->", spotifyToken);
               setSpotifyConnected(true);
               console.log("spotify token set to true", spotifyConnected);
   
@@ -174,7 +174,7 @@ function Homepage() {
             }
 
 
-            console.log("spotify token got ->", spotifyToken);
+            //console.log("spotify token got ->", spotifyToken);
           });
 
           
