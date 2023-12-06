@@ -246,12 +246,12 @@ function TriviaChallengeGame() {
             }).then(() => console.log("Document updated with no new high score"));
         }
 
-    }
+    };
 
     const replayGame = async () => {
         console.log("REPLAY GAME CLICKED");
         navigate("/triviachallengelobby");
-    }
+    };
 
     const getHighScores = async () => {
         var triviaHSArray = [];
@@ -269,7 +269,7 @@ function TriviaChallengeGame() {
         setTriviaGamesArray(slicedArray);
         console.log("getHighScores is working");
         console.log(triviaHSArray);
-    }
+    };
 
     useEffect (() => {
         if (answers.length == 0) {
