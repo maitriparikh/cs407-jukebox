@@ -224,7 +224,7 @@ function LyricChallengeLobby() {
                     fontWeight: "bold",
                     margin: "3%"
                 }}
-                onClick={testLyrics}
+                onClick={getAllLyrics}
                 >
                 Ready Game!
                 </Button>
