@@ -245,7 +245,7 @@ socket.on('leave-lobby', ({ user, ownerID }) => {
       break; // Exit loop after updating the lobby details
 
     }
-    console.log(lobbies)
+    //console.log(lobbies)
 
 
 
@@ -272,7 +272,7 @@ socket.on('leave-lobby', ({ user, ownerID }) => {
       break; // Exit loop after updating the lobby details
 
     }
-    console.log(lobbies)
+    //console.log(lobbies)
 
 
 
