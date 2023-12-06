@@ -63,6 +63,8 @@ function SongRouletteGame() {
     const[song_bank,setSongBank] = useState(song_bankGet);
     // song_bank = song_bankGet
 
+    const [answerSubmitted, setAnswerSubmitted] = useState(false);
+
     
 
 
@@ -163,6 +165,7 @@ function SongRouletteGame() {
         // check user's selection
         checkAnswers(selected);
         setAlertOpen(true)
+        setAnswerSubmitted(true);
     };
 
     
@@ -436,6 +439,7 @@ socket.on('update-the-points', (updatedPerson , index) => {
       lobbyTemp.readyNextQuestion[1] = false;
       lobbyTemp.readyNextQuestion[2] = false;
       lobbyTemp.readyNextQuestion[3] = false;
+      setAnswerSubmitted(false);
 
         
       if (currentQuestion == rounds-1)  {
@@ -679,6 +683,8 @@ socket.on('update-the-points', (updatedPerson , index) => {
                 </Grid>
             </CardContent>
         </Card>
+        
+        
         <Button
           variant="contained"
           style={{
@@ -695,6 +701,12 @@ socket.on('update-the-points', (updatedPerson , index) => {
         >
           Submit
         </Button>
+
+        {answerSubmitted && (
+        <Typography variant="h4" style={{ textAlign: "center", fontWeight: "bold", fontSize: "24px" }}>
+        Answer submitted, please wait for each other player to submit their answers!
+      </Typography>
+        )}
 
         <Dialog open={alertOpen} onClose={handleNextQuestion} PaperProps={{ style: { backgroundColor: theme.palette.background.default } }}>
         <DialogTitle>
