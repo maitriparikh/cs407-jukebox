@@ -123,7 +123,7 @@ function CustomPlaylist() {
                 // remove the random track
                 finalPlaylist.splice(randomIndex, 1);
             }
-            //console.log("NEW finalPlaylist AFTER SPLICING", finalPlaylist);
+            console.log("NEW finalPlaylist AFTER SPLICING", finalPlaylist);
 
             //console.log("finalPlaylistClean", finalPlaylistClean);
             while (finalPlaylistClean.length > 20) {
@@ -132,7 +132,7 @@ function CustomPlaylist() {
                 // remove the random track
                 finalPlaylistClean.splice(randomIndex, 1);
             }
-            //console.log("NEW finalPlaylistClean AFTER SPLICING", finalPlaylistClean);
+            console.log("NEW finalPlaylistClean AFTER SPLICING", finalPlaylistClean);
 
             // IF LENGTH NOT ENOUGH
             if (finalPlaylist.length < 20 || finalPlaylistClean.length < 20) {
@@ -154,29 +154,34 @@ function CustomPlaylist() {
                     }
                 })
 
-                console.log("finalPlaylist (before adding filler songs)", finalPlaylist);
+                
                 while (finalPlaylist.length < 20) {
-                    console.log("INSIDE EXPLICIT WHILE LOOP")
+                    //console.log("INSIDE EXPLICIT WHILE LOOP")
                     const randomIndex = getRandomIndex(playlistExtraFinal);
-                    finalPlaylist.push(playlistExtraFinal[randomIndex]);
                     if (!finalPlaylist.some( track => track === playlistExtraFinal[randomIndex])) {
                         finalPlaylist.push(playlistExtraFinal[randomIndex]);
+                    } else {
+                        //console.log("DUPLICATE", playlistExtraFinal[randomIndex])
                     }
                 }
                 console.log("finalPlaylist (after adding filler)", finalPlaylist);
 
-                console.log("finalPlaylist (before adding filler songs)", finalPlaylistClean);
                 while (finalPlaylistClean.length < 20) {
-                    console.log("INSIDE CLEAN WHILE LOOP")
+                    //console.log("INSIDE CLEAN WHILE LOOP")
                     const randomIndex = getRandomIndex(playlistExtraFinal);
                     if (!finalPlaylistClean.some( track => track === playlistExtraFinal[randomIndex])) {
                         finalPlaylistClean.push(playlistExtraFinal[randomIndex]);
+                    } else {
+                        //console.log("DUPLICATE", playlistExtraFinal[randomIndex])
                     }
                 }
-                console.log("finalPlaylist (after adding filler)", finalPlaylistClean);
+                console.log("finalPlaylistClean (after adding filler)", finalPlaylistClean);
 
 
             }
+
+
+
 
             const docRef2 = doc(db, "users", user);
             await updateDoc(docRef2, {

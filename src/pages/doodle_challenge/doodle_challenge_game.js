@@ -30,6 +30,9 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 import Timer from '../timeline_challenge/timer';
 
+import CorrectAnswerSound from "../../sounds/correct_answer.mp3";
+import WrongAnswerSound from "../../sounds/wrong_answer.mp3";
+
 import EraserIconLight from "../doodle_challenge/eraser_icon_light.png";
 import EraserIconDark from "../doodle_challenge/eraser_icon_dark.png";
  
@@ -262,12 +265,16 @@ function DoodleChallengeGame( {appearanceSelection} ) {
         console.log(answer);
         if (answer === randomDoodle.selectedSong.songName) {
             console.log("CORRECT");
+            const audio = new Audio(CorrectAnswerSound);
+            audio.play();
             setCorrect(true)
             setAlertOpen(true)
             sendGameScore(finalScore);
         }
         else {
             let tempFinalScore = finalScore - 100;
+            const audio = new Audio(WrongAnswerSound);
+            audio.play();
             setFinalScore(tempFinalScore);
             if (tries >= 2) {
                 setNoMoreTries(true)
