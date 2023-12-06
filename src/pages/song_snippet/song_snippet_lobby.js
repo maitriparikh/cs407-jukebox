@@ -228,19 +228,19 @@ function SongSnippetLobby() {
 
         <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", paddingBottom: "50px", paddingLeft: "100px", paddingRight: "100px" }}>
             <br></br>
-            <Grid item xs={12} style={{ marginBottom: "25px" }}>
+            <Grid item xs={12} style={{ marginBottom: "25px", marginTop: "40px" }}>
                 {/* Daily challenge game instructions - update as needed */}
                 <Typography variant="h4" style={{ textAlign: "center", marginBottom: "16px" }}>
                     Welcome to the Song Snippet Challenge! Your task during each round will be to 
                     guess a song with as few hints as possible. First, choose a game 
-                    mode below. Then, choose the number of rounds you wish to play
+                    mode below. Then, choose the number of rounds you wish to play.
                 </Typography>
                 <Typography variant="h4" style={{ textAlign: "center" }}>
                     In easy mode, we will start you off with an an audio snippet 
                     from the mystery song. If you recognize the tune, enter it in the box 
                     that appears on your screen. If you can't, don't worry - we will 
-                    continue giving you more hints. For hard mode, you must guess the song 
-                    from the audio snippet alone! 
+                    continue giving you more hints, but each hint will cost 10 points.
+                    For hard mode, you must guess the song from the audio snippet alone! 
                     Good luck!
                 </Typography>
             </Grid>
