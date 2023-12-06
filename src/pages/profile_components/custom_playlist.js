@@ -47,6 +47,7 @@ function CustomPlaylist() {
     const [invalidLink, setInvalidLink] = useState(false);
     const [finalPlaylist, setFinalPlaylist] = useState([]);
     const [finalPlaylistClean, setFinalPlaylistClean] = useState([]);
+    const [allTracks, setAllTracks] = useState([]);
 
 
     function getRandomIndex(array) {
@@ -77,8 +78,6 @@ function CustomPlaylist() {
         setInvalidLink(false);
     }
 
-
-
     const handleSubmitButtonClick = async () => { 
 
         // check if real spotify link
@@ -103,6 +102,8 @@ function CustomPlaylist() {
 
             let playlistDataArray = await getPlaylistTracks(playlistID);
 
+            
+
             // for each playlist get item at tracks > items > # > track and put another data structure
 
             /* MAKING SURE THERE ARE NO NULL PREVIEWS + FILTERING EXPLICIT */
@@ -115,24 +116,68 @@ function CustomPlaylist() {
                 }
             })
       
-            console.log("finalPlaylist", finalPlaylist);
+            //console.log("finalPlaylist", finalPlaylist);
             while (finalPlaylist.length > 20) {
                 // get a random track
                 const randomIndex = getRandomIndex(finalPlaylist);
                 // remove the random track
                 finalPlaylist.splice(randomIndex, 1);
             }
-            console.log("NEW finalPlaylist AFTER SPLICING", finalPlaylist);
+            //console.log("NEW finalPlaylist AFTER SPLICING", finalPlaylist);
 
-            console.log("finalPlaylistClean", finalPlaylistClean);
+            //console.log("finalPlaylistClean", finalPlaylistClean);
             while (finalPlaylistClean.length > 20) {
                 // get a random track
                 const randomIndex = getRandomIndex(finalPlaylistClean);
                 // remove the random track
                 finalPlaylistClean.splice(randomIndex, 1);
             }
-            console.log("NEW finalPlaylistClean AFTER SPLICING", finalPlaylistClean);
-            
+            //console.log("NEW finalPlaylistClean AFTER SPLICING", finalPlaylistClean);
+
+            // IF LENGTH NOT ENOUGH
+            if (finalPlaylist.length < 20 || finalPlaylistClean.length < 20) {
+                
+                //let playlistExtra1 = await getPlaylistTracks("37i9dQZF1DXcBWIGoYBM5M"); // Top Hits for extra songs
+                let playlistExtra = await getPlaylistTracks("37i9dQZF1DXbYM3nMM0oPk"); // Mega Hit Mix for extra songs
+                //let playlistExtra3 = await getPlaylistTracks("37i9dQZEVXbNG2KDcFcKOF"); // Top Songs - Global for extra songs
+                
+                console.log("playlistExtra", playlistExtra)
+                
+                let playlistExtraFinal = [];
+
+                // Filter for explicit and null tracks in Top Hits
+                playlistExtra.tracks.items.forEach(trackInPlaylist => {
+                    if (trackInPlaylist.track.preview_url !== null) {
+                        if (!trackInPlaylist.track.explicit) {
+                            playlistExtraFinal.push(trackInPlaylist.track); // We only get clean songs from Top Tracks
+                        }
+                    }
+                })
+
+                console.log("finalPlaylist (before adding filler songs)", finalPlaylist);
+                while (finalPlaylist.length < 20) {
+                    console.log("INSIDE EXPLICIT WHILE LOOP")
+                    const randomIndex = getRandomIndex(playlistExtraFinal);
+                    finalPlaylist.push(playlistExtraFinal[randomIndex]);
+                    if (!finalPlaylist.some( track => track === playlistExtraFinal[randomIndex])) {
+                        finalPlaylist.push(playlistExtraFinal[randomIndex]);
+                    }
+                }
+                console.log("finalPlaylist (after adding filler)", finalPlaylist);
+
+                console.log("finalPlaylist (before adding filler songs)", finalPlaylistClean);
+                while (finalPlaylistClean.length < 20) {
+                    console.log("INSIDE CLEAN WHILE LOOP")
+                    const randomIndex = getRandomIndex(playlistExtraFinal);
+                    if (!finalPlaylistClean.some( track => track === playlistExtraFinal[randomIndex])) {
+                        finalPlaylistClean.push(playlistExtraFinal[randomIndex]);
+                    }
+                }
+                console.log("finalPlaylist (after adding filler)", finalPlaylistClean);
+
+
+            }
+
             const docRef2 = doc(db, "users", user);
             await updateDoc(docRef2, {
                 alternativeSource: true,
