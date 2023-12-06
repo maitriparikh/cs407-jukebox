@@ -20,6 +20,8 @@ import { auth, db } from "../utils/firebase";
 import { collection, onSnapshot, getDoc, doc, updateDoc, setDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { useTheme } from '@mui/material/styles';
+import MemoryChallengeGif from "../gifs/memory_challenge.gif";
+
 export var TopFiveArrExport = true;
 
 
@@ -482,9 +484,17 @@ function Homepage() {
             onClick={() => chooseGame("Memory Challenge")}>
               <CardContent>
               <ButtonBase>
+                <div>
                 <Typography variant="h3" component="div">
                   Memory Challenge
                 </Typography>
+                <img
+                  style={{ marginTop: "4%", height: '160px', width: '280px', borderRadius: "8px", boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.4)" }}
+                  src={MemoryChallengeGif}
+                  alt="Memory Challenge GIF"
+                  loop // make it loop
+                />
+                </div>
               </ButtonBase>
               </CardContent>
             </Card>
