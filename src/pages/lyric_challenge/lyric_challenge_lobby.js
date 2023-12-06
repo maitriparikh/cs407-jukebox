@@ -105,7 +105,7 @@ function LyricChallengeLobby() {
         .then(async (res) => {
             //console.log(res.message.body.track_list[0].track.track_id);
             //console.log(res);
-            if (res.message.body.track_list) {
+            if (typeof res.message.body.track_list !== 'undefined') {
                 if (res.message.body.track_list[0].track.track_id) {
                     const trackid = res.message.body.track_list[0].track.track_id;
                     await fetchLyrics(trackid);
