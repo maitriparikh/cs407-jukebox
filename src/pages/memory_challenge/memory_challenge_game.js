@@ -23,6 +23,11 @@ import WrongAnswerSound from "../../sounds/wrong_answer.mp3";
 import FanfareSound from "../../sounds/fanfare.mp3";
 
 import { useTheme } from '@mui/material/styles';
+import { updateDoc, doc, getDoc, arrayUnion } from "firebase/firestore";
+import { db } from "../../utils/firebase";
+import { v4 as uuid } from "uuid";
+
+
 
 function MemoryChallengeGame() {
 
@@ -110,7 +115,7 @@ function MemoryChallengeGame() {
 
 
 
-    const handleCardClick = (index) => {
+    const handleCardClick = async (index) => {
       console.log("TOTAL TRIES", tries);
 
       // pause the current audio before setting the new flipped cards
@@ -167,6 +172,7 @@ function MemoryChallengeGame() {
                 setShowEnd(true);
                 const audio = new Audio(FanfareSound);
                 audio.play();
+                await sendGameScore(Math.floor(tempFinalScore));
               }
               // reset flipped cards since match is found
               setFlippedCards([]);
@@ -228,6 +234,37 @@ function MemoryChallengeGame() {
       }
       return `${minutes.toString()} minutes and ${seconds.toString()} seconds`;
     }; 
+
+    const sendGameScore = async (score) => {
+      var hs = 0;
+      const docRef = doc(db, "users", user);
+      const docSnap = await getDoc(docRef);
+      hs = docSnap.data().memoryHighScore;
+
+      if (typeof hs === 'undefined') {
+        console.log("memory high score is undefined");
+        hs = 0;
+      }
+      const gameId = uuid();
+
+      if (score > hs) {
+              
+          await updateDoc(docRef, {
+              memoryHighScore: score,
+              memoryGameScore: arrayUnion({
+                  gameId: gameId,
+                  score: score
+              })
+          }).then(() => console.log("Document updated with new high score"));
+      } else {
+          await updateDoc(docRef, {
+              memoryGameScore: arrayUnion({
+                  gameId: gameId,
+                  score: score
+              })
+          }).then(() => console.log("Document updated with no new high score"));
+      }
+    };
 
     return (
       <div>
