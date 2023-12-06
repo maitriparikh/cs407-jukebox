@@ -26,6 +26,10 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import { useTheme } from '@mui/material/styles';
 
+import { updateDoc, doc, getDoc, arrayUnion } from "firebase/firestore";
+import { db } from "../../utils/firebase";
+import { v4 as uuid } from "uuid";
+
 import Timer from '../timeline_challenge/timer';
 
 function TimelineChallengeGame() {
@@ -99,6 +103,38 @@ function TimelineChallengeGame() {
       // If dates are the same, then sort by name
       return a.songName.localeCompare(b.songName);
     });
+  };
+
+  const sendGameScore = async (score) => {
+    var hs = 0;
+    const docRef = doc(db, "users", user);
+    const docSnap = await getDoc(docRef);
+    hs = docSnap.data().timelineHighScore;
+    console.log(score);
+
+    if (typeof hs === 'undefined') {
+      console.log("memory high score is undefined");
+      hs = 0;
+    }
+    const gameId = uuid();
+
+    if (score > hs) {
+            
+        await updateDoc(docRef, {
+            timelineHighScore: score,
+            timelineGameScore: arrayUnion({
+                gameId: gameId,
+                score: score
+            })
+        }).then(() => console.log("Document updated with new high score"));
+    } else {
+        await updateDoc(docRef, {
+                timelineGameScore: arrayUnion({
+                gameId: gameId,
+                score: score
+            })
+        }).then(() => console.log("Document updated with no new high score"));
+    }
   };
 
   useEffect(() => {
@@ -207,7 +243,7 @@ function TimelineChallengeGame() {
   
  
 
-  const handleSubmit = (answerArray) => {
+  const handleSubmit = async (answerArray) => {
     let score = 0;
 
     const totalPositions = sortedSongDeck.length;
@@ -227,7 +263,9 @@ function TimelineChallengeGame() {
     // Handle the score as needed
     console.log(`Score: ${score}`);
 
-    setFinalScore(Math.floor(score))
+    setFinalScore(Math.floor(score));
+    await sendGameScore(Math.floor(score));
+
     setShowEnd(true)
     if (score === 1000) {
       setAllCorrect(true)
