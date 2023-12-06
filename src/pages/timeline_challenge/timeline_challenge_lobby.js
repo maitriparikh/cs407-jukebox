@@ -211,7 +211,7 @@ function TimelineChallengeLobby() {
             <Grid item xs={12} style={{ marginTop: "35px", marginBottom: "25px" }}>
                 {/* Memory challenge - update as needed */}
                 <Typography variant="h4" style={{ textAlign: "center" }}>
-                    Welcome to the Timeline Challenge! Your task will be to order all the songs by release date within 2 minutes. Drag the song cards so that they are listed from the oldest released song to the newest release song, and click "Submit" to verify your answer. If there are two or more songs with the same release date, order them alphabetically. Good luck!
+                    Welcome to the Timeline Challenge! Your task will be to order all the songs by release date within 2 minutes. Drag the song cards so that they are listed from the oldest released song to the newest release song, and click "Submit" to verify your answer. If there are two or more songs with the same release date, order them alphabetically from top to bottom. Good luck!
                 </Typography>
             </Grid>
 

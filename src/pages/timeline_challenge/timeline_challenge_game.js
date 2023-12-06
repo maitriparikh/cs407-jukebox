@@ -397,7 +397,7 @@ function TimelineChallengeGame() {
         
         <br></br>
 
-        <Card elevation={3} style={{ position: 'relative', border: `2px solid ${theme.palette.primary.main}`, borderRadius: "8px", backgroundColor: theme.palette.background.default }}>
+        <Card elevation={3} style={{ padding: "10px", position: 'relative', border: `2px solid ${theme.palette.primary.main}`, borderRadius: "8px", backgroundColor: theme.palette.background.default }}>
               <br></br>
               {/* Cancel Icon */}
               <CancelIcon
@@ -418,6 +418,10 @@ function TimelineChallengeGame() {
 
             <br />
 
+          <Typography variant="p" style={{ textAlign: "center" }}>
+          oldest
+          </Typography>
+
             <DndProvider backend={HTML5Backend}>
             <div>
             {songInfoArray.map((card, index) => (
@@ -425,6 +429,10 @@ function TimelineChallengeGame() {
             ))}
             </div>
           </DndProvider>
+
+          <Typography variant="p" style={{ textAlign: "center" }}>
+          newest
+          </Typography>
 
           <br></br>
 
