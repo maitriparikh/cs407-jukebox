@@ -329,6 +329,17 @@ const changeID = (id) => {
            Lobby Code: {lobby.code} (Players: {lobby.playerNames.join(', ')})
            
             <button
+             variant="contained"
+             style={{
+            width: 100,
+            color: theme.palette.primary.main,
+            backgroundColor: theme.palette.secondary.main,
+            textTransform: "none",
+            fontSize: 20,
+            fontWeight: "bold",
+            margin: "3%"
+          }}
+          
               onClick={() => handleJoinLobby(lobby.code, lobby.ownerID)}
               disabled={joiningLobby === lobby.code || lobby.ownerID === user || lobby.players.includes(user) }
             >
