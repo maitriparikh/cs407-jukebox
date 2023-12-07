@@ -18,8 +18,9 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { UserContext } from "../../App";
 
 import { db } from "../../utils/firebase";
-import { collection, onSnapshot, getDoc, doc, updateDoc, setDoc } from "firebase/firestore";
+import { collection, onSnapshot, getDoc, doc, updateDoc, setDoc, arrayUnion } from "firebase/firestore";
 import { useTheme } from '@mui/material/styles';
+import { v4 as uuid } from "uuid";
 import io from 'socket.io-client';
 
 const socket = io('http://localhost:3001');
@@ -214,6 +215,16 @@ function SongRouletteGame() {
                 let gameWinner = sortedPeople[0].name + " has won this game of Song Roulette! 🎉"
                 setWinner(gameWinner)
             }
+
+            //send game score
+            //need to find the correct score for the user
+            //
+            console.log("people array is: " + people);
+            console.log("user: " + user);
+            if (typeof user !== 'undefined') {
+
+            }
+            sendGameScore(100);
             
         } 
         else if (currentQuestion < song_bank.length - 1) { // Change question to next question
@@ -616,7 +627,39 @@ socket.on('update-the-points', (updatedPerson , index) => {
             ))}
     */
 
-    
+    const sendGameScore = async (score) => {
+      var hs = 0;
+      const docRef = doc(db, "users", user);
+      const docSnap = await getDoc(docRef);
+      hs = docSnap.data().rouletteHighScore;
+
+      if (typeof hs === 'undefined') {
+        console.log("roulette high score is undefined");
+        hs = 0;
+      }
+      const gameId = uuid();
+
+      console.log("hs is " + hs + " and overall pts is " + score);
+      if (score > hs) {  
+        await updateDoc(docRef, {
+          snippetHighScore: score,
+          snippetGameScore: arrayUnion({
+              gameId: gameId,
+              rounds: rounds,
+              score: score
+          })
+        }).then(() => console.log("Document updated with new high score"));
+      } else {
+          await updateDoc(docRef, {
+            snippetGameScore: arrayUnion({
+                  gameId: gameId,
+                  rounds: rounds,
+                  score: score
+              })
+          }).then(() => console.log("Document updated with no new high score"));
+      }
+
+    }
     
     return (
     <div>
