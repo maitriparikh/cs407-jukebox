@@ -202,24 +202,30 @@ function SongSnippetGame() {
             const audio = new Audio(FanfareSound);
             audio.play();
 
-            await sendGameScore();
+            await sendGameScore(pointsAdd);
         }
     }
 
-    const sendGameScore = async () => {
+    const sendGameScore = async (score) => {
       var hs = 0;
       const docRef = doc(db, "users", user);
       const docSnap = await getDoc(docRef);
       hs = docSnap.data().snippetHighScore;
+
+      if (typeof hs === 'undefined') {
+        console.log("memory high score is undefined");
+        hs = 0;
+      }
       const gameId = uuid();
+
       console.log("hs is " + hs + " and overall pts is " + overallPoints);
-      if (overallPoints > hs) {  
+      if (score > hs) {  
         await updateDoc(docRef, {
           snippetHighScore: overallPoints,
           snippetGameScore: arrayUnion({
               gameId: gameId,
               rounds: songInfoArray.length,
-              score: overallPoints,
+              score: score,
               gameMode: gameMode
           })
         }).then(() => console.log("Document updated with new high score"));
@@ -228,7 +234,7 @@ function SongSnippetGame() {
             snippetGameScore: arrayUnion({
                   gameId: gameId,
                   rounds: songInfoArray.length,
-                  score: overallPoints,
+                  score: score,
                   gameMode: gameMode
               })
           }).then(() => console.log("Document updated with no new high score"));
