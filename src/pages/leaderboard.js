@@ -190,7 +190,19 @@ function Leaderboard() {
                 <h1>Music Game Leaderboards</h1>
                 <div>
                     <h2>Song Roulette Leaderboard</h2>
-                    
+                    {
+                        typeof rouletteGamesArray !== 'undefined'? (
+                            rouletteGamesArray.map(highScore => (
+                                <p>
+                                    <h3>{highScore.username}: {highScore.score}</h3>
+                                </p>
+    
+                            ))
+                        ): (
+                            <p></p>
+                        )
+                        
+                    }
                     <h2>Doodle Challenge Leaderboard</h2>
                     {
                         doodleGamesArray.map(highScore => (

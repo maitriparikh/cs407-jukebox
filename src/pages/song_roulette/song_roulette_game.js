@@ -222,12 +222,11 @@ function SongRouletteGame() {
             //send game score
             //need to find the correct score for the user
             //
-            console.log("people array is: " + people);
-            console.log("user: " + user);
-            if (typeof user !== 'undefined') {
-
-            }
-            sendGameScore(100);
+            sortedPeople.forEach(obj => {
+              if (obj.name === userNameTemp2) {
+                sendGameScore(obj.points);
+              }
+            })
             
         } 
         else if (currentQuestion < song_bank.length - 1) { // Change question to next question
@@ -646,8 +645,8 @@ socket.on('update-the-points', (updatedPerson , index) => {
       console.log("hs is " + hs + " and overall pts is " + score);
       if (score > hs) {  
         await updateDoc(docRef, {
-          snippetHighScore: score,
-          snippetGameScore: arrayUnion({
+          rouletteHighScore: score,
+          rouletteGameScore: arrayUnion({
               gameId: gameId,
               rounds: rounds,
               score: score
@@ -655,7 +654,7 @@ socket.on('update-the-points', (updatedPerson , index) => {
         }).then(() => console.log("Document updated with new high score"));
       } else {
           await updateDoc(docRef, {
-            snippetGameScore: arrayUnion({
+            rouletteGameScore: arrayUnion({
                   gameId: gameId,
                   rounds: rounds,
                   score: score
