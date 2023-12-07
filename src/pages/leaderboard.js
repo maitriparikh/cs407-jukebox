@@ -53,19 +53,22 @@ function Leaderboard() {
     }
 
     const triviaChallengeStats = (triviaArray) => {
-        if (triviaArray.length != 0) {
-            var pts = 0;
-            var rds = 0;
-            for (let i = 0; i < triviaArray.length; i++) {
-                console.log(parseInt(triviaArray[i].rounds, 10));
-                console.log(parseInt(triviaArray[i].score, 10));
-                rds += parseInt(triviaArray[i].rounds, 10);
-                pts += parseInt(triviaArray[i].score, 10);
+        if (typeof triviaArray !== 'undefined') {
+            if (triviaArray.length != 0) {
+                var pts = 0;
+                var rds = 0;
+                for (let i = 0; i < triviaArray.length; i++) {
+                    console.log(parseInt(triviaArray[i].rounds, 10));
+                    console.log(parseInt(triviaArray[i].score, 10));
+                    rds += parseInt(triviaArray[i].rounds, 10);
+                    pts += parseInt(triviaArray[i].score, 10);
+                }
+                setAvgPtsPerRound(Math.round(averagePointsPerRound(pts, rds) * 100) / 100);
+                setTotalRounds(rds);
+                setTotalPoints(pts);
             }
-            setAvgPtsPerRound(Math.round(averagePointsPerRound(pts, rds) * 100) / 100);
-            setTotalRounds(rds);
-            setTotalPoints(pts);
         }
+        
     }
 
     const getHighScores = async () => {
@@ -227,12 +230,17 @@ function Leaderboard() {
                     }
                     <h2>Lyric Challenge Leaderboard</h2>
                     {
-                        lyricGamesArray.map(highScore => (
-                            <p>
-                                <h3>{highScore.username}: {highScore.score}</h3>
-                            </p>
-
-                        ))
+                        typeof lyricGamesArray !== 'undefined'? (
+                            lyricGamesArray.map(highScore => (
+                                <p>
+                                    <h3>{highScore.username}: {highScore.score}</h3>
+                                </p>
+    
+                            ))
+                        ): (
+                            <p></p>
+                        )
+                        
                     }
 
                     <h2>Memory Challenge Leaderboard</h2>
