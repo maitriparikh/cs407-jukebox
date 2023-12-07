@@ -43,22 +43,18 @@ function LyricChallengeLobby() {
     const navigate = useNavigate();
 
 
-    const getArtists = async (list) => {
+    const getArtists = (list) => {
         var total = [];
         console.log("songbank in getArtists is " + songArray);
         for (let i = 0; i < list.length; i++) {
-            var arr = [];
-            for (let j = 0; j < list[i].artists.length; j++) {
-                arr.push(list[i].artists[j].name);
-            }
-            total.push(arr);
+            total.push(list[i].artists[0].name);
         }
         console.log(total);
         setArtists(total);
         return total;
     };
   
-    const getSongs = async (list) => {
+    const getSongs = (list) => {
         var total = [];
         for (let i = 0; i < list.length; i++) {
             total.push(list[i].name);
@@ -94,6 +90,7 @@ function LyricChallengeLobby() {
             if (typeof res.message.body.lyrics !== 'undefined') {
                 songLyricsArray.push(res.message.body.lyrics.lyrics_body);
             } else {
+                songLyricsArray.push("No song lyrics");
                 console.error("Song (trackid: " + track + ") did not have lyrics");
             }
             
@@ -105,7 +102,7 @@ function LyricChallengeLobby() {
         .then(async (res) => {
             //console.log(res.message.body.track_list[0].track.track_id);
             //console.log(res);
-            if (typeof res.message.body.track_list !== 'undefined') {
+            if (typeof res.message.body.track_list !== 'undefined' && res.message.body.track_list.length > 0) {
                 if (res.message.body.track_list[0].track.track_id) {
                     const trackid = res.message.body.track_list[0].track.track_id;
                     await fetchLyrics(trackid);
@@ -129,9 +126,9 @@ function LyricChallengeLobby() {
 
     const getAllLyrics = async () => {
         const aArt = await getArtists(songArray);
-        await setArtists(aArt);
+        setArtists(aArt);
         const aSon = await getSongs(songArray);
-        await setSongs(aSon);
+        setSongs(aSon);
         console.log(artists);
         console.log(songs);
         for (let i = 0; i < songArray.length; i++) {
