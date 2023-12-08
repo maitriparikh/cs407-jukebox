@@ -111,11 +111,13 @@ function LyricChallengeGame() {
         setAnswers(newAns);
 
         if (currentQuestion == rounds - 1) { // Max rounds reached
-            await sendGameScore();
-            await getHighScores();
+            
+            
             setShowGame(!showGame);
             const audio = new Audio(FanfareSound);
             audio.play(); 
+            await sendGameScore();
+            //await getHighScores();
         } 
         else if (currentQuestion < rounds - 1) { // Change question to next question
             console.log("Current question number is " + currentQuestion)
@@ -252,9 +254,21 @@ function LyricChallengeGame() {
                     {question}
                 </Typography>
                 <br></br>
-                <Typography variant="h3" style={{ textAlign: "center"}}>
-                    {lyrics[answerIndex]}
-                </Typography>
+                {
+                    <Typography variant="h3" style={{ textAlign: "center"}}>
+                        {lyrics[answerIndex]}
+                    </Typography>
+                    /*
+                    lyrics[answerIndex].forEach(line => {
+                        (
+                            <Typography variant="h3" style={{ textAlign: "center"}}>
+                                {line}
+                            </Typography>
+                        )
+                    })
+                    */
+                }
+                
                 <br></br>
 
                 <Grid xs={8} sm={6}>
@@ -361,7 +375,7 @@ function LyricChallengeGame() {
                 >
                 Replay
                 </Button>
-                
+                {/*
                 <h2>Lyric Challenge Leaderboard</h2>
                 {
                     lyricGamesArray.map(highScore => (
@@ -369,7 +383,8 @@ function LyricChallengeGame() {
                             <h3>{highScore.username}: {highScore.score}</h3>
                         </p>
                     ))
-                }
+                }*/
+            }
             </div>
         )}
         </div>
