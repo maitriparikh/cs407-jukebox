@@ -54,9 +54,10 @@ function LyricChallengeGame() {
     //answer index keeps track of which song is being asked about
     //default is 0
     //will be randomized for each question
-    const ans = Math.floor(Math.random() * 20);
+    const length = songbank.length;
+    const ans = Math.floor(Math.random() * 10);
     console.log("Answer index is " + ans);
-    const [answerIndex, setAnswerIndex] = useState(Math.floor(Math.random() * 20));
+    const [answerIndex, setAnswerIndex] = useState(Math.floor(Math.random() * 10));
 
     const question = "Can you guess the song based on these lyrics?";
 
@@ -104,7 +105,7 @@ function LyricChallengeGame() {
         // reset selected option (for next question)
         setSelected("");
         
-        const answ = Math.floor(Math.random() * 20);
+        const answ = Math.floor(Math.random() * 10);
         setAnswerIndex(answ);
 
         const newAns = createAnswers(answ);
@@ -212,7 +213,7 @@ function LyricChallengeGame() {
             var temp = [];
             temp.push(songs[answerIndex]);
             while (temp.length != 4) {
-                const rand = Math.floor(Math.random() * 20);
+                const rand = Math.floor(Math.random() * 10);
                 if (temp.indexOf(songs[rand]) == -1) {
                     temp.push(songs[rand]);
                 }
@@ -259,11 +260,11 @@ function LyricChallengeGame() {
                         <Typography variant="h3" style={{ textAlign: "center"}}>
                             {lyrics[answerIndex][0]}
                             <br></br>
+                            {lyrics[answerIndex][1]}
+                            <br></br>
                             {lyrics[answerIndex][2]}
                             <br></br>
                             {lyrics[answerIndex][3]}
-                            <br></br>
-                            {lyrics[answerIndex][4]}
                         </Typography>
                     ): (
                         <Typography variant="h3" style={{ textAlign: "center"}}>
