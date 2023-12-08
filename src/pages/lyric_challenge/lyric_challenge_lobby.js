@@ -30,6 +30,7 @@ import StartGameSound from "../../sounds/start_game.mp3";
 
 function LyricChallengeLobby() {
 
+    const copyRight = "******* This Lyrics is NOT for Commercial use *******\n(1409624001866)";
     const theme = useTheme();
     const { user, setUser } = useContext(UserContext);
 
@@ -88,7 +89,11 @@ function LyricChallengeLobby() {
         .then(async (res) => {
             console.log("inside res");
             if (typeof res.message.body.lyrics !== 'undefined') {
-                songLyricsArray.push(res.message.body.lyrics.lyrics_body);
+                let sLyrics = res.message.body.lyrics.lyrics_body.replace(copyRight, "");
+                let msLyrics = sLyrics.replace("\n...\n\n", "");
+                const lineArray = msLyrics.split("\n");
+                console.log(lineArray);
+                songLyricsArray.push(lineArray);
             } else {
                 songLyricsArray.push("No song lyrics");
                 console.error("Song (trackid: " + track + ") did not have lyrics");
@@ -110,6 +115,7 @@ function LyricChallengeLobby() {
                     console.error("This song could not be found: " + song + " by " + artist);
                 }
             } else {
+                songLyricsArray.push("No song lyrics");
                 console.error("There was not a track list for this song");
             }
         })

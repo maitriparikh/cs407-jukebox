@@ -254,19 +254,23 @@ function LyricChallengeGame() {
                     {question}
                 </Typography>
                 <br></br>
-                {
-                    <Typography variant="h3" style={{ textAlign: "center"}}>
-                        {lyrics[answerIndex]}
-                    </Typography>
-                    /*
-                    lyrics[answerIndex].forEach(line => {
-                        (
-                            <Typography variant="h3" style={{ textAlign: "center"}}>
-                                {line}
-                            </Typography>
-                        )
-                    })
-                    */
+                {   
+                    lyrics[answerIndex].length > 4 ? (
+                        <Typography variant="h3" style={{ textAlign: "center"}}>
+                            {lyrics[answerIndex][0]}
+                            <br></br>
+                            {lyrics[answerIndex][2]}
+                            <br></br>
+                            {lyrics[answerIndex][3]}
+                            <br></br>
+                            {lyrics[answerIndex][4]}
+                        </Typography>
+                    ): (
+                        <Typography variant="h3" style={{ textAlign: "center"}}>
+                            {lyrics[answerIndex][0]}
+                            <br></br>
+                        </Typography>
+                    )  
                 }
                 
                 <br></br>
