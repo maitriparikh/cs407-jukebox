@@ -15,9 +15,11 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
-import { db } from "../../utils/firebase";
+import { db, auth } from "../../utils/firebase";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { UserContext } from "../../App";
+import { signOut, onAuthStateChanged } from "firebase/auth"; 
+
 
 import { useTheme } from '@mui/material/styles';
 
@@ -41,9 +43,10 @@ function TriviaChallengeLobby() {
     const [previews, setPreviews] = useState([]);
     const [albumImages, setAlbumImages] = useState([]);
 
-    const getArtists = async (list) => {
+    const getArtists = (list) => {
       var total = [];
-      console.log("songbank in getArtists is " + songbank);
+      console.log("songbank in getArtists is ");
+      console.log(list);
       for (let i = 0; i < list.length; i++) {
           var arr = [];
           for (let j = 0; j < list[i].artists.length; j++) {
@@ -55,7 +58,7 @@ function TriviaChallengeLobby() {
       return total;
     };
 
-    const getSongs = async (list) => {
+    const getSongs = (list) => {
         var total = [];
         for (let i = 0; i < list.length; i++) {
             total.push(list[i].name);
@@ -64,7 +67,7 @@ function TriviaChallengeLobby() {
         return total;
     };
 
-    const getAlbumNames = async (list) => {
+    const getAlbumNames = (list) => {
         var names = [];
         var images = [];
         for (let i = 0; i < list.length; i++) {
@@ -74,7 +77,7 @@ function TriviaChallengeLobby() {
         return names;
     }
 
-    const getAlbumImages = async (list) => {
+    const getAlbumImages = (list) => {
       var images = [];
       for (let i = 0; i < list.length; i++) {
           images.push(list[i].album.images[0]);
@@ -83,7 +86,7 @@ function TriviaChallengeLobby() {
       return images;
   }
 
-    const getPreviews = async (list) => {
+    const getPreviews = (list) => {
         var total = [];
         for (let i = 0; i < list.length; i++) {
             total.push(list[i].preview_url);
@@ -94,14 +97,11 @@ function TriviaChallengeLobby() {
 
     const startgame_click = async () => {
         //console.log("START GAME CLICKED");
-        //console.log(topFiveArr);
-        //await buildSongBank()
         const audio = new Audio(StartGameSound);
         audio.play();
         navigate("/triviachallengegame", {
           state: {
             rounds: numOfRounds,
-            songbank: songbank,
             artists: artists,
             songs: songs,
             previews: previews,
@@ -135,38 +135,41 @@ function TriviaChallengeLobby() {
       return (await fetchWebApi('v1/me/top/tracks?time_range=short_term&limit=10', 'GET')).items;
     }
 
-    const displayTop = async() => {
-      const topTracks = await getTopTracks();
-      await setSongbank(topTracks);
-      const dtArtists = await getArtists(topTracks);
-      await setArtists(dtArtists);
-      const dtSongs = await getSongs(topTracks);
-      await setSongs(dtSongs);
-      const dtPreviews = await getPreviews(topTracks);
-      await setPreviews(dtPreviews);
-      const dtAlbumNames = await getAlbumNames(topTracks);
-      await setAlbumNames(dtAlbumNames);
-      const dtAlbumImages = await getAlbumImages(topTracks);
-      await setAlbumImages(dtAlbumImages);
+    const displayTop = async(topTracks) => {
+      const dtArtists = getArtists(topTracks);
+      setArtists(dtArtists);
+      const dtSongs = getSongs(topTracks);
+      setSongs(dtSongs);
+      const dtPreviews = getPreviews(topTracks);
+      setPreviews(dtPreviews);
+      const dtAlbumNames = getAlbumNames(topTracks);
+      setAlbumNames(dtAlbumNames);
+      const dtAlbumImages = getAlbumImages(topTracks);
+      setAlbumImages(dtAlbumImages);
       
       
     }
 
     
 
-    useEffect(()=>{
-        
-        getSpotifyToken();
-        if (spotifyToken) {
-          console.log("spotify token got in song roulette game lobby ->", spotifyToken)
-          // get specific playlist code (user entered or from firebase?) (future sprint) (hard-coded)
-          /* make song_bank data structure */
-          displayTop();
-        
+    useEffect(() =>{
+
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          console.log("start");
+          await onSnapshot(doc(db, "users", user.uid), async (doc) => {
+              //make check for explicit tag
+              console.log(doc.data().contentFilter);
+              if (doc.data().contentFilter === "explicit") {
+                displayTop(doc.data().personalSongBank);
+              } else {
+                displayTop(doc.data().personalSongBankClean);
+              }
+              console.log("random");
+          });
         }
-        
-        
-      }, [spotifyToken]);
+      });    
+    }, []);
 
     return (
       <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
