@@ -26,8 +26,7 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { UserContext } from "../../App";
 
 import StartGameSound from "../../sounds/start_game.mp3";
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-
+import DownloadingIcon from '@mui/icons-material/Downloading';
 
 function LyricChallengeLobby() {
 
@@ -297,7 +296,7 @@ function LyricChallengeLobby() {
                 }}
                 onClick={startgame_click}
                 >
-                <RemoveCircleOutlineIcon/> &nbsp; Start Game
+                Start Game
               </Button>
               </label>
             </div>) : 
@@ -309,7 +308,7 @@ function LyricChallengeLobby() {
                 style={{
                     width: 230,
                     color: "gray",
-                    backgroundColor: theme.palette.secondary.main,
+                    backgroundColor: "light gray",
                     textTransform: "none",
                     fontSize: 15,
                     fontWeight: "bold",
@@ -317,7 +316,7 @@ function LyricChallengeLobby() {
                 }}
                 
                 >
-                <RemoveCircleOutlineIcon/> &nbsp; Loading Lyric Data
+                <DownloadingIcon/> &nbsp; Loading Lyrics
               </Button>
               </label>
             </div>
