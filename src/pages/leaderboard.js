@@ -339,15 +339,16 @@ function Leaderboard() {
                             width: "100%",
                         }}>
                             <CardContent>
-                            <div>
-                                <Typography sx={{ color: "#5a2005", marginBottom: "15%" }} variant="h3"> My Playing Statistics </Typography>
+                                <Typography sx={{ color: "#5a2005" }} variant="h3"> My Playing Statistics </Typography>
+                                <br></br>
+                                <br></br>
+                                <br></br>
                                 <Typography sx={{ color: "#5a2005" }} variant="p">Total Rounds Played: {totalRounds} </Typography>
                                 <br></br>
                                 <Typography sx={{ color: "#5a2005" }} variant="p">Total Points Earned: {totalPoints} </Typography>
                                 <br></br>
                                 <Typography sx={{ color: "#5a2005" }} variant="p">Avg. Points Per Round: {avgPtsPerRound}</Typography>
                                 <br></br>
-                            </div>
                             </CardContent>
                         </Card>
                     </Grid>
@@ -367,21 +368,22 @@ function Leaderboard() {
                             <Typography sx={{ color: "#5a2005" }} variant="h3" component="div">
                                 Song Roulette Leaderboard
                             </Typography>
-                            <BarChart
-                                xAxis={[{ 
-                                    scaleType: 'band', 
+                            <div style={{ width: "100%", height: "100%" }}>
+                                <BarChart
+                                    xAxis={[{ 
+                                        scaleType: 'band', 
+                                        
+                                        data: chartData.songroulette.map(entry => entry.name),
+                                        color: theme.palette.primary.main
+                                    }]}
                                     
-                                    data: chartData.songroulette.map(entry => entry.name),
-                                    color: theme.palette.primary.main
-                                }]}
-                                
-                                series={[{ 
-                                    data: chartData.songroulette.map(entry => entry.score), 
-                                    color: "#FBE7BF" 
-                                }]}
-                                width={950}
-                                height={200}
-                            />
+                                    series={[{ 
+                                        data: chartData.songroulette.map(entry => entry.score), 
+                                        color: "#FBE7BF" 
+                                    }]}
+                                    height={200}
+                                />
+                            </div>
                             </CardContent>
                         </Card>
                     </Grid>
@@ -401,21 +403,22 @@ function Leaderboard() {
                             <Typography sx={{ color: "#5a2005" }} variant="h3" component="div">
                                 Doodle Challenge Leaderboard
                             </Typography>
-                            <BarChart
-                                xAxis={[{ 
-                                    scaleType: 'band', 
+                            <div style={{ width: "100%", height: "100%" }}>
+                                <BarChart
+                                    xAxis={[{ 
+                                        scaleType: 'band', 
+                                        
+                                        data: chartData.doodle.map(entry => entry.name),
+                                        color: theme.palette.primary.main
+                                    }]}
                                     
-                                    data: chartData.doodle.map(entry => entry.name),
-                                    color: theme.palette.primary.main
-                                }]}
-                                
-                                series={[{ 
-                                    data: chartData.doodle.map(entry => entry.score), 
-                                    color: "#FBE7BF" 
-                                }]}
-                                width={450}
-                                height={300}
-                            />
+                                    series={[{ 
+                                        data: chartData.doodle.map(entry => entry.score), 
+                                        color: "#FBE7BF" 
+                                    }]}
+                                    height={300}
+                                />
+                            </div>
                             </CardContent>
                         </Card>
                     </Grid>
@@ -435,21 +438,22 @@ function Leaderboard() {
                             <Typography sx={{ color: "#5a2005" }} variant="h3" component="div">
                                 Timeline Challenge Leaderboard
                             </Typography>
-                            <BarChart
-                                xAxis={[{ 
-                                    scaleType: 'band', 
+                            <div style={{ width: "100%", height: "100%" }}>
+                                <BarChart
+                                    xAxis={[{ 
+                                        scaleType: 'band', 
+                                        
+                                        data: chartData.timeline.map(entry => entry.name),
+                                        color: theme.palette.primary.main
+                                    }]}
                                     
-                                    data: chartData.timeline.map(entry => entry.name),
-                                    color: theme.palette.primary.main
-                                }]}
-                                
-                                series={[{ 
-                                    data: chartData.timeline.map(entry => entry.score), 
-                                    color: "#FBE7BF" 
-                                }]}
-                                width={450}
-                                height={300}
-                            />
+                                    series={[{ 
+                                        data: chartData.timeline.map(entry => entry.score), 
+                                        color: "#FBE7BF" 
+                                    }]}
+                                    height={300}
+                                />
+                            </div>
                             </CardContent>
                         </Card>
                     </Grid>
@@ -469,21 +473,22 @@ function Leaderboard() {
                             <Typography sx={{ color: "#5a2005" }} variant="h3" component="div">
                                 Song Snippet Leaderboard
                             </Typography>
-                            <BarChart
-                                xAxis={[{ 
-                                    scaleType: 'band', 
+                            <div style={{ width: "100%", height: "100%" }}>
+                                <BarChart
+                                    xAxis={[{ 
+                                        scaleType: 'band', 
+                                        
+                                        data: chartData.snippet.map(entry => entry.name),
+                                        color: theme.palette.primary.main
+                                    }]}
                                     
-                                    data: chartData.snippet.map(entry => entry.name),
-                                    color: theme.palette.primary.main
-                                }]}
-                                
-                                series={[{ 
-                                    data: chartData.snippet.map(entry => entry.score), 
-                                    color: "#FBE7BF" 
-                                }]}
-                                width={450}
-                                height={300}
-                            />
+                                    series={[{ 
+                                        data: chartData.snippet.map(entry => entry.score), 
+                                        color: "#FBE7BF" 
+                                    }]}
+                                    height={300}
+                                />
+                            </div>
                             </CardContent>
                         </Card>
                     </Grid>
@@ -503,21 +508,22 @@ function Leaderboard() {
                             <Typography sx={{ color: "#5a2005" }} variant="h3" component="div">
                                 Trivia Challenge Leaderboard
                             </Typography>
-                            <BarChart
-                                xAxis={[{ 
-                                    scaleType: 'band', 
+                            <div style={{ width: "100%", height: "100%" }}>
+                                <BarChart
+                                    xAxis={[{ 
+                                        scaleType: 'band', 
+                                        
+                                        data: chartData.trivia.map(entry => entry.name),
+                                        color: theme.palette.primary.main
+                                    }]}
                                     
-                                    data: chartData.trivia.map(entry => entry.name),
-                                    color: theme.palette.primary.main
-                                }]}
-                                
-                                series={[{ 
-                                    data: chartData.trivia.map(entry => entry.score), 
-                                    color: "#FBE7BF" 
-                                }]}
-                                width={450}
-                                height={300}
-                            />
+                                    series={[{ 
+                                        data: chartData.trivia.map(entry => entry.score), 
+                                        color: "#FBE7BF" 
+                                    }]}
+                                    height={300}
+                                />
+                            </div>
                             </CardContent>
                         </Card>
                     </Grid>
@@ -537,21 +543,22 @@ function Leaderboard() {
                             <Typography sx={{ color: "#5a2005" }} variant="h3" component="div">
                                 Lyric Challenge Leaderboard
                             </Typography>
-                            <BarChart
-                                xAxis={[{ 
-                                    scaleType: 'band', 
+                            <div style={{ width: "100%", height: "100%" }}>
+                                <BarChart
+                                    xAxis={[{ 
+                                        scaleType: 'band', 
+                                        
+                                        data: chartData.lyric.map(entry => entry.name),
+                                        color: theme.palette.primary.main
+                                    }]}
                                     
-                                    data: chartData.lyric.map(entry => entry.name),
-                                    color: theme.palette.primary.main
-                                }]}
-                                
-                                series={[{ 
-                                    data: chartData.lyric.map(entry => entry.score), 
-                                    color: "#FBE7BF" 
-                                }]}
-                                width={450}
-                                height={300}
-                            />
+                                    series={[{ 
+                                        data: chartData.lyric.map(entry => entry.score), 
+                                        color: "#FBE7BF" 
+                                    }]}
+                                    height={300}
+                                />
+                            </div>
                             </CardContent>
                         </Card>
                     </Grid>
@@ -571,21 +578,22 @@ function Leaderboard() {
                             <Typography sx={{ color: "#5a2005" }} variant="h3" component="div">
                                 Memory Challenge Leaderboard
                             </Typography>
-                            <BarChart
-                                xAxis={[{ 
-                                    scaleType: 'band', 
+                            <div style={{ width: "100%", height: "100%" }}>
+                                <BarChart
+                                    xAxis={[{ 
+                                        scaleType: 'band', 
+                                        
+                                        data: chartData.memory.map(entry => entry.name),
+                                        color: theme.palette.primary.main
+                                    }]}
                                     
-                                    data: chartData.memory.map(entry => entry.name),
-                                    color: theme.palette.primary.main
-                                }]}
-                                
-                                series={[{ 
-                                    data: chartData.memory.map(entry => entry.score), 
-                                    color: "#FBE7BF" 
-                                }]}
-                                width={450}
-                                height={300}
-                            />
+                                    series={[{ 
+                                        data: chartData.memory.map(entry => entry.score), 
+                                        color: "#FBE7BF" 
+                                    }]}
+                                    height={300}
+                                />
+                            </div>
                             </CardContent>
                         </Card>
                     </Grid>
