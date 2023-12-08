@@ -363,11 +363,13 @@ function Profile() {
           </Grid>
   
         </Grid>
+
+        <br></br>
         
        
         {spotifyName === "" ? <p></p> : (
                     <Typography variant="p" style={{ textAlign: 'left' }}> 
-                      Hello, you have connected with {spotifyName} 
+                      You have connected with <b>{spotifyName}</b>!
                     </Typography>
                   )}
 

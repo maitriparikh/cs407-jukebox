@@ -17,9 +17,10 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import TextField from "@mui/material/TextField";
 import { useTheme } from '@mui/material/styles';
-import { collection, doc, onSnapshot, updateDoc, setDoc, getDoc, addDoc } from "firebase/firestore";
+import { collection, doc, onSnapshot, updateDoc, setDoc, getDoc, addDoc, arrayUnion } from "firebase/firestore";
 import { db } from "../../utils/firebase";
 import { UserContext } from "../../App";
+import { v4 as uuid } from "uuid";
 import Autocomplete from '@mui/material/Autocomplete';
 import BrushIcon from '@mui/icons-material/Brush';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -28,6 +29,9 @@ import IconButton from "@mui/material/IconButton";
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 import Timer from '../timeline_challenge/timer';
+
+import CorrectAnswerSound from "../../sounds/correct_answer.mp3";
+import WrongAnswerSound from "../../sounds/wrong_answer.mp3";
 
 import EraserIconLight from "../doodle_challenge/eraser_icon_light.png";
 import EraserIconDark from "../doodle_challenge/eraser_icon_dark.png";
@@ -185,51 +189,47 @@ function DoodleChallengeGame( {appearanceSelection} ) {
         }
     };
       
-      const clearCanvas = () => {
+    const clearCanvas = () => {
         if (context) {
             const canvas = canvasRef.current;
             const ctx = canvas.getContext("2d");
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
-      };
-      
-      const startNewPath = () => {
+    };
+    
+    const startNewPath = () => {
         if (context) {
             context.beginPath();
         }
-      };
-      
-      const drawComplete = () => {
+    };
+    
+    const drawComplete = () => {
         if (context) {
             context.beginPath();
         }
-      };
+    };
 
-      const inputRef = useRef(null);
+    const inputRef = useRef(null);
       
-      useEffect(() => {
+    useEffect(() => {
         if (!showSongSelection ) {
             const canvas = canvasRef.current;
             const ctx = canvas.getContext("2d");
             setContext(ctx);
         }
 
-      }, [showSongSelection, context]);
+    }, [showSongSelection, context]);
 
-
-
-      const AudioPlayer = ({ src }) => {
+    const AudioPlayer = ({ src }) => {
         return (
-          <audio controls style={{ width: '400px', borderRadius: '12px', marginTop: "1%", marginRight: "1%" }}>
+            <audio controls style={{ width: '400px', borderRadius: '12px', marginTop: "1%", marginRight: "1%" }}>
             <source src={src} type="audio/mpeg" />
             Your browser does not support the audio element.
-          </audio>
+            </audio>
         );
-      };
+    };
     
-    
-    
-      const cardClick = (card) => {
+    const cardClick = (card) => {
         setSelectedSong(card);
         console.log("clicked song", selectedSong)
         setShowSongSelection(false)
@@ -265,18 +265,55 @@ function DoodleChallengeGame( {appearanceSelection} ) {
         console.log(answer);
         if (answer === randomDoodle.selectedSong.songName) {
             console.log("CORRECT");
+            const audio = new Audio(CorrectAnswerSound);
+            audio.play();
             setCorrect(true)
             setAlertOpen(true)
+            sendGameScore(finalScore);
         }
         else {
             let tempFinalScore = finalScore - 100;
+            const audio = new Audio(WrongAnswerSound);
+            audio.play();
             setFinalScore(tempFinalScore);
             if (tries >= 2) {
                 setNoMoreTries(true)
             }
             setAlertOpen(true)
+            sendGameScore(tempFinalScore);
         }
-    }
+    };
+
+    const sendGameScore = async (score) => {
+        var hs = 0;
+        const docRef = doc(db, "users", user);
+        const docSnap = await getDoc(docRef);
+        hs = docSnap.data().doodleHighScore;
+  
+        if (typeof hs === 'undefined') {
+          console.log("doodle high score is undefined");
+          hs = 0;
+        }
+        const gameId = uuid();
+  
+        if (score > hs) {
+                
+            await updateDoc(docRef, {
+                doodleHighScore: score,
+                doodleGameScore: arrayUnion({
+                    gameId: gameId,
+                    score: score
+                })
+            }).then(() => console.log("Document updated with new high score"));
+        } else {
+            await updateDoc(docRef, {
+                doodleGameScore: arrayUnion({
+                    gameId: gameId,
+                    score: score
+                })
+            }).then(() => console.log("Document updated with no new high score"));
+        }
+    };
     
     return (
         <>

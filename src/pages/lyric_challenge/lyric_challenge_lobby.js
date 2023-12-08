@@ -43,22 +43,18 @@ function LyricChallengeLobby() {
     const navigate = useNavigate();
 
 
-    const getArtists = async (list) => {
+    const getArtists = (list) => {
         var total = [];
         console.log("songbank in getArtists is " + songArray);
         for (let i = 0; i < list.length; i++) {
-            var arr = [];
-            for (let j = 0; j < list[i].artists.length; j++) {
-                arr.push(list[i].artists[j].name);
-            }
-            total.push(arr);
+            total.push(list[i].artists[0].name);
         }
         console.log(total);
         setArtists(total);
         return total;
     };
   
-    const getSongs = async (list) => {
+    const getSongs = (list) => {
         var total = [];
         for (let i = 0; i < list.length; i++) {
             total.push(list[i].name);
@@ -91,46 +87,48 @@ function LyricChallengeLobby() {
         await fetchWebApi(`track.lyrics.get?track_id=${track}&apikey=650a3fdb8d7d1f523343720cf1b0e519`, 'GET')
         .then(async (res) => {
             console.log("inside res");
-            songLyricsArray.push(res.message.body.lyrics.lyrics_body);
-            /*
-            if (songLyricsArray.length === 0) {
-                console.log("inside fetLyrics")
-                var arr = new Array();
-                arr.push(res.message.body.lyrics.lyrics_body);
-                setSongLyricsArray(arr);
-                console.log(arr);
-                console.log(songLyricsArray);
+            if (typeof res.message.body.lyrics !== 'undefined') {
+                songLyricsArray.push(res.message.body.lyrics.lyrics_body);
             } else {
-                var arr = [...songLyricsArray];
-                arr.push(res.message.body.lyrics.lyrics_body);
-                setSongLyricsArray(arr);
-                console.log(arr);
-                console.log(songLyricsArray)
+                songLyricsArray.push("No song lyrics");
+                console.error("Song (trackid: " + track + ") did not have lyrics");
             }
-            */
-            return res;
+            
         })
     }
 
     const fetchTrackId = async (song, artist) => {
         await fetchWebApi(`track.search?q_artist=${artist}&q_track=${song}&page_size=1&page=1&s_track_rating=desc&apikey=650a3fdb8d7d1f523343720cf1b0e519`, 'GET')
         .then(async (res) => {
-            console.log(res.message.body.track_list[0].track.track_id);
-            if (res.message.body.track_list[0].track.track_id) {
-                const trackid = res.message.body.track_list[0].track.track_id;
-                await fetchLyrics(trackid);
+            //console.log(res.message.body.track_list[0].track.track_id);
+            //console.log(res);
+            if (typeof res.message.body.track_list !== 'undefined' && res.message.body.track_list.length > 0) {
+                if (res.message.body.track_list[0].track.track_id) {
+                    const trackid = res.message.body.track_list[0].track.track_id;
+                    await fetchLyrics(trackid);
+                } else {
+                    console.error("This song could not be found: " + song + " by " + artist);
+                }
             } else {
-                console.error("This song could not be found: " + song + " by " + artist);
+                console.error("There was not a track list for this song");
             }
-            
         })
+    }
+
+    const testLyrics = async () => {
+        await fetchTrackId("Super Shy", "NewJeans");
+        await fetchTrackId("war", "Hypnotic Brass Ensemble");
+        await fetchTrackId("baby", "justin bieber");
+        const song = 'Bagatelle No. 25 in a minor woo 59 "für elise"';
+        console.log(song);
+        await fetchTrackId(song, "Ludwig van Beethoven")
     }
 
     const getAllLyrics = async () => {
         const aArt = await getArtists(songArray);
-        await setArtists(aArt);
+        setArtists(aArt);
         const aSon = await getSongs(songArray);
-        await setSongs(aSon);
+        setSongs(aSon);
         console.log(artists);
         console.log(songs);
         for (let i = 0; i < songArray.length; i++) {

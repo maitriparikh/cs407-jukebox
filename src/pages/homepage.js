@@ -20,6 +20,19 @@ import { auth, db } from "../utils/firebase";
 import { collection, onSnapshot, getDoc, doc, updateDoc, setDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { useTheme } from '@mui/material/styles';
+
+import CasinoIcon from '@mui/icons-material/Casino';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+
+// GIFs for game cards
+import DefaultGif from "../gifs/giphy.gif";
+import DailyChallengeGif from "../gifs/daily_challenge.gif";
+import DoodleChallengeGif from "../gifs/doodle_challenge.gif";
+import TimelineChallengeGif from "../gifs/timeline_challenge.gif";
+import MemoryChallengeGif from "../gifs/memory_challenge.gif";
+import SongSnippetChallengeGif from "../gifs/songsnippet_challenge.gif";
+
+
 export var TopFiveArrExport = true;
 
 
@@ -167,7 +180,7 @@ function Homepage() {
             setSpotifyToken(doc.data().spotifyToken);
             setAltSource(doc.data().alternativeSource)
             if (spotifyToken != "") {
-              console.log("spotify token got in choose game ->", spotifyToken);
+              //console.log("spotify token got in choose game ->", spotifyToken);
               setSpotifyConnected(true);
               console.log("spotify token set to true", spotifyConnected);
   
@@ -185,7 +198,7 @@ function Homepage() {
             }
 
 
-            console.log("spotify token got ->", spotifyToken);
+            //console.log("spotify token got ->", spotifyToken);
           });
 
           
@@ -329,7 +342,7 @@ function Homepage() {
           }}
           onClick={() => chooseGame("Random")}
         >
-          Random 🔀
+          Random &nbsp; <CasinoIcon style={{ transform: 'rotate(-15deg)', display: 'inline-block' }} />
         </Button>
         <br></br>
         <br></br>
@@ -344,17 +357,23 @@ function Homepage() {
               color: theme.palette.primary.main,
               border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
-              height: "230px",
+              height: "100%",
               width: "100%",
             }}
             onClick={() => chooseGame("Daily Challenge")}
             >
               <CardContent>
-                <ButtonBase>
+                  <div>
                 <Typography variant="h3" component="div">
                   Daily Challenge
                 </Typography>
-                </ButtonBase>
+                <img
+                  style={{ marginTop: "5%", height: '50%', width: '50%' }}
+                  src={DailyChallengeGif}
+                  alt="Daily Challenge GIF"
+                  loop // make it loop
+                />
+                </div>
               </CardContent>
             </Card>
           </Grid>
@@ -365,16 +384,22 @@ function Homepage() {
               color: theme.palette.primary.main,
               border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
-              height: "230px",
+              height: "100%",
               width: "100%",
             }}
             onClick={() => chooseGame("Song Roulette")}>
               <CardContent>
-                <ButtonBase>
-                <Typography variant="h3" component="div">
-                  Song Roulette 👥
-                </Typography>
-                </ButtonBase>
+                  <div>
+                  <Typography variant="h3" component="div" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    Song Roulette <PeopleAltIcon style={{ marginLeft: '5px' }} />
+                  </Typography>
+                <img
+                  style={{ marginTop: "4%", height: '50%', width: '50%', borderRadius: "8px", boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.4)" }}
+                  src={DefaultGif}
+                  alt="Memory Challenge GIF"
+                  loop // make it loop
+                />
+                </div>
               </CardContent>
             </Card>
           </Grid>
@@ -385,16 +410,22 @@ function Homepage() {
               color: theme.palette.primary.main,
               border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
-              height: "230px",
+              height: "100%",
               width: "100%",
             }}
             onClick={() => chooseGame("Doodle Challenge")}>
               <CardContent>
-              <ButtonBase>
+                <div>
                 <Typography variant="h3" component="div">
                   Doodle Challenge
                 </Typography>
-              </ButtonBase>
+                <img
+                  style={{ marginTop: "4%", height: '100%', width: '90%', borderRadius: "8px", boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.4)" }}
+                  src={DoodleChallengeGif}
+                  alt="Doodle Challenge GIF"
+                  loop // make it loop
+                />
+                </div>
               </CardContent>
             </Card>
           </Grid>
@@ -405,16 +436,22 @@ function Homepage() {
               color: theme.palette.primary.main,
               border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
-              height: "230px",
+              height: "100%",
               width: "100%",
             }}
             onClick={() => chooseGame("Timeline Challenge")}>
               <CardContent>
-              <ButtonBase>
+                <div>
                 <Typography variant="h3" component="div">
                   Timeline Challenge
                 </Typography>
-              </ButtonBase>
+                <img
+                  style={{ marginTop: "4%", height: '100%', width: '90%', borderRadius: "8px", boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.4)" }}
+                  src={TimelineChallengeGif}
+                  alt="Timeline Challenge GIF"
+                  loop // make it loop
+                />
+                </div>
               </CardContent>
             </Card>
           </Grid>
@@ -427,16 +464,22 @@ function Homepage() {
               color: theme.palette.primary.main,
               border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
-              height: "230px",
+              height: "100%",
               width: "100%",
             }}
             onClick={() => chooseGame("Song Snippet")}>
               <CardContent>
-                <ButtonBase>
+                  <div>
                 <Typography variant="h3" component="div">
                   Song Snippet
                 </Typography>
-                </ButtonBase>
+                <img
+                  style={{ marginTop: "4%", height: '100%', width: '90%', borderRadius: "8px", boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.4)" }}
+                  src={SongSnippetChallengeGif}
+                  alt="Memory Challenge GIF"
+                  loop // make it loop
+                />
+                </div>
               </CardContent>
             </Card>
           </Grid>
@@ -447,16 +490,22 @@ function Homepage() {
               color: theme.palette.primary.main,
               border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
-              height: "230px",
+              height: "100%",
               width: "100%",
             }}
             onClick={() => chooseGame("Trivia Challenge")}>
               <CardContent>
-              <ButtonBase>
+              <div>
                 <Typography variant="h3" component="div">
                   Trivia Challenge
                 </Typography>
-              </ButtonBase>
+                <img
+                  style={{ marginTop: "4%", height: '50%', width: '50%', borderRadius: "8px", boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.4)" }}
+                  src={DefaultGif}
+                  alt="Memory Challenge GIF"
+                  loop // make it loop
+                />
+                </div>
               </CardContent>
             </Card>
           </Grid>
@@ -467,16 +516,22 @@ function Homepage() {
               color: theme.palette.primary.main,
               border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
-              height: "230px",
+              height: "100%",
               width: "100%",
             }}
             onClick={() => chooseGame("Lyric Challenge")}>
               <CardContent>
-              <ButtonBase>
+              <div>
                 <Typography variant="h3" component="div">
                   Lyric Challenge
                 </Typography>
-              </ButtonBase>
+                <img
+                  style={{ marginTop: "4%", height: '50%', width: '50%', borderRadius: "8px", boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.4)" }}
+                  src={DefaultGif}
+                  alt="Memory Challenge GIF"
+                  loop // make it loop
+                />
+                </div>
               </CardContent>
             </Card>
           </Grid>
@@ -487,16 +542,22 @@ function Homepage() {
               color: theme.palette.primary.main,
               border: `2px solid ${theme.palette.primary.main}`,
               borderRadius: "8px",
-              height: "230px",
+              height: "100%",
               width: "100%",
             }}
             onClick={() => chooseGame("Memory Challenge")}>
               <CardContent>
-              <ButtonBase>
+                <div>
                 <Typography variant="h3" component="div">
                   Memory Challenge
                 </Typography>
-              </ButtonBase>
+                <img
+                  style={{ marginTop: "4%", height: '100%', width: '90%', borderRadius: "8px", boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.4)" }}
+                  src={MemoryChallengeGif}
+                  alt="Memory Challenge GIF"
+                  loop // make it loop
+                />
+                </div>
               </CardContent>
             </Card>
           </Grid>

@@ -1,5 +1,5 @@
 import Button from "@mui/material/Button";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef  } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CircularProgress, Grid } from "@mui/material";
 import { Box, Stack } from "@mui/system";
@@ -18,11 +18,13 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { UserContext } from "../../App";
 
 import { db } from "../../utils/firebase";
-import { collection, onSnapshot, getDoc, doc, updateDoc, setDoc } from "firebase/firestore";
+import { collection, onSnapshot, getDoc, doc, updateDoc, setDoc, arrayUnion } from "firebase/firestore";
 import { useTheme } from '@mui/material/styles';
+import { v4 as uuid } from "uuid";
 import io from 'socket.io-client';
 
 const socket = io('http://localhost:3001');
+var count = 0;
 
 
 function SongRouletteGame() {
@@ -40,6 +42,8 @@ function SongRouletteGame() {
 
     const replayGame = () => {
       console.log("REPLAY GAME CLICKED");
+      deleteLobby();
+
       navigate("/songroulettelobbybrowser");
     };
     
@@ -59,6 +63,8 @@ function SongRouletteGame() {
     const song_bankGet = location.state.song_bank; // Get song_bank array from lobby page
     const[song_bank,setSongBank] = useState(song_bankGet);
     // song_bank = song_bankGet
+
+    const [answerSubmitted, setAnswerSubmitted] = useState(false);
 
     
 
@@ -98,6 +104,7 @@ function SongRouletteGame() {
 
     var tempppy = location.state.currentLobby
     const [currentLobby, setCurrentLobby] = useState(lobbyGet);
+    const socketRef = useRef(null);
 
 
     
@@ -159,6 +166,7 @@ function SongRouletteGame() {
         // check user's selection
         checkAnswers(selected);
         setAlertOpen(true)
+        setAnswerSubmitted(true);
     };
 
     
@@ -210,6 +218,15 @@ function SongRouletteGame() {
                 let gameWinner = sortedPeople[0].name + " has won this game of Song Roulette! 🎉"
                 setWinner(gameWinner)
             }
+
+            //send game score
+            //need to find the correct score for the user
+            //
+            sortedPeople.forEach(obj => {
+              if (obj.name === userNameTemp2) {
+                sendGameScore(obj.points);
+              }
+            })
             
         } 
         else if (currentQuestion < song_bank.length - 1) { // Change question to next question
@@ -228,6 +245,21 @@ function SongRouletteGame() {
             ///
         }
     }
+
+
+     const deleteLobby = () => {
+     // console.log("testing delete")
+      //console.log(currentLobby.ownerID)
+      //console.log(lobbies)
+      getCurrentLobby();
+
+      if (currentLobby.length!= 0) {
+        socket.emit('delete-lobby', currentLobby.ownerID);
+        navigate("/songroulettelobbybrowser");
+
+
+      }
+    };
 
 
   const getSpotifyToken = async () => {
@@ -371,41 +403,44 @@ socket.on('update-the-points', (updatedPerson , index) => {
 
   useEffect(() => {
 
-    socket.on('update-ready-next-question', (test, theIndex) => {
+    socketRef.current = io('http://localhost:3001');
+
+    socketRef.current.on('update-ready-next-question', (test, theIndex) => {
       
       lobbyTemp.readyNextQuestion[theIndex] = test;
       console.log(lobbyTemp)
       console.log("update ready state");
       if ( lobbyTemp.readyNextQuestion[0] == true && lobbyTemp.readyNextQuestion[1] == true && lobbyTemp.readyNextQuestion[2] == true && lobbyGet.readyNextQuestion[3] ==true) {
+        const nextQuestion = currentQuestion + 1;
+        //setCurrentQuestion(nextQuestion);
+        console.log("current question:" + currentQuestion);
+        console.log("next question   :" + nextQuestion);
+        console.log("rounds          :" + rounds);
 
-
-
-      const nextQuestion = currentQuestion + 1;
-      //setCurrentQuestion(nextQuestion);
-      console.log("current question:" + currentQuestion);
-      console.log("next question   :" + nextQuestion);
-
-      
-      if (currentQuestion !== rounds - 1)  {
-        setCurrentQuestion(nextQuestion);
-      }
-      
-              
-
+        
+        if (currentQuestion !== rounds - 1)  {
+          setCurrentQuestion(nextQuestion);
+        }
+        
         setDisableSubmitButton(false);
         
         if (currentLobby.ownerID == user) {
-           socket.emit('reset-question-ready', { lobbyCode: currentLobby.code, meIndex: meIndex});
+          socketRef.current.emit('reset-question-ready', { lobbyCode: currentLobby.code, meIndex: meIndex});
         }
 
 
       }
     });
+
+
+     return () => {
+      socketRef.current.off('update-ready-next-question');
+    };
   }, [currentQuestion]); 
 
     useEffect(() => {
 
-    socket.on('set-ready-to-false', () => {
+    socketRef.current.on('set-ready-to-false', () => {
 
       //console.log(lobbyTemp)
       console.log("reset");
@@ -414,10 +449,32 @@ socket.on('update-the-points', (updatedPerson , index) => {
       lobbyTemp.readyNextQuestion[1] = false;
       lobbyTemp.readyNextQuestion[2] = false;
       lobbyTemp.readyNextQuestion[3] = false;
+      setAnswerSubmitted(false);
 
         
       if (currentQuestion == rounds-1)  {
         setShowGame(!showGame);
+
+         const sortedPeople = [...people];
+            sortedPeople.sort((a, b) => b.points - a.points);
+
+            let winners = "";
+            let topScore = sortedPeople[0].points;
+            for (let i = 1; i < sortedPeople.length; i++) {
+                if (sortedPeople[i].points == topScore) { // tie found
+                    winners += sortedPeople[i].name + ", "
+                }    
+            }
+
+            if (winners != "") {
+                winners += "and " + sortedPeople[0].name + " have won this game of Song Roulette! 🎉"
+                setWinner(winners)
+            }
+            else {
+                let gameWinner = sortedPeople[0].name + " has won this game of Song Roulette! 🎉"
+                setWinner(gameWinner)
+            }
+            
         
       }
 
@@ -425,9 +482,11 @@ socket.on('update-the-points', (updatedPerson , index) => {
         console.log("curr")
         console.log(currentQuestion)
       
-        return(socket.off('set-ready-to-false'))
+        //return(socket.off('set-ready-to-false'))
 
     });
+
+    
   }, [currentQuestion]); 
  
  
@@ -447,6 +506,13 @@ socket.on('update-the-points', (updatedPerson , index) => {
      useEffect(() => {
         getSpotifyToken();
     }, [spotifyToken]);
+
+
+      socket.on('lobby-deleted', (ownerID) => {
+        if(currentLobby && currentLobby.ownerID !== ownerID){
+          navigate("/songroulettelobbybrowser" , );
+        }
+      });
    
     
 
@@ -564,7 +630,39 @@ socket.on('update-the-points', (updatedPerson , index) => {
             ))}
     */
 
-    
+    const sendGameScore = async (score) => {
+      var hs = 0;
+      const docRef = doc(db, "users", user);
+      const docSnap = await getDoc(docRef);
+      hs = docSnap.data().rouletteHighScore;
+
+      if (typeof hs === 'undefined') {
+        console.log("roulette high score is undefined");
+        hs = 0;
+      }
+      const gameId = uuid();
+
+      console.log("hs is " + hs + " and overall pts is " + score);
+      if (score > hs) {  
+        await updateDoc(docRef, {
+          rouletteHighScore: score,
+          rouletteGameScore: arrayUnion({
+              gameId: gameId,
+              rounds: rounds,
+              score: score
+          })
+        }).then(() => console.log("Document updated with new high score"));
+      } else {
+          await updateDoc(docRef, {
+            rouletteGameScore: arrayUnion({
+                  gameId: gameId,
+                  rounds: rounds,
+                  score: score
+              })
+          }).then(() => console.log("Document updated with no new high score"));
+      }
+
+    }
     
     return (
     <div>
@@ -627,6 +725,8 @@ socket.on('update-the-points', (updatedPerson , index) => {
                 </Grid>
             </CardContent>
         </Card>
+        
+        
         <Button
           variant="contained"
           style={{
@@ -643,6 +743,12 @@ socket.on('update-the-points', (updatedPerson , index) => {
         >
           Submit
         </Button>
+
+        {answerSubmitted && (
+        <Typography variant="h4" style={{ textAlign: "center", fontWeight: "bold", fontSize: "24px" }}>
+        Answer submitted, please wait for each other player to submit their answers!
+      </Typography>
+        )}
 
         <Dialog open={alertOpen} onClose={handleNextQuestion} PaperProps={{ style: { backgroundColor: theme.palette.background.default } }}>
         <DialogTitle>

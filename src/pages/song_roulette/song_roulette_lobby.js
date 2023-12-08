@@ -729,13 +729,23 @@ function SongRouletteLobby() {
         </Button>
         <div> {/* Button to delete lobby */}
         {/* Button to delete lobby */}
-        <button onClick={() => deleteLobby()}
+        <button 
+        variant="contained"
+         style={{
+            width: 230,
+            color: theme.palette.primary.main,
+            backgroundColor: theme.palette.secondary.main,
+            textTransform: "none",
+            fontSize: 15,
+            fontWeight: "bold",
+            margin: "3%"
+          }}
+        
+        onClick={() => deleteLobby()}
          disabled={isButtonDisabledOwner}
-         >Delete Lobby</button>
+         >Ready / Delete Lobby</button>
         {/* Button to leave lobby */}
-        <button onClick={() => deleteLobby()}
-        disabled={true}
-        >Leave Lobby</button>
+
         </div>
         <ul>
           { /*lobbyUsers.map((player, index) => (
