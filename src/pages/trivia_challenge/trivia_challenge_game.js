@@ -226,6 +226,10 @@ function TriviaChallengeGame() {
         hs = docSnap.data().triviaHighScore;
         const gameId = uuid();
 
+        if (typeof hs === 'undefined') {
+            hs = 0;
+        }
+        
         if (totalPoints > hs) {
                 
             await updateDoc(docRef, {
