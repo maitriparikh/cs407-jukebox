@@ -47,7 +47,7 @@ function LyricChallengeLobby() {
     const getArtists = (list) => {
         var total = [];
         console.log("songbank in getArtists is " + songArray);
-        for (let i = 0; i < list.length; i++) {
+        for (let i = 0; i < list.length / 2; i++) {
             total.push(list[i].artists[0].name);
         }
         console.log(total);
@@ -57,7 +57,7 @@ function LyricChallengeLobby() {
   
     const getSongs = (list) => {
         var total = [];
-        for (let i = 0; i < list.length; i++) {
+        for (let i = 0; i < list.length / 2; i++) {
             total.push(list[i].name);
         }
         console.log(total);
@@ -130,14 +130,14 @@ function LyricChallengeLobby() {
         await fetchTrackId(song, "Ludwig van Beethoven")
     }
 
-    const getAllLyrics = async () => {
-        const aArt = await getArtists(songArray);
+    const getAllLyrics = async (array) => {
+        const aArt = await getArtists(array);
         setArtists(aArt);
-        const aSon = await getSongs(songArray);
+        const aSon = await getSongs(array);
         setSongs(aSon);
         console.log(artists);
         console.log(songs);
-        for (let i = 0; i < songArray.length; i++) {
+        for (let i = 0; i < array.length / 2; i++) {
             await fetchTrackId(aSon[i], aArt[i]);
         }
     };
@@ -166,9 +166,11 @@ function LyricChallengeLobby() {
                 console.log("start");
                 await onSnapshot(doc(db, "users", user.uid), async (doc) => {
                     setSongArray(doc.data().personalSongBank);
+                    getAllLyrics(doc.data().personalSongBank);
                     //console.log(doc.data().personalSongBank);
                     console.log(songArray);
                 });
+                
             }
 
         })
@@ -223,21 +225,7 @@ function LyricChallengeLobby() {
             </Grid>
 
             <Grid item xs={12}>
-                <Button
-                variant="contained"
-                style={{
-                    width: 230,
-                    color: theme.palette.primary.main,
-                    backgroundColor: theme.palette.secondary.main,
-                    textTransform: "none",
-                    fontSize: 15,
-                    fontWeight: "bold",
-                    margin: "3%"
-                }}
-                onClick={getAllLyrics}
-                >
-                Ready Game!
-                </Button>
+                
                 <Button
                 variant="contained"
                 style={{
