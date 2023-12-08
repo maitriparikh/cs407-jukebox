@@ -529,7 +529,7 @@ function Homepage() {
                   Lyric Challenge
                 </Typography>
                 <img
-                  style={{ marginTop: "4%", height: '100%', width: '95%', borderRadius: "8px", boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.4)" }}
+                  style={{ marginTop: "4%", height: '100%', width: '90%', borderRadius: "8px", boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.4)" }}
                   src={LyricChallengeGif}
                   alt="Memory Challenge GIF"
                   loop // make it loop

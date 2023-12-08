@@ -232,14 +232,13 @@ function LyricChallengeGame() {
             <Typography variant="h3" style={{ textAlign: "center"}}>
             Round {currentQuestion + 1} of {rounds}
             </Typography>
-            <br></br>
             
             <br></br>
             <Card elevation={3} style={{ position: 'relative', border: `2px solid ${theme.palette.primary.main}`, borderRadius: "8px" }}>
                 {/* Cancel Icon */}
                 <CancelIcon
                     style={{
-                    color: "theme.palette.secondary.main",
+                    color: theme.palette.primary.main,
                     position: 'absolute',
                     top: '15px',
                     right: '15px',
