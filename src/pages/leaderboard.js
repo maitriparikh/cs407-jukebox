@@ -24,8 +24,13 @@ import { UserContext } from "../App";
 import { onAuthStateChanged } from "firebase/auth";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import CircularProgress from "@mui/material/CircularProgress";
+
+
+import { BarChart } from '@mui/x-charts/BarChart';
 
 import { useTheme } from '@mui/material/styles';
+import SongRouletteGame from "./song_roulette/song_roulette_game";
 
 
 function Leaderboard() {
@@ -47,6 +52,10 @@ function Leaderboard() {
     const [totalRounds, setTotalRounds] = useState(0);
     const [totalPoints, setTotalPoints] = useState(0);
     const [avgPtsPerRound, setAvgPtsPerRound] = useState(0);
+
+    const [dataLoaded, setDataLoaded] = useState(false);
+
+    const [loading, setLoading] = useState(true);
 
     const averagePointsPerRound = (totalPts, totalRound) => {
         return (totalPts / totalRound);
@@ -131,7 +140,7 @@ function Leaderboard() {
         const slicedArrayTrivia = triviaHSArray.slice(0, topNum);
         const slicedArraySnippet = snippetHSArray.slice(0, topNum);
         const slicedArrayLyric = lyricHSArray.slice(0, topNum);
-        const slicedArrayRoulette = rouletteHSArray.slice(0, topNum);
+        const slicedArrayRoulette = rouletteHSArray.slice(0, 10);
         const slicedArrayMemory = memoryHSArray.slice(0, topNum);
         const slicedArrayTimeline = timelineHSArray.slice(0, topNum);
         const slicedArrayDoodle = doodleHSArray.slice(0, topNum);
@@ -185,13 +194,26 @@ function Leaderboard() {
                     //triviaChallengeStats(doc.data().triviaGameScore);
                 });
                 await getHighScores();
+                setDataLoaded(true); // make sure data loaded before showing leaderboard graphs
+                setLoading(false); // for loading icon to display
             }
         })        
     }, [])
 
+    const chartData = {
+        songroulette: rouletteGamesArray.map((entry) => ({ name: entry.username, score: entry.score })),
+        doodle: doodleGamesArray.map((entry) => ({ name: entry.username, score: entry.score })),
+        timeline: timelineGamesArray.map((entry) => ({ name: entry.username, score: entry.score })),
+        snippet: snippetGamesArray.map((entry) => ({ name: entry.username, score: entry.score })),
+        trivia: triviaGamesArray.map((entry) => ({ name: entry.username, score: entry.score })),
+        lyric: lyricGamesArray.map((entry) => ({ name: entry.username, score: entry.score })),
+        memory: memoryGamesArray.map((entry) => ({ name: entry.username, score: entry.score }))
+    };
+
     return(
         
-        <div>
+        <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "7%", marginRight: "7%" }}>
+            {/* 
             <div>
                 <h1>Music Game Leaderboards</h1>
                 <div>
@@ -272,15 +294,314 @@ function Leaderboard() {
                     }
                 </div>
             </div>
-            <br></br>
-            <div>
-                <h1>Overall Playing Statisitics</h1>
-                <div>
-                    <h3>Total Rounds: {totalRounds} </h3>
-                    <h3>Total Points: {totalPoints} </h3>
-                    <h3>Average Points Per Round: {avgPtsPerRound}</h3>
-                </div>
+            */}
+
+        <Typography variant="h2" style={{ textAlign: "left" }}>
+            Leaderboard 
+        </Typography>
+
+        <br></br>
+
+        {loading ? ( // Show loading icon
+            <div style={{ height: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <CircularProgress />
             </div>
+        ) : (
+            <div>
+            {dataLoaded && (       
+            <div>
+                {/* SUMMARY LEADERBOARD */}
+                {/*}
+                <BarChart
+                    xAxis={[{ scaleType: 'band', data: ["Lyric Challenge", "Trivia Challenge"] }]}
+                    series={[
+                        { data: chartData.lyric.map(entry => entry.score) },
+                        { data: chartData.trivia.map(entry => entry.score) },
+                    ]}
+                    width={500}
+                    height={300}
+                    />
+                */}
+
+                
+
+                <Grid container spacing={2}>
+
+                    {/* PERSONAL STATISTICS */}
+                    <Grid item xs={6} md={4}>
+                    <Card
+                        elevation={3} sx={{
+                            backgroundColor: "white",
+                            color: theme.palette.primary.main,
+                            border: `2px solid ${theme.palette.primary.main}`,
+                            borderRadius: "8px",
+                            height: "100%",
+                            width: "100%",
+                        }}>
+                            <CardContent>
+                            <div>
+                                <Typography sx={{ color: "#5a2005", marginBottom: "15%" }} variant="h3"> My Playing Statistics </Typography>
+                                <Typography sx={{ color: "#5a2005" }} variant="p">Total Rounds Played: {totalRounds} </Typography>
+                                <br></br>
+                                <Typography sx={{ color: "#5a2005" }} variant="p">Total Points Earned: {totalPoints} </Typography>
+                                <br></br>
+                                <Typography sx={{ color: "#5a2005" }} variant="p">Avg. Points Per Round: {avgPtsPerRound}</Typography>
+                                <br></br>
+                            </div>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+
+                    {/* SONG ROULETTE CHALLENGE LEADERBOARD */}
+                    <Grid item xs={16} md={8}>
+                        <Card
+                        elevation={3} sx={{
+                            backgroundColor: "white",
+                            color: theme.palette.primary.main,
+                            border: `2px solid ${theme.palette.primary.main}`,
+                            borderRadius: "8px",
+                            height: "100%",
+                            width: "100%",
+                        }}>
+                            <CardContent>
+                            <Typography sx={{ color: "#5a2005" }} variant="h3" component="div">
+                                Song Roulette Leaderboard
+                            </Typography>
+                            <BarChart
+                                xAxis={[{ 
+                                    scaleType: 'band', 
+                                    
+                                    data: chartData.songroulette.map(entry => entry.name),
+                                    color: theme.palette.primary.main
+                                }]}
+                                
+                                series={[{ 
+                                    data: chartData.songroulette.map(entry => entry.score), 
+                                    color: "#FBE7BF" 
+                                }]}
+                                width={950}
+                                height={200}
+                            />
+                            </CardContent>
+                        </Card>
+                    </Grid>
+
+                    {/* DOODLE CHALLENGE LEADERBOARD */}
+                    <Grid item xs={7} md={4}>
+                        <Card
+                        elevation={3} sx={{
+                            backgroundColor: "white",
+                            color: theme.palette.primary.main,
+                            border: `2px solid ${theme.palette.primary.main}`,
+                            borderRadius: "8px",
+                            height: "100%",
+                            width: "100%",
+                        }}>
+                            <CardContent>
+                            <Typography sx={{ color: "#5a2005" }} variant="h3" component="div">
+                                Doodle Challenge Leaderboard
+                            </Typography>
+                            <BarChart
+                                xAxis={[{ 
+                                    scaleType: 'band', 
+                                    
+                                    data: chartData.doodle.map(entry => entry.name),
+                                    color: theme.palette.primary.main
+                                }]}
+                                
+                                series={[{ 
+                                    data: chartData.doodle.map(entry => entry.score), 
+                                    color: "#FBE7BF" 
+                                }]}
+                                width={450}
+                                height={300}
+                            />
+                            </CardContent>
+                        </Card>
+                    </Grid>
+
+                    {/* TIMELINE CHALLENGE LEADERBOARD */}
+                    <Grid item xs={7} md={4}>
+                        <Card
+                        elevation={3} sx={{
+                            backgroundColor: "white",
+                            color: theme.palette.primary.main,
+                            border: `2px solid ${theme.palette.primary.main}`,
+                            borderRadius: "8px",
+                            height: "100%",
+                            width: "100%",
+                        }}>
+                            <CardContent>
+                            <Typography sx={{ color: "#5a2005" }} variant="h3" component="div">
+                                Timeline Challenge Leaderboard
+                            </Typography>
+                            <BarChart
+                                xAxis={[{ 
+                                    scaleType: 'band', 
+                                    
+                                    data: chartData.timeline.map(entry => entry.name),
+                                    color: theme.palette.primary.main
+                                }]}
+                                
+                                series={[{ 
+                                    data: chartData.timeline.map(entry => entry.score), 
+                                    color: "#FBE7BF" 
+                                }]}
+                                width={450}
+                                height={300}
+                            />
+                            </CardContent>
+                        </Card>
+                    </Grid>
+
+                    {/* SNIPPET CHALLENGE LEADERBOARD */}
+                    <Grid item xs={7} md={4}>
+                        <Card
+                        elevation={3} sx={{
+                            backgroundColor: "white",
+                            color: theme.palette.primary.main,
+                            border: `2px solid ${theme.palette.primary.main}`,
+                            borderRadius: "8px",
+                            height: "100%",
+                            width: "100%",
+                        }}>
+                            <CardContent>
+                            <Typography sx={{ color: "#5a2005" }} variant="h3" component="div">
+                                Song Snippet Leaderboard
+                            </Typography>
+                            <BarChart
+                                xAxis={[{ 
+                                    scaleType: 'band', 
+                                    
+                                    data: chartData.snippet.map(entry => entry.name),
+                                    color: theme.palette.primary.main
+                                }]}
+                                
+                                series={[{ 
+                                    data: chartData.snippet.map(entry => entry.score), 
+                                    color: "#FBE7BF" 
+                                }]}
+                                width={450}
+                                height={300}
+                            />
+                            </CardContent>
+                        </Card>
+                    </Grid>
+
+                    {/* TRIVIA CHALLENGE LEADERBOARD */}
+                    <Grid item xs={7} md={4}>
+                        <Card
+                        elevation={3} sx={{
+                            backgroundColor: "white",
+                            color: theme.palette.primary.main,
+                            border: `2px solid ${theme.palette.primary.main}`,
+                            borderRadius: "8px",
+                            height: "100%",
+                            width: "100%",
+                        }}>
+                            <CardContent>
+                            <Typography sx={{ color: "#5a2005" }} variant="h3" component="div">
+                                Trivia Challenge Leaderboard
+                            </Typography>
+                            <BarChart
+                                xAxis={[{ 
+                                    scaleType: 'band', 
+                                    
+                                    data: chartData.trivia.map(entry => entry.name),
+                                    color: theme.palette.primary.main
+                                }]}
+                                
+                                series={[{ 
+                                    data: chartData.trivia.map(entry => entry.score), 
+                                    color: "#FBE7BF" 
+                                }]}
+                                width={450}
+                                height={300}
+                            />
+                            </CardContent>
+                        </Card>
+                    </Grid>
+
+                    {/* LYRIC CHALLENGE LEADERBOARD */}
+                    <Grid item xs={7} md={4}>
+                        <Card
+                        elevation={3} sx={{
+                            backgroundColor: "white",
+                            color: theme.palette.primary.main,
+                            border: `2px solid ${theme.palette.primary.main}`,
+                            borderRadius: "8px",
+                            height: "100%",
+                            width: "100%",
+                        }}>
+                            <CardContent>
+                            <Typography sx={{ color: "#5a2005" }} variant="h3" component="div">
+                                Lyric Challenge Leaderboard
+                            </Typography>
+                            <BarChart
+                                xAxis={[{ 
+                                    scaleType: 'band', 
+                                    
+                                    data: chartData.lyric.map(entry => entry.name),
+                                    color: theme.palette.primary.main
+                                }]}
+                                
+                                series={[{ 
+                                    data: chartData.lyric.map(entry => entry.score), 
+                                    color: "#FBE7BF" 
+                                }]}
+                                width={450}
+                                height={300}
+                            />
+                            </CardContent>
+                        </Card>
+                    </Grid>
+
+                    {/* MEMORY CHALLENGE LEADERBOARD */}
+                    <Grid item xs={7} md={4}>
+                        <Card
+                        elevation={3} sx={{
+                            backgroundColor: "white",
+                            color: theme.palette.primary.main,
+                            border: `2px solid ${theme.palette.primary.main}`,
+                            borderRadius: "8px",
+                            height: "100%",
+                            width: "100%",
+                        }}>
+                            <CardContent>
+                            <Typography sx={{ color: "#5a2005" }} variant="h3" component="div">
+                                Memory Challenge Leaderboard
+                            </Typography>
+                            <BarChart
+                                xAxis={[{ 
+                                    scaleType: 'band', 
+                                    
+                                    data: chartData.memory.map(entry => entry.name),
+                                    color: theme.palette.primary.main
+                                }]}
+                                
+                                series={[{ 
+                                    data: chartData.memory.map(entry => entry.score), 
+                                    color: "#FBE7BF" 
+                                }]}
+                                width={450}
+                                height={300}
+                            />
+                            </CardContent>
+                        </Card>
+                    </Grid>
+
+                </Grid>
+                <br></br>
+                <br></br>
+                <br></br>
+                <br></br>
+                <br></br>
+                <br></br>
+            </div>
+            )}
+            </div>
+        )}
+
         </div>
     );
 }
