@@ -159,16 +159,18 @@ function LyricChallengeLobby() {
 
     
     useEffect(()=>{
-        
-        
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 console.log("start");
                 await onSnapshot(doc(db, "users", user.uid), async (doc) => {
-                    setSongArray(doc.data().personalSongBank);
-                    getAllLyrics(doc.data().personalSongBank);
                     //console.log(doc.data().personalSongBank);
-                    console.log(songArray);
+                    if (doc.data().contentFilter === "explicit") {
+                        setSongArray(doc.data().personalSongBank);
+                        getAllLyrics(doc.data().personalSongBank);
+                      } else {
+                        setSongArray(doc.data().personalSongBankClean);
+                        getAllLyrics(doc.data().personalSongBankClean);
+                    }
                 });
                 
             }
