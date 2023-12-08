@@ -146,6 +146,11 @@ function Homepage() {
           merge: true
         }).then(() => {
           console.log("Document updated")
+          //TopFiveArrExport = finalPlaylist;
+          //setTopFiveArr(finalPlaylist);
+          //console.log(finalPlaylist)
+          //console.log("testing final playlist")
+
         }).catch((error) => {
           console.log("There was an error updating the doc with spotify token");
         });
@@ -182,6 +187,12 @@ function Homepage() {
               //try to get top 5 songs
               
               //const addTopFive = await displayTop();
+
+              
+                 
+
+                  TopFiveArrExport= (doc.data().personalSongBank);
+              
             } else {
               setSpotifyConnected(false);
             }
