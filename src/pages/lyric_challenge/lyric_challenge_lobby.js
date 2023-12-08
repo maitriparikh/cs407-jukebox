@@ -26,6 +26,7 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { UserContext } from "../../App";
 
 import StartGameSound from "../../sounds/start_game.mp3";
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 
 
 function LyricChallengeLobby() {
@@ -40,6 +41,11 @@ function LyricChallengeLobby() {
     const [track, setTrack] = useState("");
     const [songs, setSongs] = useState([]);
     const [artists, setArtists] = useState([]);
+
+    const [fSongs, setFSongs] = useState([]);
+    const [fArtists, setFArtists] = useState([]);
+
+    const [ready, setReady] = useState(false);
 
     const navigate = useNavigate();
 
@@ -83,21 +89,26 @@ function LyricChallengeLobby() {
         
       }
 
-    const fetchLyrics = async (track) => {
+    const fetchLyrics = async (track, song, artist) => {
         console.log("inside fetch with " + track);
         await fetchWebApi(`track.lyrics.get?track_id=${track}&apikey=650a3fdb8d7d1f523343720cf1b0e519`, 'GET')
         .then(async (res) => {
             console.log("inside res");
-            if (typeof res.message.body.lyrics !== 'undefined') {
-                let sLyrics = res.message.body.lyrics.lyrics_body.replace(copyRight, "");
-                let msLyrics = sLyrics.replace("\n...\n\n", "");
-                const lineArray = msLyrics.split("\n");
-                console.log(lineArray);
-                songLyricsArray.push(lineArray);
-            } else {
-                songLyricsArray.push("No song lyrics");
-                console.error("Song (trackid: " + track + ") did not have lyrics");
+            if (res !== null) {
+                if (typeof res.message.body.lyrics !== 'undefined') {
+                    let sLyrics = res.message.body.lyrics.lyrics_body.replace(copyRight, "");
+                    let msLyrics = sLyrics.replace("\n...\n\n", "");
+                    const lineArray = msLyrics.split("\n");
+                    console.log(lineArray);
+                    songLyricsArray.push(lineArray);
+                    fSongs.push(song);
+                    fArtists.push(artist);
+                } else {
+                    songLyricsArray.push("No song lyrics");
+                    console.error("Song (trackid: " + track + ") did not have lyrics");
+                }
             }
+            
             
         })
     }
@@ -110,14 +121,17 @@ function LyricChallengeLobby() {
             if (typeof res.message.body.track_list !== 'undefined' && res.message.body.track_list.length > 0) {
                 if (res.message.body.track_list[0].track.track_id) {
                     const trackid = res.message.body.track_list[0].track.track_id;
-                    await fetchLyrics(trackid);
+                    await fetchLyrics(trackid, song, artist);
                 } else {
                     console.error("This song could not be found: " + song + " by " + artist);
                 }
             } else {
-                songLyricsArray.push("No song lyrics");
+                //songLyricsArray.push("No song lyrics");
                 console.error("There was not a track list for this song");
             }
+        }).catch(error => {
+            console.log("there was an error");
+            //songLyricsArray.push("No song lyrics");
         })
     }
 
@@ -137,9 +151,13 @@ function LyricChallengeLobby() {
         setSongs(aSon);
         console.log(artists);
         console.log(songs);
-        for (let i = 0; i < array.length / 2; i++) {
+        for (let i = 0; i < 10; i++) {
             await fetchTrackId(aSon[i], aArt[i]);
         }
+        while( fSongs.length < 9) {
+            //setReady(false);
+        }
+        setReady(true);
     };
 
     const startgame_click = async () => {
@@ -150,9 +168,11 @@ function LyricChallengeLobby() {
           state: {
             rounds: numOfRounds,
             songbank: songArray,
-            artists: artists,
-            songs: songs,
-            lyrics: songLyricsArray
+            artists: fArtists,
+            songs: fSongs,
+            lyrics: songLyricsArray,
+            tartists: artists,
+            tsongs: songs
           },
         });
     };
@@ -182,7 +202,7 @@ function LyricChallengeLobby() {
     
 
     return (
-      <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
+        <div style={{ marginTop: "2%", marginBottom: "2%", marginLeft: "10%", marginRight: "10%" }}>
 
         <Typography variant="h2" style={{ textAlign: "center" }}>
             Lyric Challenge
@@ -198,6 +218,35 @@ function LyricChallengeLobby() {
         style={{ marginTop: '20px' }}
         >
 
+            
+
+            </Grid>
+
+        <Card 
+            style={{ 
+            height: "100%", 
+            border: `3px solid ${theme.palette.primary.main}`, 
+            borderRadius: "8px",
+            textTransform: "none",
+            fontWeight: "bold",
+            width: "85%", 
+            margin: "0 auto", 
+            backgroundColor: theme.palette.background.default
+            }}
+        >
+
+        <CardContent style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", paddingBottom: "50px", paddingLeft: "100px", paddingRight: "100px" }}>
+            <br></br>
+            <Grid item xs={12} style={{ marginBottom: "25px", marginTop: "40px" }}>
+                {/* Daily challenge game instructions - update as needed */}
+                <Typography variant="h4" style={{ textAlign: "center", marginBottom: "16px" }}>
+                    Welcome to the Lyric Challenge! Your task during each round will be to 
+                    guess a song based on the available. First, choose the number of rounds you wish to play. 
+                    Then, press start game.
+                </Typography>
+            </Grid>
+
+            <br></br>
             <Grid item xs={12}>
             {/* Number of Rounds */}
             <FormControl>
@@ -226,9 +275,16 @@ function LyricChallengeLobby() {
             </FormControl>
             </Grid>
 
-            <Grid item xs={12}>
-                
-                <Button
+            </CardContent>
+            </Card>
+
+            
+
+            <br></br>
+
+            {ready ? (<div>
+              <label htmlFor="profile-picture-delete">
+              <Button
                 variant="contained"
                 style={{
                     width: 230,
@@ -237,14 +293,38 @@ function LyricChallengeLobby() {
                     textTransform: "none",
                     fontSize: 15,
                     fontWeight: "bold",
-                    margin: "3%"
+                    margin: "auto"
                 }}
                 onClick={startgame_click}
                 >
-                Start Game!
-                </Button>
-            </Grid>
-            </Grid>
+                <RemoveCircleOutlineIcon/> &nbsp; Start Game
+              </Button>
+              </label>
+            </div>) : 
+            (
+              <div>
+              <label htmlFor="profile-picture-delete">
+              <Button disabled
+                variant="contained"
+                style={{
+                    width: 230,
+                    color: "gray",
+                    backgroundColor: theme.palette.secondary.main,
+                    textTransform: "none",
+                    fontSize: 15,
+                    fontWeight: "bold",
+                    margin: "auto"
+                }}
+                
+                >
+                <RemoveCircleOutlineIcon/> &nbsp; Loading Lyric Data
+              </Button>
+              </label>
+            </div>
+            )
+            }
+
+            
    
         </div>
       );

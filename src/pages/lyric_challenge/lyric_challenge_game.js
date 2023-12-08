@@ -38,6 +38,9 @@ function LyricChallengeGame() {
     const songs = location.state.songs;
     const lyrics = location.state.lyrics;
 
+    const tsongs = location.state.tsongs;
+    const tartists = location.state.tartists;
+
     const [currentQuestion, setCurrentQuestion] = useState(0); // keeps track of question number
     const [showGame, setShowGame] = useState(true); // Determines when quiz ends
     const [selected, setSelected] = useState(""); // Answer the user has selected
@@ -55,9 +58,9 @@ function LyricChallengeGame() {
     //default is 0
     //will be randomized for each question
     const length = songbank.length;
-    const ans = Math.floor(Math.random() * 10);
+    const ans = Math.floor(Math.random() * songs.length);
     console.log("Answer index is " + ans);
-    const [answerIndex, setAnswerIndex] = useState(Math.floor(Math.random() * 10));
+    const [answerIndex, setAnswerIndex] = useState(ans);
 
     const question = "Can you guess the song based on these lyrics?";
 
@@ -66,7 +69,7 @@ function LyricChallengeGame() {
         //make array of song names as possible answers
         arr.push(songs[answInd]);
         while (arr.length < 4) {
-            const rand = Math.floor(Math.random() * 10);
+            const rand = Math.floor(Math.random() * songs.length);
             if (arr.indexOf(songs[rand]) == -1) {
                 arr.push(songs[rand]);
             }
@@ -105,7 +108,7 @@ function LyricChallengeGame() {
         // reset selected option (for next question)
         setSelected("");
         
-        const answ = Math.floor(Math.random() * 10);
+        const answ = Math.floor(Math.random() * songs.length);
         setAnswerIndex(answ);
 
         const newAns = createAnswers(answ);
@@ -209,11 +212,15 @@ function LyricChallengeGame() {
     useEffect (() => {
         console.log(rounds);
         console.log(lyrics);
+        console.log(artists);
+        console.log(songs);
+        console.log(tartists);
+        console.log(tsongs);
         if (answers.length == 0) {
             var temp = [];
             temp.push(songs[answerIndex]);
             while (temp.length != 4) {
-                const rand = Math.floor(Math.random() * 10);
+                const rand = Math.floor(Math.random() * songs.length);
                 if (temp.indexOf(songs[rand]) == -1) {
                     temp.push(songs[rand]);
                 }
