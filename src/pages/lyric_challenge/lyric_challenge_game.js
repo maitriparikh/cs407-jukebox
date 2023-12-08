@@ -275,6 +275,10 @@ function LyricChallengeGame() {
                         <Typography variant="h3" style={{ textAlign: "center"}}>
                             {lyrics[answerIndex][0]}
                             <br></br>
+                            {lyrics[answerIndex][1]}
+                            <br></br>
+                            {lyrics[answerIndex][2]}
+                            <br></br>
                         </Typography>
                     )  
                 }
