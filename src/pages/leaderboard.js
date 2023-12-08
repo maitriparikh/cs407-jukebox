@@ -52,23 +52,25 @@ function Leaderboard() {
         return (totalPts / totalRound);
     }
 
-    const triviaChallengeStats = (triviaArray) => {
-        if (typeof triviaArray !== 'undefined') {
-            if (triviaArray.length != 0) {
-                var pts = 0;
-                var rds = 0;
-                for (let i = 0; i < triviaArray.length; i++) {
-                    console.log(parseInt(triviaArray[i].rounds, 10));
-                    console.log(parseInt(triviaArray[i].score, 10));
-                    rds += parseInt(triviaArray[i].rounds, 10);
-                    pts += parseInt(triviaArray[i].score, 10);
+    const totalStats = (array) => {
+        var totalPoints = 0;
+        var totalRounds = 0;
+        for (let i = 0; i < array.length; i++) {
+            for (let j = 0; j < array[i].length; j++) {
+                if (typeof array[i][j].rounds !== 'undefined') {
+                    //totalPoints += array[i][j].score;
+                    totalPoints += parseInt(array[i][j].score, 10);
+                    //totalRounds += array[i][j].rounds;
+                    totalRounds += parseInt(array[i][j].rounds, 10);
+                } else {
+                    totalPoints += parseInt(array[i][j].score, 10);
+                    totalRounds++;
                 }
-                setAvgPtsPerRound(Math.round(averagePointsPerRound(pts, rds) * 100) / 100);
-                setTotalRounds(rds);
-                setTotalPoints(pts);
             }
         }
-        
+        setTotalRounds(totalRounds);
+        setTotalPoints(totalPoints);
+        setAvgPtsPerRound(Math.round(averagePointsPerRound(totalPoints, totalRounds) * 100) / 100);
     }
 
     const getHighScores = async () => {
@@ -85,8 +87,7 @@ function Leaderboard() {
         const q = query(collection(db, "users"));
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
-            // doc.data() is never undefined for query doc snapshots
-            //console.log(doc.id, " => ", doc.data());
+            
             if (doc.data().triviaHighScore) {
                 console.log("user high score" + doc.data().triviaHighScore);
                 triviaHSArray.push({username: doc.data().username, score: doc.data().triviaHighScore});
@@ -124,14 +125,16 @@ function Leaderboard() {
         memoryHSArray = memoryHSArray.sort((a,b) => b.score - a.score);
         timelineHSArray = timelineHSArray.sort((a,b) => b.score - a.score);
         doodleHSArray = doodleHSArray.sort((a,b) => b.score - a.score);
-        const slicedArrayTrivia = triviaHSArray.slice(0, 10);
-        const slicedArraySnippet = snippetHSArray.slice(0, 10);
-        const slicedArrayLyric = lyricHSArray.slice(0, 10);
 
-        const slicedArrayRoulette = rouletteHSArray.slice(0, 10);
-        const slicedArrayMemory = memoryHSArray.slice(0, 10);
-        const slicedArrayTimeline = timelineHSArray.slice(0, 10);
-        const slicedArrayDoodle = doodleHSArray.slice(0, 10);
+        //gets top 3 scores
+        const topNum = 3;
+        const slicedArrayTrivia = triviaHSArray.slice(0, topNum);
+        const slicedArraySnippet = snippetHSArray.slice(0, topNum);
+        const slicedArrayLyric = lyricHSArray.slice(0, topNum);
+        const slicedArrayRoulette = rouletteHSArray.slice(0, topNum);
+        const slicedArrayMemory = memoryHSArray.slice(0, topNum);
+        const slicedArrayTimeline = timelineHSArray.slice(0, topNum);
+        const slicedArrayDoodle = doodleHSArray.slice(0, topNum);
 
 
         setTriviaGamesArray(slicedArrayTrivia);
@@ -148,35 +151,38 @@ function Leaderboard() {
             if (user) {
                 setUser(user.uid);
                 await onSnapshot(doc(db, "users", user.uid), async (doc) => {
-                    /*
+                    
+                    var gameScores = [];
                     if (typeof doc.data().triviaGameScore !== 'undefined') {
-                        setTriviaGamesArray(doc.data().triviaGameScore);
+                        gameScores.push(doc.data().triviaGameScore);
                     }
                     if (typeof doc.data().snippetGameScore !== 'undefined') {
-                        setSnippetGamesArray(doc.data().snippetGameScore);
-                    }
-                    if (typeof doc.data().lyricGameScore !== 'undefined') {
-                        setLyricGamesArray(doc.data().lyricGameScore);
+                        gameScores.push(doc.data().snippetGameScore);
                     }
                     if (typeof doc.data().rouletteGameScore !== 'undefined') {
-                        setRouletteGamesArray(doc.data().rouletteGameScore);
+                        gameScores.push(doc.data().rouletteGameScore);
                     }
-                    if (typeof doc.data().memoryGameScore !== 'undefined') {
-                        setMemoryGamesArray(doc.data().memoryGameScore);
-                    }
-                    if (typeof doc.data().timelineGameScore !== 'undefined') {
-                        setTimelineGamesArray(doc.data().timelineGameScore);
+                    if (typeof doc.data().lyricGameScore !== 'undefined') {
+                        gameScores.push(doc.data().lyricGameScore);
                     }
                     if (typeof doc.data().doodleGameScore !== 'undefined') {
-                        setDoodleGamesArray(doc.data().doodleGameScore);
+                        gameScores.push(doc.data().doodleGameScore);
                     }
-                    */
-                    
-                    setLyricGamesArray(doc.data().triviaGameScore);
-                    console.log(doc.data().triviaGameScore);
+                    if (typeof doc.data().memoryGameScore !== 'undefined') {
+                        gameScores.push(doc.data().memoryGameScore);
+                    }
+                    if (typeof doc.data().timelineGameScore !== 'undefined') {
+                        gameScores.push(doc.data().timelineGameScore);
+                    }
+
+                    totalStats(gameScores);
+
+                    //setLyricGamesArray(doc.data().triviaGameScore);
+                    //console.log(doc.data().triviaGameScore);
 
 
-                    triviaChallengeStats(doc.data().triviaGameScore);
+
+                    //triviaChallengeStats(doc.data().triviaGameScore);
                 });
                 await getHighScores();
             }
@@ -268,14 +274,11 @@ function Leaderboard() {
             </div>
             <br></br>
             <div>
-                <h1>Playing Statisitics</h1>
+                <h1>Overall Playing Statisitics</h1>
                 <div>
-                    <h2>Trivia Challenge Statisitics</h2>
-                    <div>
-                        <h3>Total Rounds: {totalRounds} </h3>
-                        <h3>Total Points: {totalPoints} </h3>
-                        <h3>Average Points Per Round (Max is 50 points): {avgPtsPerRound}</h3>
-                    </div>
+                    <h3>Total Rounds: {totalRounds} </h3>
+                    <h3>Total Points: {totalPoints} </h3>
+                    <h3>Average Points Per Round: {avgPtsPerRound}</h3>
                 </div>
             </div>
         </div>
