@@ -335,46 +335,41 @@ function TriviaChallengeGame() {
                 {
                     questionsIndex == 0 ?
                     (
-                        <Typography variant="h2" style={{ textAlign: "center"}}>
+                        <Typography variant="h3" style={{ textAlign: "center"}}>
                             {questions[questionsIndex] + "" + artists[answerIndex]}
                         </Typography>
                     ) :
                     (
-                        <Typography variant="h2" style={{ textAlign: "center"}}>
+                        <Typography variant="h3" style={{ textAlign: "center"}}>
                             {questions[questionsIndex]}
                         </Typography>
                     )
                 }
+                <br></br>
                 
                 {
                     questionsIndex == 1 ? 
                     (
-                        //code for album image
-                        <iframe 
-                            style={{ borderRadius: '12px' }}
-                            src={previews[answerIndex]}
-                            width="70%" 
-                            height="100" 
-                            frameBorder="0" 
-                            allowfullscreen="" 
-                            allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-                            loading="lazy">
-                        </iframe>
+
+                        <audio controls style={{ width: '880px', borderRadius: '12px', marginTop: "1%" }}>
+                        <source src={previews[answerIndex]} type="audio/mpeg" />
+                        Your browser does not support the audio element.
+                        </audio>
                         
                         
                     ) : 
                     (
-                        //code for album preview
-                        <iframe 
-                            style={{ borderRadius: '10px' }}
-                            src={albumImages[answerIndex].url}
-                            width="20%" 
-                            height="300" 
-                            frameBorder="0" 
-                            allowfullscreen="" 
-                            allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-                            loading="lazy">
-                        </iframe>
+
+                        <img
+                        src={albumImages[answerIndex].url}
+                        alt="Album Cover"
+                        style={{
+                            width: '180px',
+                            height: '180px',
+                            borderRadius: '12px',
+                            marginRight: '16px',
+                        }}
+                        />
         
 
                     )

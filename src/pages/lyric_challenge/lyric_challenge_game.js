@@ -233,7 +233,8 @@ function LyricChallengeGame() {
             Round {currentQuestion + 1} of {rounds}
             </Typography>
             <br></br>
-                
+            
+            <br></br>
             <Card elevation={3} style={{ position: 'relative', border: `2px solid ${theme.palette.primary.main}`, borderRadius: "8px" }}>
                 {/* Cancel Icon */}
                 <CancelIcon
@@ -251,9 +252,7 @@ function LyricChallengeGame() {
                 />
                 
                 <CardContent>    
-                <Typography variant="h2" style={{ textAlign: "center"}}>
-                    {question}
-                </Typography>
+                
                 <br></br>
                 {   
                     lyrics[answerIndex].length > 4 ? (
@@ -357,6 +356,7 @@ function LyricChallengeGame() {
             </div>
         ) : (
             <div>
+                <br></br>
                 <Typography variant="h2" style={{ textAlign: "center" }}>
                     Lyric Challenge Summary
                 </Typography>

@@ -31,6 +31,9 @@ import DoodleChallengeGif from "../gifs/doodle_challenge.gif";
 import TimelineChallengeGif from "../gifs/timeline_challenge.gif";
 import MemoryChallengeGif from "../gifs/memory_challenge.gif";
 import SongSnippetChallengeGif from "../gifs/songsnippet_challenge.gif";
+import LyricChallengeGif from "../gifs/lyric_challenge.gif";
+import TriviaChallengeGif from "../gifs/trivia_challenge.gif";
+import SongRouletteChallengeGif from "../gifs/songroulette_challenge.gif";
 
 
 export var TopFiveArrExport = true;
@@ -394,8 +397,8 @@ function Homepage() {
                     Song Roulette <PeopleAltIcon style={{ marginLeft: '5px' }} />
                   </Typography>
                 <img
-                  style={{ marginTop: "4%", height: '50%', width: '50%', borderRadius: "8px", boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.4)" }}
-                  src={DefaultGif}
+                  style={{ marginTop: "4%", height: '100%', width: '95%', borderRadius: "8px", boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.4)" }}
+                  src={SongRouletteChallengeGif}
                   alt="Memory Challenge GIF"
                   loop // make it loop
                 />
@@ -500,8 +503,8 @@ function Homepage() {
                   Trivia Challenge
                 </Typography>
                 <img
-                  style={{ marginTop: "4%", height: '50%', width: '50%', borderRadius: "8px", boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.4)" }}
-                  src={DefaultGif}
+                  style={{ marginTop: "4%", height: '100%', width: '95%', borderRadius: "8px", boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.4)" }}
+                  src={TriviaChallengeGif}
                   alt="Memory Challenge GIF"
                   loop // make it loop
                 />
@@ -526,8 +529,8 @@ function Homepage() {
                   Lyric Challenge
                 </Typography>
                 <img
-                  style={{ marginTop: "4%", height: '50%', width: '50%', borderRadius: "8px", boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.4)" }}
-                  src={DefaultGif}
+                  style={{ marginTop: "4%", height: '100%', width: '95%', borderRadius: "8px", boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.4)" }}
+                  src={LyricChallengeGif}
                   alt="Memory Challenge GIF"
                   loop // make it loop
                 />
