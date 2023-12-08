@@ -124,11 +124,11 @@ function TriviaChallengeGame() {
         setAnswers(newAns);
 
         if (currentQuestion == rounds - 1) { // Max rounds reached
-            await sendGameScore();
-            await getHighScores();
+            //await getHighScores();
             setShowGame(!showGame);
             const audio = new Audio(FanfareSound);
             audio.play(); 
+            await sendGameScore();
         } 
         else if (currentQuestion < rounds - 1) { // Change question to next question
             console.log("Current question number is " + currentQuestion)
@@ -485,6 +485,7 @@ function TriviaChallengeGame() {
                 >
                 Replay
                 </Button>
+                {/*
                 <h2>Trivia Challenge Leaderboard</h2>
                     {
                         triviaGamesArray.map(highScore => (
@@ -493,7 +494,9 @@ function TriviaChallengeGame() {
                             </p>
 
                         ))
-                    }
+                    } 
+                    */
+                }
                 
             </div>
         )}
